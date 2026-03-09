@@ -1,13 +1,21 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 
+const requiredEnv = (name: string) => {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Missing required env var: ${name}`);
+  }
+  return value;
+};
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDeori5nzM-gxwTaK0DCQjo1kQn1QESdkI",
-  authDomain: "aaa-belair.firebaseapp.com",
-  projectId: "aaa-belair",
-  storageBucket: "aaa-belair.firebasestorage.app",
-  messagingSenderId: "749161292260",
-  appId: "1:749161292260:web:6a3b04eb80024568fca7f1",
+  apiKey: requiredEnv("NEXT_PUBLIC_FIREBASE_API_KEY"),
+  authDomain: requiredEnv("NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN"),
+  projectId: requiredEnv("NEXT_PUBLIC_FIREBASE_PROJECT_ID"),
+  storageBucket: requiredEnv("NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET"),
+  messagingSenderId: requiredEnv("NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID"),
+  appId: requiredEnv("NEXT_PUBLIC_FIREBASE_APP_ID"),
 };
 
 const app = initializeApp(firebaseConfig);

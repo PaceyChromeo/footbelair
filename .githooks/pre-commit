@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ "$SKIP_SECRET_SCAN" = "1" ]; then
+  echo "Skipping secret scan (SKIP_SECRET_SCAN=1)"
+  exit 0
+fi
+
+if command -v npm >/dev/null 2>&1; then
+  npm run -s scan:secrets
+else
+  echo "npm not found; skipping secret scan" >&2
+fi
