@@ -382,13 +382,14 @@ export async function autoResolveExpiredMatches(
     const match = d.data() as Match;
     if (match.status !== "open" && match.status !== "full") continue;
 
-    const matchTime = match.date.toDate();
-    matchTime.setHours(14, 0, 0, 0);
-    if (matchTime > now) continue;
+    const matchStart = match.date.toDate();
+    const matchEnd = new Date(matchStart.getTime() + 90 * 60 * 1000);
 
     if (match.players.length >= MIN_PLAYERS) {
+      if (matchEnd > now) continue;
       await completeMatchAndDeductQuotas(d.id);
     } else {
+      if (matchStart > now) continue;
       await cancelMatch(d.id, { type: "not_enough_players" });
     }
   }
