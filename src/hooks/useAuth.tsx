@@ -107,6 +107,35 @@ async function syncUserToFirestore(user: User, displayNameOverride?: string): Pr
     };
   }
 
+  // No document for this UID — check if an orphaned profile exists for the same email
+  // (e.g. Firebase Auth account was recreated and got a new UID).
+  if (user.email) {
+    const usersRef = collection(db, "users");
+    const emailQuery = query(usersRef, where("email", "==", user.email));
+    const emailSnap = await getDocs(emailQuery);
+
+    if (!emailSnap.empty) {
+      const orphaned = emailSnap.docs[0].data() as UserProfile;
+
+      const migratedProfile: UserProfile = {
+        ...orphaned,
+        uid: user.uid,
+        displayName: resolvedName !== "Unknown" ? resolvedName : orphaned.displayName,
+        email: user.email,
+        photoURL: user.photoURL || orphaned.photoURL,
+        quota: orphaned.quota.month !== currentMonth
+          ? { remaining: MAX_QUOTA, month: currentMonth }
+          : orphaned.quota,
+        penalty: orphaned.penalty?.active && orphaned.penalty.until.toDate() <= new Date()
+          ? null
+          : orphaned.penalty,
+      };
+
+      await setDoc(userRef, migratedProfile);
+      return migratedProfile;
+    }
+  }
+
   const newProfile: UserProfile = {
     uid: user.uid,
     displayName: resolvedName,
