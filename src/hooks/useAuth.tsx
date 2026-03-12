@@ -174,25 +174,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUpWithEmail = async (email: string, password: string, displayName: string) => {
     setSigningUp(true);
     try {
+      const usersRef = collection(db, "users");
+
+      const emailQuery = query(usersRef, where("email", "==", email));
+      const emailSnap = await getDocs(emailQuery);
+      if (!emailSnap.empty) {
+        throw new SignupError("email-already-exists");
+      }
+
+      const nameQuery = query(usersRef, where("displayName", "==", displayName));
+      const nameSnap = await getDocs(nameQuery);
+      if (!nameSnap.empty) {
+        throw new SignupError("name-already-exists");
+      }
+
       const credential = await createUserWithEmailAndPassword(auth, email, password);
 
       try {
-        const usersRef = collection(db, "users");
-        const nameQuery = query(usersRef, where("displayName", "==", displayName));
-        const nameSnap = await getDocs(nameQuery);
-        if (!nameSnap.empty) {
-          await credential.user.delete();
-          throw new SignupError("name-already-exists");
-        }
-
         await updateProfile(credential.user, { displayName });
         const userProfile = await syncUserToFirestore(credential.user, displayName);
         setUser(credential.user);
         setProfile(userProfile);
       } catch (err) {
-        if (err instanceof SignupError || (err as { code?: string }).code === "name-already-exists") {
-          throw err;
-        }
         try { await credential.user.delete(); } catch { /* best-effort cleanup */ }
         throw err;
       }
