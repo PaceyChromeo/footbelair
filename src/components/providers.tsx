@@ -7,12 +7,23 @@ import { ReactNode } from "react";
 
 const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? "";
 
-export function Providers({ children }: { children: ReactNode }) {
+function RecaptchaWrapper({ children }: { children: ReactNode }) {
+  if (!recaptchaSiteKey) {
+    return <>{children}</>;
+  }
   return (
     <GoogleReCaptchaProvider reCaptchaKey={recaptchaSiteKey}>
+      {children}
+    </GoogleReCaptchaProvider>
+  );
+}
+
+export function Providers({ children }: { children: ReactNode }) {
+  return (
+    <RecaptchaWrapper>
       <LocaleProvider>
         <AuthProvider>{children}</AuthProvider>
       </LocaleProvider>
-    </GoogleReCaptchaProvider>
+    </RecaptchaWrapper>
   );
 }
