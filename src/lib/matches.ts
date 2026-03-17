@@ -438,3 +438,12 @@ export async function deleteUserAccount(targetUid: string): Promise<void> {
   const userRef = doc(db, "users", targetUid);
   await deleteDoc(userRef);
 }
+
+export function subscribeToPendingUsersCount(
+  callback: (count: number) => void
+): () => void {
+  const q = query(collection(db, "users"), where("status", "==", "pending"));
+  return onSnapshot(q, (snapshot: QuerySnapshot<DocumentData>) => {
+    callback(snapshot.size);
+  });
+}

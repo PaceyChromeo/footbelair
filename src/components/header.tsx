@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocale } from "@/hooks/useLocale";
+import { subscribeToPendingUsersCount } from "@/lib/matches";
 import { localeList, localeLabels, type Locale } from "@/lib/i18n";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -19,6 +21,12 @@ import { LogOut, Shield, User, UserCircle, Ticket, Globe } from "lucide-react";
 export function Header() {
   const { profile, signInWithGoogle, signOut, loading } = useAuth();
   const { t, locale, setLocale } = useLocale();
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useEffect(() => {
+    if (profile?.role !== "admin") return;
+    return subscribeToPendingUsersCount(setPendingCount);
+  }, [profile?.role]);
 
   return (
     <header className="border-b bg-gradient-to-r from-emerald-600 to-green-700 text-white shadow-md">
@@ -100,6 +108,11 @@ export function Header() {
                       <Link href="/admin" className="flex items-center gap-2">
                         <Shield className="h-4 w-4" />
                         {t("navAdmin")}
+                        {pendingCount > 0 && (
+                          <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[11px] font-bold text-white">
+                            {pendingCount}
+                          </span>
+                        )}
                       </Link>
                     </DropdownMenuItem>
                   )}
