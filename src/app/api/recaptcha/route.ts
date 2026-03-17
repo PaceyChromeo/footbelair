@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY ?? "";
+const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ?? "";
 const SCORE_THRESHOLD = 0.5;
+
+export async function GET() {
+  return NextResponse.json({
+    hasSecretKey: RECAPTCHA_SECRET_KEY.length > 0,
+    hasSiteKey: RECAPTCHA_SITE_KEY.length > 0,
+    siteKeyPrefix: RECAPTCHA_SITE_KEY.slice(0, 4) || "EMPTY",
+  });
+}
 
 interface RecaptchaResponse {
   success: boolean;
