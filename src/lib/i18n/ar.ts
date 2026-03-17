@@ -116,6 +116,16 @@ const ar = {
   deleteWeek: "حذف الأسبوع",
   weekDeleted: "تم حذف مباريات الأسبوع",
   deleteWeekConfirm: "حذف جميع مباريات هذا الأسبوع؟ هذا الإجراء لا يمكن التراجع عنه.",
+  pendingApproval: "في انتظار الموافقة",
+  pendingApprovalMessage: "حسابك في انتظار موافقة المشرف. يمكنك الوصول إلى ملفك الشخصي ولكن ليس المباريات.",
+  pendingUsers: "حسابات معلقة",
+  approvedUsers: "حسابات معتمدة",
+  approveUser: "موافقة",
+  userApproved: "تمت الموافقة على {name}",
+  deleteUser: "حذف الحساب",
+  deleteUserConfirm: "حذف حساب {name}؟ هذا الإجراء لا يمكن التراجع عنه.",
+  userDeleted: "تم حذف {name}",
+  noPendingUsers: "لا توجد حسابات معلقة",
 
   // Language
   language: "اللغة",

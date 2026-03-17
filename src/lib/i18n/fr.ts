@@ -117,6 +117,18 @@ const fr = {
   weekDeleted: "Matchs de la semaine supprimés",
   deleteWeekConfirm: "Supprimer tous les matchs de cette semaine ? Cette action est irréversible.",
 
+  // Account approval
+  pendingApproval: "En attente d'approbation",
+  pendingApprovalMessage: "Ton compte est en attente de validation par un administrateur. Tu peux accéder à ton profil mais pas aux matchs.",
+  pendingUsers: "Comptes en attente",
+  approvedUsers: "Comptes approuvés",
+  approveUser: "Approuver",
+  userApproved: "{name} approuvé",
+  deleteUser: "Supprimer le compte",
+  deleteUserConfirm: "Supprimer le compte de {name} ? Cette action est irréversible.",
+  userDeleted: "{name} supprimé",
+  noPendingUsers: "Aucun compte en attente",
+
   // Language
   language: "Langue",
   langFr: "Français",

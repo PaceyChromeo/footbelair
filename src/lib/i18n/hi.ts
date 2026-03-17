@@ -117,6 +117,18 @@ const hi = {
   weekDeleted: "साप्ताहिक मैच हटाए गए",
   deleteWeekConfirm: "इस सप्ताह के सभी मैच हटाएं? यह क्रिया अपरिवर्तनीय है।",
 
+  // Account approval
+  pendingApproval: "अनुमोदन लंबित",
+  pendingApprovalMessage: "आपका खाता व्यवस्थापक अनुमोदन की प्रतीक्षा में है। आप अपनी प्रोफ़ाइल देख सकते हैं लेकिन मैच नहीं।",
+  pendingUsers: "लंबित खाते",
+  approvedUsers: "स्वीकृत खाते",
+  approveUser: "अनुमोदन करें",
+  userApproved: "{name} अनुमोदित",
+  deleteUser: "खाता हटाएं",
+  deleteUserConfirm: "{name} का खाता हटाएं? यह क्रिया अपरिवर्तनीय है।",
+  userDeleted: "{name} हटाया गया",
+  noPendingUsers: "कोई लंबित खाता नहीं",
+
   // Language
   language: "भाषा",
   langFr: "Français",

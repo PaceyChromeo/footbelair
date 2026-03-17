@@ -87,12 +87,14 @@ export function Header() {
                       {t("navProfile")}
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/" className="flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      {t("navMatches")}
-                    </Link>
-                  </DropdownMenuItem>
+                  {profile.status !== "pending" && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/" className="flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        {t("navMatches")}
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   {profile.role === "admin" && (
                     <DropdownMenuItem asChild>
                       <Link href="/admin" className="flex items-center gap-2">

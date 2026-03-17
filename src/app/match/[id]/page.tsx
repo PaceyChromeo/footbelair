@@ -50,6 +50,12 @@ export default function MatchDetailPage() {
   }, [authLoading, profile, router]);
 
   useEffect(() => {
+    if (!authLoading && profile?.status === "pending") {
+      router.push("/");
+    }
+  }, [authLoading, profile, router]);
+
+  useEffect(() => {
     if (!matchId) return;
     const unsubMatch = subscribeToMatch(matchId, (m) => {
       setMatch(m);

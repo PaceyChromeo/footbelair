@@ -116,6 +116,16 @@ const it = {
   deleteWeek: "Elimina settimana",
   weekDeleted: "Partite della settimana eliminate",
   deleteWeekConfirm: "Eliminare tutte le partite di questa settimana? Questa azione è irreversibile.",
+  pendingApproval: "In attesa di approvazione",
+  pendingApprovalMessage: "Il tuo account è in attesa di approvazione da parte di un amministratore. Puoi accedere al tuo profilo ma non alle partite.",
+  pendingUsers: "Account in attesa",
+  approvedUsers: "Account approvati",
+  approveUser: "Approva",
+  userApproved: "{name} approvato",
+  deleteUser: "Elimina account",
+  deleteUserConfirm: "Eliminare l'account di {name}? Questa azione è irreversibile.",
+  userDeleted: "{name} eliminato",
+  noPendingUsers: "Nessun account in attesa",
 
   // Language
   language: "Lingua",

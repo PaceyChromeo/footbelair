@@ -21,6 +21,8 @@ import {
   adminMoveToPlayers,
   adminMoveToWaitingList,
   deleteWeekMatches,
+  setUserStatus,
+  deleteUserAccount,
 } from "@/lib/matches";
 import { Match, UserProfile, DayOfWeek, MAX_PLAYERS, CancellationReason, CancellationReasonType } from "@/lib/types";
 import { Timestamp } from "firebase/firestore";
@@ -56,6 +58,7 @@ import {
   ArrowDown,
   ArrowUp,
   Trash2,
+  UserCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -264,6 +267,26 @@ export default function AdminPage() {
     }
   };
 
+  const handleApproveUser = async (user: UserProfile) => {
+    try {
+      await setUserStatus(user.uid, "approved");
+      toast.success(t("userApproved", { name: user.displayName }));
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : t("error");
+      toast.error(message);
+    }
+  };
+
+  const handleDeleteUser = async (user: UserProfile) => {
+    try {
+      await deleteUserAccount(user.uid);
+      toast.success(t("userDeleted", { name: user.displayName }));
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : t("error");
+      toast.error(message);
+    }
+  };
+
   const weekLabel = (() => {
     const mon = weekDates[0].date;
     const fri = weekDates[4].date;
@@ -273,6 +296,9 @@ export default function AdminPage() {
   const allUsers = Array.from(usersMap.values()).sort((a, b) =>
     a.displayName.localeCompare(b.displayName)
   );
+
+  const pendingUsers = allUsers.filter((u) => u.status === "pending");
+  const approvedUsers = allUsers.filter((u) => u.status !== "pending");
 
   if (authLoading || !profile || profile.role !== "admin") {
     return null;
@@ -621,13 +647,86 @@ export default function AdminPage() {
           <TabsContent value="users" className="space-y-4">
             <Card>
               <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <AlertTriangle className="h-4 w-4 text-amber-500" />
+                  {t("pendingUsers")} ({pendingUsers.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {pendingUsers.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">{t("noPendingUsers")}</p>
+                ) : (
+                  <div className="space-y-2">
+                    {pendingUsers.map((user) => (
+                      <div
+                        key={user.uid}
+                        className="flex items-center justify-between rounded-md p-2 hover:bg-muted"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={user.photoURL || undefined} />
+                            <AvatarFallback>
+                              {user.displayName.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <span className="text-sm font-medium">{user.displayName}</span>
+                            <p className="text-xs text-muted-foreground">{user.email}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-1">
+                          <Button
+                            size="sm"
+                            variant="default"
+                            onClick={() => handleApproveUser(user)}
+                            className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700"
+                          >
+                            <UserCheck className="mr-1 h-3 w-3" />
+                            {t("approveUser")}
+                          </Button>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button size="sm" variant="destructive" className="h-7 text-xs">
+                                <Trash2 className="mr-1 h-3 w-3" />
+                                {t("deleteUser")}
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>{t("deleteUser")}</DialogTitle>
+                              </DialogHeader>
+                              <p className="text-sm text-muted-foreground">
+                                {t("deleteUserConfirm", { name: user.displayName })}
+                              </p>
+                              <DialogFooter>
+                                <DialogClose asChild>
+                                  <Button variant="outline">{t("cancel")}</Button>
+                                </DialogClose>
+                                <DialogClose asChild>
+                                  <Button variant="destructive" onClick={() => handleDeleteUser(user)}>
+                                    {t("confirm")}
+                                  </Button>
+                                </DialogClose>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
                 <CardTitle className="text-base">
-                  {t("users")} ({allUsers.length})
+                  {t("approvedUsers")} ({approvedUsers.length})
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
-                  {allUsers.map((user) => (
+                  {approvedUsers.map((user) => (
                     <div
                       key={user.uid}
                       className="flex items-center justify-between rounded-md p-2 hover:bg-muted"
@@ -698,6 +797,32 @@ export default function AdminPage() {
                             </>
                           )}
                         </Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button size="sm" variant="ghost" className="h-7 text-xs text-destructive hover:text-destructive">
+                              <Trash2 className="mr-1 h-3 w-3" />
+                              {t("deleteUser")}
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>{t("deleteUser")}</DialogTitle>
+                            </DialogHeader>
+                            <p className="text-sm text-muted-foreground">
+                              {t("deleteUserConfirm", { name: user.displayName })}
+                            </p>
+                            <DialogFooter>
+                              <DialogClose asChild>
+                                <Button variant="outline">{t("cancel")}</Button>
+                              </DialogClose>
+                              <DialogClose asChild>
+                                <Button variant="destructive" onClick={() => handleDeleteUser(user)}>
+                                  {t("confirm")}
+                                </Button>
+                              </DialogClose>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
                       </div>
                     </div>
                   ))}

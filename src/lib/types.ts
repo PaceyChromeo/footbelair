@@ -12,6 +12,7 @@ export interface CancellationReason {
 }
 
 export type UserRole = "admin" | "player";
+export type UserStatus = "pending" | "approved";
 
 export interface PlayerEntry {
   uid: string;
@@ -39,6 +40,7 @@ export interface UserProfile {
   email: string;
   photoURL: string | null;
   role: UserRole;
+  status: UserStatus;
   quota: UserQuota;
   penalty: Penalty | null;
   createdAt: Timestamp;

@@ -117,6 +117,18 @@ const pt = {
   weekDeleted: "Jogos da semana eliminados",
   deleteWeekConfirm: "Eliminar todos os jogos desta semana? Esta ação é irreversível.",
 
+  // Account approval
+  pendingApproval: "Aprovação pendente",
+  pendingApprovalMessage: "Sua conta está aguardando aprovação de um administrador. Você pode acessar seu perfil, mas não os jogos.",
+  pendingUsers: "Contas pendentes",
+  approvedUsers: "Contas aprovadas",
+  approveUser: "Aprovar",
+  userApproved: "{name} aprovado",
+  deleteUser: "Excluir conta",
+  deleteUserConfirm: "Excluir a conta de {name}? Esta ação é irreversível.",
+  userDeleted: "{name} excluído",
+  noPendingUsers: "Nenhuma conta pendente",
+
   // Language
   language: "Idioma",
   langFr: "Français",

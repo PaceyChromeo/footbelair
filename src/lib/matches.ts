@@ -19,6 +19,7 @@ import {
   Match,
   PlayerEntry,
   UserProfile,
+  UserStatus,
   MAX_PLAYERS,
   MIN_PLAYERS,
   MAX_QUOTA,
@@ -423,4 +424,17 @@ export async function cleanupOutOfRangeMatches(): Promise<void> {
   for (const d of futureSnapshot.docs) {
     await deleteDoc(doc(db, "matches", d.id));
   }
+}
+
+export async function setUserStatus(
+  targetUid: string,
+  status: UserStatus
+): Promise<void> {
+  const userRef = doc(db, "users", targetUid);
+  await updateDoc(userRef, { status });
+}
+
+export async function deleteUserAccount(targetUid: string): Promise<void> {
+  const userRef = doc(db, "users", targetUid);
+  await deleteDoc(userRef);
 }

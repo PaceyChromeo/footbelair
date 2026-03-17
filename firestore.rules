@@ -35,8 +35,8 @@ service cloud.firestore {
       // Admins can update any user profile (role changes, penalties, quota deductions)
       allow update: if isOwner(userId) || isAdmin();
 
-      // No one can delete user profiles from the client
-      allow delete: if false;
+      // Only admins can delete user profiles
+      allow delete: if isAdmin();
     }
 
     // =====================

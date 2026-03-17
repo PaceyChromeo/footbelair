@@ -89,6 +89,11 @@ async function syncUserToFirestore(user: User, displayNameOverride?: string): Pr
       photoURL: user.photoURL || existing.photoURL,
     };
 
+    // Backfill status for existing users created before the approval workflow
+    if (!existing.status) {
+      updates.status = "approved";
+    }
+
     if (existing.quota.month !== currentMonth) {
       updates.quota = { remaining: MAX_QUOTA, month: currentMonth };
     }
@@ -102,6 +107,7 @@ async function syncUserToFirestore(user: User, displayNameOverride?: string): Pr
     return {
       ...existing,
       ...updates,
+      status: updates.status || existing.status || "approved",
       quota: updates.quota || existing.quota,
       penalty: updates.penalty === null ? null : existing.penalty,
     };
@@ -123,6 +129,7 @@ async function syncUserToFirestore(user: User, displayNameOverride?: string): Pr
         displayName: resolvedName !== "Unknown" ? resolvedName : orphaned.displayName,
         email: user.email,
         photoURL: user.photoURL || orphaned.photoURL,
+        status: orphaned.status || "approved",
         quota: orphaned.quota.month !== currentMonth
           ? { remaining: MAX_QUOTA, month: currentMonth }
           : orphaned.quota,
@@ -142,6 +149,7 @@ async function syncUserToFirestore(user: User, displayNameOverride?: string): Pr
     email: user.email || "",
     photoURL: user.photoURL,
     role: "player",
+    status: "pending",
     quota: { remaining: MAX_QUOTA, month: currentMonth },
     penalty: null,
     createdAt: Timestamp.now(),

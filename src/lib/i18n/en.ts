@@ -117,6 +117,18 @@ const en = {
   weekDeleted: "Weekly matches deleted",
   deleteWeekConfirm: "Delete all matches for this week? This action is irreversible.",
 
+  // Account approval
+  pendingApproval: "Pending approval",
+  pendingApprovalMessage: "Your account is awaiting admin approval. You can access your profile but not the matches.",
+  pendingUsers: "Pending accounts",
+  approvedUsers: "Approved accounts",
+  approveUser: "Approve",
+  userApproved: "{name} approved",
+  deleteUser: "Delete account",
+  deleteUserConfirm: "Delete {name}'s account? This action is irreversible.",
+  userDeleted: "{name} deleted",
+  noPendingUsers: "No pending accounts",
+
   // Language
   language: "Language",
   langFr: "Français",

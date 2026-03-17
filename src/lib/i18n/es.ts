@@ -117,6 +117,18 @@ const es = {
   weekDeleted: "Partidos de la semana eliminados",
   deleteWeekConfirm: "¿Eliminar todos los partidos de esta semana? Esta acción es irreversible.",
 
+  // Account approval
+  pendingApproval: "Pendiente de aprobación",
+  pendingApprovalMessage: "Tu cuenta está pendiente de aprobación por un administrador. Puedes acceder a tu perfil pero no a los partidos.",
+  pendingUsers: "Cuentas pendientes",
+  approvedUsers: "Cuentas aprobadas",
+  approveUser: "Aprobar",
+  userApproved: "{name} aprobado",
+  deleteUser: "Eliminar cuenta",
+  deleteUserConfirm: "¿Eliminar la cuenta de {name}? Esta acción es irreversible.",
+  userDeleted: "{name} eliminado",
+  noPendingUsers: "No hay cuentas pendientes",
+
   // Language
   language: "Idioma",
   langFr: "Français",
