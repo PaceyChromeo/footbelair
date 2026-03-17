@@ -34,6 +34,7 @@ const es = {
   authErrorInvalidEmail: "Dirección de email inválida.",
   authErrorTooManyRequests: "Demasiados intentos. Inténtalo más tarde.",
   authErrorGeneric: "Ha ocurrido un error. Inténtalo de nuevo.",
+  authErrorCaptcha: "La verificación anti-robot falló. Inténtalo de nuevo.",
   logout: "Cerrar sesión",
 
   // Header / Nav

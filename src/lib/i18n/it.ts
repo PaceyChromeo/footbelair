@@ -34,6 +34,7 @@ const it = {
   authErrorInvalidEmail: "Indirizzo email non valido.",
   authErrorTooManyRequests: "Troppi tentativi. Riprova più tardi.",
   authErrorGeneric: "Si è verificato un errore. Riprova.",
+  authErrorCaptcha: "Verifica anti-robot fallita. Riprova.",
   logout: "Esci",
 
   // Header / Nav

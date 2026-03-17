@@ -34,6 +34,7 @@ const fr = {
   authErrorInvalidEmail: "Adresse email invalide.",
   authErrorTooManyRequests: "Trop de tentatives. Réessaie plus tard.",
   authErrorGeneric: "Une erreur est survenue. Réessaie.",
+  authErrorCaptcha: "La vérification anti-robot a échoué. Réessaie.",
   logout: "Déconnexion",
 
   // Header / Nav

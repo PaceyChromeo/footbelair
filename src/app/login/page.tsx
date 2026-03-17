@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Globe } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
 import { FirebaseError } from "firebase/app";
 
 type AuthMode = "login" | "signup" | "reset";
@@ -24,6 +25,7 @@ export default function LoginPage() {
   const { signInWithGoogle, signInWithEmail, signUpWithEmail, resetPassword, profile, loading } = useAuth();
   const { t, locale, setLocale } = useLocale();
   const router = useRouter();
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const [mode, setMode] = useState<AuthMode>("login");
   const [email, setEmail] = useState("");
@@ -58,6 +60,22 @@ export default function LoginPage() {
     }
   }
 
+  const verifyRecaptcha = useCallback(async (): Promise<boolean> => {
+    if (!executeRecaptcha) return false;
+    try {
+      const token = await executeRecaptcha("signup");
+      const res = await fetch("/api/recaptcha", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+      const data = await res.json();
+      return data.success === true;
+    } catch {
+      return false;
+    }
+  }, [executeRecaptcha]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -68,6 +86,12 @@ export default function LoginPage() {
       if (mode === "login") {
         await signInWithEmail(email, password);
       } else if (mode === "signup") {
+        const captchaOk = await verifyRecaptcha();
+        if (!captchaOk) {
+          setError(t("authErrorCaptcha"));
+          setSubmitting(false);
+          return;
+        }
         await signUpWithEmail(email, password, displayName);
       } else if (mode === "reset") {
         await resetPassword(email);

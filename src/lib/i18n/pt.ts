@@ -34,6 +34,7 @@ const pt = {
   authErrorInvalidEmail: "Endereço de email inválido.",
   authErrorTooManyRequests: "Muitas tentativas. Tente novamente mais tarde.",
   authErrorGeneric: "Ocorreu um erro. Tente novamente.",
+  authErrorCaptcha: "A verificação anti-robô falhou. Tente novamente.",
   logout: "Sair",
 
   // Header / Nav

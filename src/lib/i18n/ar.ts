@@ -34,6 +34,7 @@ const ar = {
   authErrorInvalidEmail: "عنوان بريد إلكتروني غير صالح.",
   authErrorTooManyRequests: "محاولات كثيرة جداً. حاول مرة أخرى لاحقاً.",
   authErrorGeneric: "حدث خطأ. حاول مرة أخرى.",
+  authErrorCaptcha: "فشل التحقق من أنك لست روبوتاً. حاول مرة أخرى.",
   logout: "تسجيل الخروج",
 
   // Header / Nav

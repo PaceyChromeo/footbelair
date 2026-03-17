@@ -34,6 +34,7 @@ const hi = {
   authErrorInvalidEmail: "अमान्य ईमेल पता।",
   authErrorTooManyRequests: "बहुत अधिक प्रयास। बाद में पुनः प्रयास करें।",
   authErrorGeneric: "एक त्रुटि हुई। कृपया पुनः प्रयास करें।",
+  authErrorCaptcha: "बॉट सत्यापन विफल रहा। कृपया पुनः प्रयास करें।",
   logout: "लॉग आउट",
 
   // Header / Nav

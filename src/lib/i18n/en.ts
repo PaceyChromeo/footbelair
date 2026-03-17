@@ -34,6 +34,7 @@ const en = {
   authErrorInvalidEmail: "Invalid email address.",
   authErrorTooManyRequests: "Too many attempts. Try again later.",
   authErrorGeneric: "An error occurred. Please try again.",
+  authErrorCaptcha: "Bot verification failed. Please try again.",
   logout: "Log out",
 
   // Header / Nav
