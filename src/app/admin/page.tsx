@@ -317,7 +317,14 @@ export default function AdminPage() {
         <Tabs defaultValue="matches">
           <TabsList className="mb-4">
             <TabsTrigger value="matches">{t("matchesTab")}</TabsTrigger>
-            <TabsTrigger value="users">{t("usersTab")}</TabsTrigger>
+            <TabsTrigger value="users" className="relative">
+              {t("usersTab")}
+              {pendingUsers.length > 0 && (
+                <span className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[11px] font-bold text-white">
+                  {pendingUsers.length}
+                </span>
+              )}
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="matches" className="space-y-6">
