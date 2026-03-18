@@ -29,17 +29,17 @@ export function Header() {
   }, [profile?.role]);
 
   return (
-    <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/70 border-b border-white/20 shadow-sm text-slate-800">
+    <header className="sticky top-0 z-50 bg-transparent text-white">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2">
           <span className="text-2xl">⚽</span>
-          <span className="bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent text-2xl font-bold tracking-tight">{t("appName")}</span>
+          <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent text-2xl font-bold tracking-tight drop-shadow-sm">{t("appName")}</span>
         </Link>
 
         <div className="flex items-center gap-3">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-slate-600 hover:bg-slate-100">
+              <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-white/80 hover:text-white hover:bg-white/10">
                 <Globe className="h-4 w-4" />
                 <span className="text-xs uppercase">{locale}</span>
               </Button>
@@ -61,7 +61,7 @@ export function Header() {
             <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
           ) : profile ? (
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5 text-sm text-slate-600">
+              <div className="flex items-center gap-1.5 text-sm text-white/80">
                 <Ticket className="h-4 w-4" />
                 <span>{profile.quota.remaining}/10</span>
               </div>
@@ -74,7 +74,7 @@ export function Header() {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:bg-slate-100">
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:bg-white/10">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={profile.photoURL || undefined} />
                       <AvatarFallback>
