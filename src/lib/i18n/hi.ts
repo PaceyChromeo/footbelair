@@ -246,6 +246,7 @@ rulesSec8Title: "8. संपर्क",
   reportedBy: "{name} द्वारा रिपोर्ट किया गया",
   reportedPlayer: "रिपोर्ट किया गया खिलाड़ी",
   reportMatch: "मैच: {day} {date}",
+  playerReported: "रिपोर्ट किया गया",
 } as const;
 
 export default hi;

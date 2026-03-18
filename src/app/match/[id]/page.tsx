@@ -52,6 +52,7 @@ export default function MatchDetailPage() {
   const [loading, setLoading] = useState(true);
   const [reportingPlayer, setReportingPlayer] = useState<{ uid: string; displayName: string } | null>(null);
   const [reportSending, setReportSending] = useState(false);
+  const [reportedPlayers, setReportedPlayers] = useState<Set<string>>(new Set());
 
   const matchId = params.id as string;
 
@@ -162,6 +163,7 @@ export default function MatchDetailPage() {
         matchDate,
         matchDay,
       });
+      setReportedPlayers((prev) => new Set(prev).add(reportingPlayer.uid));
       toast.success(t("reportNoShowSent"));
     } catch {
       toast.error(t("error"));
@@ -358,13 +360,20 @@ export default function MatchDetailPage() {
                             <AlertTriangle className="h-3 w-3 text-destructive" />
                           )}
                           {match.status === "completed" && profile && p.uid !== profile.uid && (
-                            <button
-                              onClick={() => setReportingPlayer({ uid: p.uid, displayName: p.displayName })}
-                              className="ml-1 flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 hover:border-red-300 transition-colors"
-                            >
-                              <Flag className="h-3 w-3" />
-                              {t("reportNoShow")}
-                            </button>
+                            reportedPlayers.has(p.uid) ? (
+                              <span className="ml-1 flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium text-amber-700 bg-amber-50 border border-amber-200">
+                                <Flag className="h-3 w-3" />
+                                {t("playerReported")}
+                              </span>
+                            ) : (
+                              <button
+                                onClick={() => setReportingPlayer({ uid: p.uid, displayName: p.displayName })}
+                                className="ml-1 flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 hover:border-red-300 transition-colors"
+                              >
+                                <Flag className="h-3 w-3" />
+                                {t("reportNoShow")}
+                              </button>
+                            )
                           )}
                         </div>
                       </div>

@@ -244,6 +244,7 @@ rulesSec8Title: "8. التواصل",
   reportedBy: "بلاغ من {name}",
   reportedPlayer: "اللاعب المبلغ عنه",
   reportMatch: "مباراة: {day} {date}",
+  playerReported: "تم الإبلاغ",
 } as const;
 
 export default ar;

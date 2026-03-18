@@ -247,6 +247,7 @@ rulesSec8Title: "8. Contact",
   reportedBy: "Reported by {name}",
   reportedPlayer: "Reported player",
   reportMatch: "Match: {day} {date}",
+  playerReported: "Reported",
 } as const;
 
 export default en;
