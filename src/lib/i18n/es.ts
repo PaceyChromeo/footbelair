@@ -252,6 +252,14 @@ rulesSec8Title: "8. Contacto",
   reportedPlayer: "Jugador reportado",
   reportMatch: "Partido: {day} {date}",
   playerReported: "Reportado",
+  rosterUpdated: "La lista de jugadores se ha actualizado",
+  confirmMatch: "Confirmar partido",
+  matchConfirmed: "¡Partido confirmado!",
+  confirmed: "Confirmado ✓",
+  confirmMatchTitle: "¿Confirmar este partido?",
+  confirmMatchDescription: "Se enviará un email de confirmación a todos los jugadores inscritos (jugadores + lista de espera) con la lista de jugadores.",
+  notEnoughPlayersToConfirm: "Se necesitan al menos 10 jugadores para confirmar el partido.",
+  matchAlreadyConfirmed: "Partido ya confirmado",
 } as const;
 
 export default es;

@@ -3,7 +3,7 @@ import type { Locale } from "@/lib/i18n";
 
 export type DayOfWeek = "monday" | "tuesday" | "wednesday" | "thursday" | "friday";
 
-export type MatchStatus = "open" | "full" | "cancelled" | "completed";
+export type MatchStatus = "open" | "full" | "cancelled" | "completed" | "confirmed";
 
 export type CancellationReasonType = "not_enough_players" | "unplayable_field" | "custom";
 

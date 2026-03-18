@@ -252,6 +252,14 @@ rulesSec8Title: "8. Contact",
   reportedPlayer: "Reported player",
   reportMatch: "Match: {day} {date}",
   playerReported: "Reported",
+  rosterUpdated: "The player roster has been updated",
+  confirmMatch: "Confirm match",
+  matchConfirmed: "Match confirmed!",
+  confirmed: "Confirmed ✓",
+  confirmMatchTitle: "Confirm this match?",
+  confirmMatchDescription: "A confirmation email will be sent to all subscribed players (players + waiting list) with the player list.",
+  notEnoughPlayersToConfirm: "At least 10 players are required to confirm the match.",
+  matchAlreadyConfirmed: "Match already confirmed",
 } as const;
 
 export default en;

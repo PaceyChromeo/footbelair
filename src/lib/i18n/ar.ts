@@ -249,6 +249,14 @@ rulesSec8Title: "8. التواصل",
   reportedPlayer: "اللاعب المبلغ عنه",
   reportMatch: "مباراة: {day} {date}",
   playerReported: "تم الإبلاغ",
+  confirmMatch: "تأكيد المباراة",
+  matchConfirmed: "تم تأكيد المباراة!",
+  confirmed: "مؤكدة ✓",
+  confirmMatchTitle: "تأكيد هذه المباراة؟",
+  confirmMatchDescription: "سيتم إرسال بريد تأكيد إلكتروني إلى جميع اللاعبين المسجلين (لاعبون + قائمة الانتظار) مع قائمة اللاعبين.",
+  notEnoughPlayersToConfirm: "يلزم 10 لاعبين على الأقل لتأكيد المباراة.",
+  matchAlreadyConfirmed: "المباراة مؤكدة بالفعل",
+  rosterUpdated: "تم تحديث قائمة اللاعبين",
 } as const;
 
 export default ar;

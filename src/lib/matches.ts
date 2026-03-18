@@ -19,6 +19,7 @@ import {
 import { db } from "@/lib/firebase";
 import {
   Match,
+  MatchStatus,
   PlayerEntry,
   UserProfile,
   UserStatus,
@@ -212,7 +213,9 @@ export async function joinMatch(
   const sorted = sortByPriority(allEntries, usersMap);
   const { players, waitingList } = splitPlayersAndWaitingList(sorted, MAX_PLAYERS);
 
-  const newStatus = players.length >= MAX_PLAYERS ? "full" : "open";
+  const newStatus = match.status === "confirmed"
+    ? "confirmed"
+    : players.length >= MAX_PLAYERS ? "full" : "open";
 
   await updateDoc(matchRef, {
     players,
@@ -221,12 +224,20 @@ export async function joinMatch(
   });
 }
 
+export interface LeaveMatchResult {
+  autoLateCancelApplied: boolean;
+  matchStatus: MatchStatus;
+  promotedPlayers: PlayerEntry[];
+  players: PlayerEntry[];
+  waitingList: PlayerEntry[];
+}
+
 export async function leaveMatch(
   matchId: string,
   uid: string,
   usersMap: Map<string, UserProfile>,
   isLateCancel: boolean = false
-): Promise<{ autoLateCancelApplied: boolean }> {
+): Promise<LeaveMatchResult> {
   const matchRef = doc(db, "matches", matchId);
   const matchSnap = await getDoc(matchRef);
   if (!matchSnap.exists()) throw new Error("Match not found");
@@ -238,13 +249,21 @@ export async function leaveMatch(
   const hoursUntilMatch = (matchStart.getTime() - now.getTime()) / (1000 * 60 * 60);
   const autoLateCancel = !isLateCancel && hoursUntilMatch >= 0 && hoursUntilMatch < LATE_CANCEL_HOURS;
 
+  const previousPlayerUids = new Set(match.players.map((p) => p.uid));
+
   const allEntries = [...match.players, ...match.waitingList].filter(
     (p) => p.uid !== uid
   );
   const sorted = sortByPriority(allEntries, usersMap);
   const { players, waitingList } = splitPlayersAndWaitingList(sorted, MAX_PLAYERS);
 
-  const newStatus = players.length >= MAX_PLAYERS ? "full" : "open";
+  const promotedPlayers = players.filter(
+    (p) => !previousPlayerUids.has(p.uid) && p.uid !== uid
+  );
+
+  const newStatus = match.status === "confirmed"
+    ? "confirmed"
+    : players.length >= MAX_PLAYERS ? "full" : "open";
 
   await updateDoc(matchRef, {
     players,
@@ -267,10 +286,10 @@ export async function leaveMatch(
       },
     });
 
-    return { autoLateCancelApplied: true };
+    return { autoLateCancelApplied: true, matchStatus: newStatus, promotedPlayers, players, waitingList };
   }
 
-  return { autoLateCancelApplied: false };
+  return { autoLateCancelApplied: false, matchStatus: newStatus, promotedPlayers, players, waitingList };
 }
 
 export async function declareNoShow(
@@ -353,7 +372,9 @@ export async function adminMoveToPlayers(
 
   const newWL = match.waitingList.filter((p) => p.uid !== uid);
   const newPlayers = [...match.players, entry];
-  const newStatus = newPlayers.length >= MAX_PLAYERS ? "full" : "open";
+  const newStatus = match.status === "confirmed"
+    ? "confirmed"
+    : newPlayers.length >= MAX_PLAYERS ? "full" : "open";
 
   await updateDoc(matchRef, { players: newPlayers, waitingList: newWL, status: newStatus });
 }
@@ -373,7 +394,9 @@ export async function adminMoveToWaitingList(
 
   const newPlayers = match.players.filter((p) => p.uid !== uid);
   const newWL = [...match.waitingList, demoted];
-  const newStatus = newPlayers.length >= MAX_PLAYERS ? "full" : "open";
+  const newStatus = match.status === "confirmed"
+    ? "confirmed"
+    : newPlayers.length >= MAX_PLAYERS ? "full" : "open";
 
   await updateDoc(matchRef, { players: newPlayers, waitingList: newWL, status: newStatus });
 }
@@ -439,7 +462,7 @@ export async function autoResolveExpiredMatches(
 
   for (const d of snapshot.docs) {
     const match = d.data() as Match;
-    if (match.status !== "open" && match.status !== "full") continue;
+    if (match.status !== "open" && match.status !== "full" && match.status !== "confirmed") continue;
 
     const matchStart = match.date.toDate();
     const matchEnd = new Date(matchStart.getTime() + 90 * 60 * 1000);
@@ -504,6 +527,23 @@ export function subscribeToPendingUsersCount(
   return onSnapshot(q, (snapshot: QuerySnapshot<DocumentData>) => {
     callback(snapshot.size);
   });
+}
+
+export async function confirmMatch(matchId: string): Promise<Match> {
+  const matchRef = doc(db, "matches", matchId);
+  const matchSnap = await getDoc(matchRef);
+  if (!matchSnap.exists()) throw new Error("Match not found");
+
+  const match = { id: matchSnap.id, ...matchSnap.data() } as Match;
+  if (match.players.length < MIN_PLAYERS) {
+    throw new Error("NOT_ENOUGH_PLAYERS");
+  }
+  if (match.status === "cancelled" || match.status === "completed" || match.status === "confirmed") {
+    throw new Error("INVALID_STATUS");
+  }
+
+  await updateDoc(matchRef, { status: "confirmed" });
+  return { ...match, status: "confirmed" };
 }
 
 export async function createNoShowReport(

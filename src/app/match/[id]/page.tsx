@@ -12,7 +12,7 @@ import {
   leaveMatch,
   createNoShowReport,
 } from "@/lib/matches";
-import { Match, UserProfile, DayOfWeek, MAX_PLAYERS } from "@/lib/types";
+import { Match, UserProfile, DayOfWeek, MAX_PLAYERS, MIN_PLAYERS } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -127,6 +127,40 @@ export default function MatchDetailPage() {
         }
       } else {
         toast.success(t("unregisteredToast"));
+      }
+
+      if (result.matchStatus === "confirmed" && result.promotedPlayers.length > 0) {
+        const matchDate = format(match.date.toDate(), "d MMMM yyyy", { locale: dateFnsLocale });
+        const matchDay = t(dayTranslationKeys[match.dayOfWeek]);
+
+        const promotedPlayer = result.promotedPlayers[0];
+        const promotedUser = usersMap.get(promotedPlayer.uid);
+        const promotedRecipient = promotedUser?.email
+          ? { email: promotedUser.email, locale: promotedUser.locale ?? "fr", displayName: promotedPlayer.displayName }
+          : null;
+
+        const existingPlayerEmails = result.players
+          .filter((p) => !result.promotedPlayers.some((pp) => pp.uid === p.uid))
+          .reduce<Array<{ email: string; locale: string; displayName: string }>>((acc, p) => {
+            const user = usersMap.get(p.uid);
+            if (user?.email) {
+              acc.push({ email: user.email, locale: user.locale ?? "fr", displayName: p.displayName });
+            }
+            return acc;
+          }, []);
+
+        fetch("/api/roster-update", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            existingPlayerEmails,
+            promotedPlayer: promotedRecipient,
+            matchDay,
+            matchDate,
+            players: result.players.map((p) => ({ displayName: p.displayName })),
+            waitingList: result.waitingList.map((p) => ({ displayName: p.displayName })),
+          }),
+        }).catch(() => {});
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : t("error");
@@ -255,6 +289,8 @@ export default function MatchDetailPage() {
                     ? "destructive"
                     : match.status === "completed"
                     ? "secondary"
+                    : match.status === "confirmed"
+                    ? "default"
                     : match.players.length >= MAX_PLAYERS
                     ? "destructive"
                     : "default"
@@ -270,6 +306,8 @@ export default function MatchDetailPage() {
                     : t("cancelled")
                   : match.status === "completed"
                   ? t("completed")
+                  : match.status === "confirmed"
+                  ? t("confirmed")
                   : match.players.length >= MAX_PLAYERS
                   ? t("full")
                   : t("spotsAvailable")}

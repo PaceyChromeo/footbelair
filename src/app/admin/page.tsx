@@ -12,6 +12,7 @@ import {
   subscribeToPendingReportsCount,
   createWeekMatches,
   cancelMatch,
+  confirmMatch,
   declareNoShow,
   resolveNoShowReport,
   removePenalty,
@@ -156,6 +157,7 @@ export default function AdminPage() {
   const [cancelCustomText, setCancelCustomText] = useState("");
   const [noShowReports, setNoShowReports] = useState<NoShowReport[]>([]);
   const [pendingReportsCount, setPendingReportsCount] = useState(0);
+  const [confirmingMatchId, setConfirmingMatchId] = useState<string | null>(null);
 
   const weekDates = getWeekDates(weekOffset);
 
@@ -334,7 +336,7 @@ export default function AdminPage() {
           displayName: user.displayName,
           photoURL: user.photoURL,
           joinedAt: Timestamp.now(),
-        },
+  },
         usersMap
       );
       toast.success(t("playerAdded", { name: user.displayName }));
@@ -437,6 +439,54 @@ export default function AdminPage() {
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : t("error");
       toast.error(message);
+    }
+  };
+
+  const handleConfirmMatch = async (matchId: string) => {
+    try {
+      setConfirmingMatchId(matchId);
+      const match = await confirmMatch(matchId);
+      toast.success(t("matchConfirmed"));
+
+      // Gather recipients (all players + WL)
+      const allEntries = [...match.players, ...match.waitingList];
+      const recipients = allEntries
+        .map((p) => {
+          const user = usersMap.get(p.uid);
+          // Cast locale to any to satisfy strict type when coming from user profile
+          const loc: any = user?.locale ?? "fr";
+          return user?.email ? { email: user.email, locale: loc, displayName: p.displayName } : null;
+        })
+        .filter((r): r is { email: string; locale: string; displayName: string } => r !== null);
+
+      if (recipients.length > 0) {
+        const matchForEmail = matches.find((m) => m.id === matchId);
+        const matchDate = matchForEmail ? format(matchForEmail.date.toDate(), "d MMMM yyyy", { locale: dateFnsLocale }) : "";
+        const matchDay = matchForEmail ? t(dayTranslationKeys[matchForEmail.dayOfWeek]) : "";
+
+        fetch("/api/match-confirmed", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            recipients,
+            matchDay,
+            matchDate,
+            players: match.players.map((p) => ({ displayName: p.displayName })),
+            waitingList: match.waitingList.map((p) => ({ displayName: p.displayName })),
+          }),
+        }).catch(() => {});
+      }
+    } catch (err: unknown) {
+      if (err instanceof Error && err.message === "NOT_ENOUGH_PLAYERS") {
+        toast.error(t("notEnoughPlayersToConfirm"));
+      } else if (err instanceof Error && err.message === "INVALID_STATUS") {
+        toast.error(t("matchAlreadyConfirmed"));
+      } else {
+        const message = err instanceof Error ? err.message : t("error");
+        toast.error(message);
+      }
+    } finally {
+      setConfirmingMatchId(null);
     }
   };
 
@@ -582,9 +632,11 @@ export default function AdminPage() {
                               }
                               className={
                                 match.status !== "cancelled" && match.status !== "completed"
-                                  ? match.players.length >= MIN_PLAYERS
-                                    ? "bg-gradient-to-r from-emerald-500 to-teal-500 border-0"
-                                    : "bg-gradient-to-r from-red-500 to-orange-500 border-0"
+                                  ? match.status === "confirmed"
+                                    ? "bg-gradient-to-r from-blue-500 to-indigo-500 border-0"
+                                    : match.players.length >= MIN_PLAYERS
+                                      ? "bg-gradient-to-r from-emerald-500 to-teal-500 border-0"
+                                      : "bg-gradient-to-r from-red-500 to-orange-500 border-0"
                                   : ""
                               }
                             >
@@ -598,17 +650,54 @@ export default function AdminPage() {
                                   : t("cancelled")
                                 : match.status === "completed"
                                 ? t("completed")
+                                : match.status === "confirmed"
+                                ? t("confirmed")
                                 : `${match.players.length}/${MAX_PLAYERS}`}
                             </Badge>
-                            {(match.status === "open" || match.status === "full") && (
-                              <Button
-                                size="sm"
-                                variant="destructive"
-                                onClick={() => openCancelDialog(match.id)}
-                              >
-                                <Ban className="mr-1 h-3 w-3" />
-                                {t("cancel")}
-                              </Button>
+                            {(match.status === "open" || match.status === "full" || match.status === "confirmed") && (
+                              <>
+                                <Dialog>
+                                  <DialogTrigger asChild>
+                                    <Button
+                                      size="sm"
+                                      className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white"
+                                      disabled={match.players.length < MIN_PLAYERS}
+                                    >
+                                      <CheckCircle className="mr-1 h-3 w-3" />
+                                      {t("confirmMatch")}
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent>
+                                    <DialogHeader>
+                                      <DialogTitle>{t("confirmMatchTitle")}</DialogTitle>
+                                    </DialogHeader>
+                                    <p className="text-sm text-muted-foreground">
+                                      {t("confirmMatchDescription")}
+                                    </p>
+                                    <DialogFooter>
+                                      <DialogClose asChild>
+                                        <Button variant="outline">{t("cancel")}</Button>
+                                      </DialogClose>
+                                      <DialogClose asChild>
+                                        <Button
+                                          variant="destructive"
+                                          onClick={() => handleConfirmMatch(match.id)}
+                                        >
+                                          {t("confirm")}
+                                        </Button>
+                                      </DialogClose>
+                                    </DialogFooter>
+                                  </DialogContent>
+                                </Dialog>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => openCancelDialog(match.id)}
+                                >
+                                  <Ban className="mr-1 h-3 w-3" />
+                                  {t("cancel")}
+                                </Button>
+                              </>
                             )}
                           </div>
                         </CardTitle>
@@ -636,7 +725,7 @@ export default function AdminPage() {
                                     </Badge>
                                   )}
                                 </div>
-                                {(match.status === "open" || match.status === "full") && (
+                                {(match.status === "open" || match.status === "full" || match.status === "confirmed") && (
                                   <div className="flex gap-1">
                                     <Button
                                       size="sm"
@@ -693,7 +782,7 @@ export default function AdminPage() {
                                         </Badge>
                                       )}
                                     </div>
-                                    {(match.status === "open" || match.status === "full") && (
+                                {(match.status === "open" || match.status === "full" || match.status === "confirmed") && (
                                       <div className="flex gap-1">
                                         <Button
                                           size="sm"
@@ -719,7 +808,7 @@ export default function AdminPage() {
                               })}
                             </>
                           )}
-                          {(match.status === "open" || match.status === "full") && (
+                          {(match.status === "open" || match.status === "full" || match.status === "confirmed") && (
                             <Popover>
                               <PopoverTrigger asChild>
                                 <Button size="sm" variant="outline" className="mt-3 w-full text-xs">
@@ -1001,11 +1090,7 @@ export default function AdminPage() {
                         <div className="flex gap-1">
                           <Dialog>
                             <DialogTrigger asChild>
-                              <Button
-                                size="sm"
-                                variant="default"
-                                className="h-7 text-xs bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 border-0"
-                              >
+                              <Button size="sm" variant="default" className="h-7 text-xs bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 border-0">
                                 <CheckCircle className="mr-1 h-3 w-3" />
                                 {t("confirmReport")}
                               </Button>

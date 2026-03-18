@@ -251,6 +251,14 @@ rulesSec8Title: "8. संपर्क",
   reportedPlayer: "रिपोर्ट किया गया खिलाड़ी",
   reportMatch: "मैच: {day} {date}",
   playerReported: "रिपोर्ट किया गया",
+  confirmMatch: "मैच की पुष्टि करें",
+  matchConfirmed: "मैच की पुष्टि हो गई!",
+  confirmed: "पुष्टि ✓",
+  confirmMatchTitle: "इस मैच की पुष्टि करें?",
+  confirmMatchDescription: "सभी सदस्य खिलाड़ियों (खिलाड़ी + प्रतीक्षा सूची) को खिलाड़ियों की सूची के साथ एक पुष्टि ईमेल भेजा जाएगा।",
+  notEnoughPlayersToConfirm: "मैच की पुष्टि के लिए कम से कम 10 खिलाड़ी आवश्यक हैं।",
+  matchAlreadyConfirmed: "मैच पहले से पुष्टि हो चुका है",
+  rosterUpdated: "खिलाड़ी सूची अपडेट हो गई है",
 } as const;
 
 export default hi;
