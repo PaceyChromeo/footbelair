@@ -8,10 +8,13 @@ import { Header } from "@/components/header";
 import {
   subscribeToMatchesForWeek,
   subscribeToUsers,
+  subscribeToNoShowReports,
+  subscribeToPendingReportsCount,
   createWeekMatches,
   cancelMatch,
   reopenMatch,
   declareNoShow,
+  resolveNoShowReport,
   removePenalty,
   setUserRole,
   completeMatchAndDeductQuotas,
@@ -24,7 +27,7 @@ import {
   setUserStatus,
   deleteUserAccount,
 } from "@/lib/matches";
-import { Match, UserProfile, DayOfWeek, MAX_PLAYERS, CancellationReason, CancellationReasonType } from "@/lib/types";
+import { Match, UserProfile, DayOfWeek, MAX_PLAYERS, CancellationReason, CancellationReasonType, NoShowReport } from "@/lib/types";
 import { Timestamp } from "firebase/firestore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -59,6 +62,7 @@ import {
   ArrowUp,
   Trash2,
   UserCheck,
+  Flag,
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -87,6 +91,8 @@ export default function AdminPage() {
   const [cancelMatchId, setCancelMatchId] = useState<string | null>(null);
   const [cancelReasonType, setCancelReasonType] = useState<CancellationReasonType>("not_enough_players");
   const [cancelCustomText, setCancelCustomText] = useState("");
+  const [noShowReports, setNoShowReports] = useState<NoShowReport[]>([]);
+  const [pendingReportsCount, setPendingReportsCount] = useState(0);
 
   const weekDates = getWeekDates(weekOffset);
 
@@ -108,6 +114,15 @@ export default function AdminPage() {
       unsubUsers();
     };
   }, [weekOffset]);
+
+  useEffect(() => {
+    const unsubReports = subscribeToNoShowReports(setNoShowReports);
+    const unsubCount = subscribeToPendingReportsCount(setPendingReportsCount);
+    return () => {
+      unsubReports();
+      unsubCount();
+    };
+  }, []);
 
   const handleCreateWeek = async () => {
     if (!profile) return;
@@ -336,6 +351,52 @@ export default function AdminPage() {
     }
   };
 
+  const handleConfirmReport = async (report: NoShowReport) => {
+    if (!profile) return;
+    try {
+      await declareNoShow(report.reportedPlayerUid, profile.uid, "no-show");
+
+      const targetUser = usersMap.get(report.reportedPlayerUid);
+      if (targetUser?.email) {
+        const now = new Date();
+        const banned = new Date(now);
+        banned.setDate(banned.getDate() + 14);
+        const penaltyUntil = new Date(now);
+        penaltyUntil.setDate(penaltyUntil.getDate() + 28);
+
+        fetch("/api/penalty-notification", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            playerEmail: targetUser.email,
+            playerName: targetUser.displayName,
+            playerLocale: targetUser.locale || "fr",
+            reason: "no-show",
+            bannedUntil: banned.toISOString(),
+            penaltyUntil: penaltyUntil.toISOString(),
+          }),
+        }).catch(() => {});
+      }
+
+      await resolveNoShowReport(report.id, "confirmed", profile.uid);
+      toast.success(t("reportConfirmed"));
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : t("error");
+      toast.error(message);
+    }
+  };
+
+  const handleDismissReport = async (report: NoShowReport) => {
+    if (!profile) return;
+    try {
+      await resolveNoShowReport(report.id, "dismissed", profile.uid);
+      toast.success(t("reportDismissed"));
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : t("error");
+      toast.error(message);
+    }
+  };
+
   const weekLabel = (() => {
     const mon = weekDates[0].date;
     const fri = weekDates[4].date;
@@ -371,6 +432,14 @@ export default function AdminPage() {
               {pendingUsers.length > 0 && (
                 <span className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[11px] font-bold text-white">
                   {pendingUsers.length}
+                </span>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="reports" className="relative">
+              {t("reportsTab")}
+              {pendingReportsCount > 0 && (
+                <span className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[11px] font-bold text-white">
+                  {pendingReportsCount}
                 </span>
               )}
             </TabsTrigger>
@@ -895,6 +964,89 @@ export default function AdminPage() {
                     </div>
                   ))}
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="reports" className="space-y-4">
+            <Card className="backdrop-blur-xl bg-white/70 border border-white/30 rounded-2xl shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Flag className="h-4 w-4 text-red-500" />
+                  {t("pendingReports")} ({noShowReports.filter((r) => r.status === "pending").length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {noShowReports.filter((r) => r.status === "pending").length === 0 ? (
+                  <p className="text-sm text-muted-foreground">{t("noPendingReports")}</p>
+                ) : (
+                  <div className="space-y-2">
+                    {noShowReports.filter((r) => r.status === "pending").map((report) => (
+                      <div
+                        key={report.id}
+                        className="flex items-center justify-between rounded-md p-2 hover:bg-white/50"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-8 w-8">
+                            <AvatarFallback>{report.reportedPlayerName.charAt(0)}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <span className="text-sm font-medium">{report.reportedPlayerName}</span>
+                            <p className="text-xs text-muted-foreground">
+                              {t("reportedBy", { name: report.reporterName })}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {t("reportMatch", { day: report.matchDay, date: report.matchDate })}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-1">
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button
+                                size="sm"
+                                variant="default"
+                                className="h-7 text-xs bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 border-0"
+                              >
+                                <CheckCircle className="mr-1 h-3 w-3" />
+                                {t("confirmReport")}
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>{t("confirmReport")}</DialogTitle>
+                              </DialogHeader>
+                              <p className="text-sm text-muted-foreground">
+                                {t("confirmReportDescription", { name: report.reportedPlayerName })}
+                              </p>
+                              <DialogFooter>
+                                <DialogClose asChild>
+                                  <Button variant="outline">{t("cancel")}</Button>
+                                </DialogClose>
+                                <DialogClose asChild>
+                                  <Button
+                                    variant="destructive"
+                                    onClick={() => handleConfirmReport(report)}
+                                  >
+                                    {t("confirm")}
+                                  </Button>
+                                </DialogClose>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-7 text-xs"
+                            onClick={() => handleDismissReport(report)}
+                          >
+                            {t("dismissReport")}
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

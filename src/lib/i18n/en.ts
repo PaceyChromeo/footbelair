@@ -234,6 +234,19 @@ rulesSec8Title: "8. Contact",
   emailWeatherDescription: "Check the weekly forecast to anticipate playing conditions.",
   emailWeatherLink: "View forecast →",
   emailFooter: "Every day at 12:30 PM · 12 spots per match",
+
+  // No-show reports
+  reportsTab: "Reports",
+  pendingReports: "Pending reports",
+  noPendingReports: "No pending reports",
+  confirmReport: "Confirm & penalize",
+  confirmReportDescription: "Confirming this report will apply a no-show penalty to {name}. This action is irreversible.",
+  dismissReport: "Dismiss",
+  reportConfirmed: "Report confirmed, penalty applied",
+  reportDismissed: "Report dismissed",
+  reportedBy: "Reported by {name}",
+  reportedPlayer: "Reported player",
+  reportMatch: "Match: {day} {date}",
 } as const;
 
 export default en;

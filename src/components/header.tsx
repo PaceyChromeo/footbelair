@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocale } from "@/hooks/useLocale";
-import { subscribeToPendingUsersCount } from "@/lib/matches";
+import { subscribeToPendingReportsCount, subscribeToPendingUsersCount } from "@/lib/matches";
 import { localeList, localeLabels, type Locale } from "@/lib/i18n";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -22,18 +22,27 @@ export function Header() {
   const { profile, signInWithGoogle, signOut, loading } = useAuth();
   const { t, locale, setLocale } = useLocale();
   const [pendingCount, setPendingCount] = useState(0);
+  const [reportsCount, setReportsCount] = useState(0);
 
   useEffect(() => {
     if (profile?.role !== "admin") return;
     return subscribeToPendingUsersCount(setPendingCount);
   }, [profile?.role]);
 
+  useEffect(() => {
+    if (profile?.role !== "admin") return;
+    return subscribeToPendingReportsCount(setReportsCount);
+  }, [profile?.role]);
+
   return (
     <header className="sticky top-0 z-50 bg-transparent text-white">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-2xl">⚽</span>
-          <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent text-2xl font-bold tracking-tight drop-shadow-sm">{t("appName")}</span>
+        <Link href="/" className="flex items-center gap-3">
+          <div className="flex flex-col items-start leading-none">
+            <span className="text-2xl font-black tracking-[0.2em] text-white uppercase drop-shadow-sm">FOOT</span>
+            <span className="text-[10px] tracking-[0.5em] text-emerald-300 uppercase w-full text-center">BEL-AIR</span>
+          </div>
+          <img src="/soccer-ball.png" alt="Football" className="h-9 w-9 drop-shadow-lg invert brightness-200" />
         </Link>
 
         <div className="flex items-center gap-3">
@@ -116,9 +125,9 @@ export function Header() {
                       <Link href="/admin" className="flex items-center gap-2">
                         <Shield className="h-4 w-4" />
                         {t("navAdmin")}
-                        {pendingCount > 0 && (
+                        {(pendingCount + reportsCount) > 0 && (
                           <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[11px] font-bold text-white">
-                            {pendingCount}
+                            {pendingCount + reportsCount}
                           </span>
                         )}
                       </Link>

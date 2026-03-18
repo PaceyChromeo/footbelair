@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocale } from "@/hooks/useLocale";
 import {
@@ -18,14 +18,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { ChevronLeft, ChevronRight, Users, Clock, AlertTriangle, CalendarDays, CloudSun } from "lucide-react";
+import { ChevronLeft, ChevronRight, Users, Clock, CloudSun, ScrollText } from "lucide-react";
 import { Timestamp } from "firebase/firestore";
 import { toast } from "sonner";
 import Link from "next/link";
-import { format, differenceInCalendarWeeks, startOfWeek as dateFnsStartOfWeek } from "date-fns";
+import { format } from "date-fns";
 import type { TranslationKeys } from "@/lib/i18n";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 
 const dayTranslationKeys: Record<DayOfWeek, TranslationKeys> = {
   monday: "monday",
@@ -152,18 +150,6 @@ export function WeekView() {
     return t("weekTitle", { start, end });
   })();
 
-  const [calendarOpen, setCalendarOpen] = useState(false);
-
-  const handleCalendarSelect = (date: Date | undefined) => {
-    if (!date) return;
-    const today = new Date();
-    const todayMonday = dateFnsStartOfWeek(today, { weekStartsOn: 1 });
-    const selectedMonday = dateFnsStartOfWeek(date, { weekStartsOn: 1 });
-    const diff = differenceInCalendarWeeks(selectedMonday, todayMonday, { weekStartsOn: 1 });
-    setWeekOffset(diff);
-    setCalendarOpen(false);
-  };
-
   return (
     <div>
       <div className="flex items-center justify-center gap-3 mb-6">
@@ -184,34 +170,31 @@ export function WeekView() {
         >
           <ChevronRight className="h-4 w-4" />
         </Button>
-        <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="outline" size="icon" className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm">
-              <CalendarDays className="h-4 w-4" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="center">
-            <Calendar
-              mode="single"
-              selected={weekDates[0].date}
-              onSelect={handleCalendarSelect}
-              locale={dateFnsLocale}
-              defaultMonth={weekDates[0].date}
-            />
-          </PopoverContent>
-        </Popover>
       </div>
 
       {!loading && matches.length > 0 && (
-        <a
-          href="https://meteofrance.com/previsions-meteo-france/villeneuve-loubet/06270"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mb-4 flex items-center justify-center gap-2 rounded-xl backdrop-blur-xl bg-white/60 border border-white/30 px-4 py-2.5 text-sm text-sky-700 hover:bg-white/80 shadow-sm transition-colors"
-        >
-          <CloudSun className="h-4 w-4" />
-          {t("weatherLinkLabel")}
-        </a>
+        <div className="mb-4 flex items-center justify-center gap-3">
+          <Link
+            href="/rules"
+            className="flex items-center gap-2 rounded-2xl backdrop-blur-xl bg-white/70 border border-white/30 shadow-lg px-4 py-2.5 transition-all hover:bg-white/80 hover:shadow-xl active:scale-[0.98]"
+          >
+            <ScrollText className="h-4 w-4 text-emerald-600 shrink-0" />
+            <span className="text-sm font-medium bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
+              {t("navRules")}
+            </span>
+          </Link>
+          <a
+            href="https://meteofrance.com/previsions-meteo-france/villeneuve-loubet/06270"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 rounded-2xl backdrop-blur-xl bg-white/70 border border-white/30 shadow-lg px-4 py-2.5 transition-all hover:bg-white/80 hover:shadow-xl active:scale-[0.98]"
+          >
+            <CloudSun className="h-4 w-4 text-sky-600 shrink-0" />
+            <span className="text-sm font-medium bg-gradient-to-r from-sky-600 to-blue-500 bg-clip-text text-transparent">
+              {t("weatherLinkLabel")}
+            </span>
+          </a>
+        </div>
       )}
 
       {loading ? (

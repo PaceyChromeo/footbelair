@@ -69,6 +69,23 @@ export const PENALTY_DURATION_DAYS = 14; // WL priority penalty (both no-show an
 export const NO_SHOW_BAN_DAYS = 14; // hard ban: cannot subscribe at all (no-show only)
 export const LATE_CANCEL_HOURS = 4;
 
+export type NoShowReportStatus = "pending" | "confirmed" | "dismissed";
+
+export interface NoShowReport {
+  id: string;
+  reporterUid: string;
+  reporterName: string;
+  reportedPlayerUid: string;
+  reportedPlayerName: string;
+  matchId: string;
+  matchDate: string;
+  matchDay: string;
+  status: NoShowReportStatus;
+  createdAt: Timestamp;
+  resolvedAt?: Timestamp;
+  resolvedBy?: string;
+}
+
 export const DAYS_ORDER: DayOfWeek[] = [
   "monday",
   "tuesday",

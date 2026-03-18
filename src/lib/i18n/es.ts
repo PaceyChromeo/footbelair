@@ -234,6 +234,19 @@ rulesSec8Title: "8. Contacto",
   emailWeatherDescription: "Consulta el clima de la semana para anticipar las condiciones de juego.",
   emailWeatherLink: "Ver previsiones →",
   emailFooter: "Todos los días a las 12:30 · 12 plazas por partido",
+
+  // No-show reports
+  reportsTab: "Reportes",
+  pendingReports: "Reportes pendientes",
+  noPendingReports: "Sin reportes pendientes",
+  confirmReport: "Confirmar y penalizar",
+  confirmReportDescription: "Confirmar este reporte aplicara una penalizacion de no-show a {name}. Esta accion es irreversible.",
+  dismissReport: "Rechazar",
+  reportConfirmed: "Reporte confirmado, penalizacion aplicada",
+  reportDismissed: "Reporte rechazado",
+  reportedBy: "Reportado por {name}",
+  reportedPlayer: "Jugador reportado",
+  reportMatch: "Partido: {day} {date}",
 } as const;
 
 export default es;

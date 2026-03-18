@@ -10,6 +10,7 @@ import {
   subscribeToUsers,
   joinMatch,
   leaveMatch,
+  createNoShowReport,
 } from "@/lib/matches";
 import { Match, UserProfile, DayOfWeek, MAX_PLAYERS } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -151,6 +152,15 @@ export default function MatchDetailPage() {
           matchDay,
           adminEmails,
         }),
+      });
+      await createNoShowReport({
+        reporterUid: profile.uid,
+        reporterName: profile.displayName,
+        reportedPlayerUid: reportingPlayer.uid,
+        reportedPlayerName: reportingPlayer.displayName,
+        matchId,
+        matchDate,
+        matchDay,
       });
       toast.success(t("reportNoShowSent"));
     } catch {

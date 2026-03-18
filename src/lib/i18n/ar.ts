@@ -231,6 +231,19 @@ rulesSec8Title: "8. التواصل",
   emailWeatherDescription: "تحقق من طقس الأسبوع لتوقع ظروف اللعب.",
   emailWeatherLink: "عرض التوقعات →",
   emailFooter: "كل يوم الساعة 12:30 · 12 مكان لكل مباراة",
+
+  // No-show reports
+  reportsTab: "البلاغات",
+  pendingReports: "بلاغات معلقة",
+  noPendingReports: "لا توجد بلاغات معلقة",
+  confirmReport: "تأكيد ومعاقبة",
+  confirmReportDescription: "تأكيد هذا البلاغ سيطبق عقوبة عدم الحضور على {name}. هذا الإجراء لا رجعة فيه.",
+  dismissReport: "رفض",
+  reportConfirmed: "تم تأكيد البلاغ وتطبيق العقوبة",
+  reportDismissed: "تم رفض البلاغ",
+  reportedBy: "بلاغ من {name}",
+  reportedPlayer: "اللاعب المبلغ عنه",
+  reportMatch: "مباراة: {day} {date}",
 } as const;
 
 export default ar;

@@ -7,12 +7,14 @@ import {
   setDoc,
   updateDoc,
   deleteDoc,
+  addDoc,
   Timestamp,
   getDoc,
   onSnapshot,
   DocumentSnapshot,
   QuerySnapshot,
   DocumentData,
+  orderBy,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import {
@@ -20,6 +22,7 @@ import {
   PlayerEntry,
   UserProfile,
   UserStatus,
+  NoShowReport,
   MAX_PLAYERS,
   MIN_PLAYERS,
   MAX_QUOTA,
@@ -500,5 +503,57 @@ export function subscribeToPendingUsersCount(
   const q = query(collection(db, "users"), where("status", "==", "pending"));
   return onSnapshot(q, (snapshot: QuerySnapshot<DocumentData>) => {
     callback(snapshot.size);
+  });
+}
+
+export async function createNoShowReport(
+  report: Omit<NoShowReport, "id" | "status" | "createdAt">
+): Promise<string> {
+  const docRef = await addDoc(collection(db, "noShowReports"), {
+    ...report,
+    status: "pending",
+    createdAt: Timestamp.now(),
+  });
+  return docRef.id;
+}
+
+export function subscribeToPendingReportsCount(
+  callback: (count: number) => void
+): () => void {
+  const q = query(
+    collection(db, "noShowReports"),
+    where("status", "==", "pending")
+  );
+  return onSnapshot(q, (snapshot: QuerySnapshot<DocumentData>) => {
+    callback(snapshot.size);
+  });
+}
+
+export function subscribeToNoShowReports(
+  callback: (reports: NoShowReport[]) => void
+): () => void {
+  const q = query(
+    collection(db, "noShowReports"),
+    orderBy("createdAt", "desc")
+  );
+  return onSnapshot(q, (snapshot: QuerySnapshot<DocumentData>) => {
+    const reports = snapshot.docs.map((d) => ({
+      id: d.id,
+      ...d.data(),
+    })) as NoShowReport[];
+    callback(reports);
+  });
+}
+
+export async function resolveNoShowReport(
+  reportId: string,
+  status: "confirmed" | "dismissed",
+  adminUid: string
+): Promise<void> {
+  const reportRef = doc(db, "noShowReports", reportId);
+  await updateDoc(reportRef, {
+    status,
+    resolvedAt: Timestamp.now(),
+    resolvedBy: adminUid,
   });
 }

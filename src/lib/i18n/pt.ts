@@ -232,6 +232,19 @@ rulesSec8Title: "8. Contacto",
   emailWeatherDescription: "Confira o clima da semana para antecipar as condições de jogo.",
   emailWeatherLink: "Ver previsões →",
   emailFooter: "Todos os dias às 12h30 · 12 vagas por jogo",
+
+  // No-show reports
+  reportsTab: "Denuncias",
+  pendingReports: "Denuncias pendentes",
+  noPendingReports: "Sem denuncias pendentes",
+  confirmReport: "Confirmar e penalizar",
+  confirmReportDescription: "Confirmar esta denuncia aplicara uma penalidade de no-show a {name}. Esta acao e irreversivel.",
+  dismissReport: "Rejeitar",
+  reportConfirmed: "Denuncia confirmada, penalidade aplicada",
+  reportDismissed: "Denuncia rejeitada",
+  reportedBy: "Denunciado por {name}",
+  reportedPlayer: "Jogador denunciado",
+  reportMatch: "Jogo: {day} {date}",
 } as const;
 
 export default pt;

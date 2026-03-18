@@ -233,6 +233,19 @@ rulesSec8Title: "8. संपर्क",
   emailWeatherDescription: "खेल की स्थिति का अनुमान लगाने के लिए सप्ताह का मौसम देखें।",
   emailWeatherLink: "पूर्वानुमान देखें →",
   emailFooter: "हर दिन दोपहर 12:30 बजे · प्रति मैच 12 स्थान",
+
+  // No-show reports
+  reportsTab: "रिपोर्ट",
+  pendingReports: "लंबित रिपोर्ट",
+  noPendingReports: "कोई लंबित रिपोर्ट नहीं",
+  confirmReport: "पुष्टि करें और दंड दें",
+  confirmReportDescription: "{name} पर नो-शो पेनल्टी लागू होगी। यह क्रिया अपरिवर्तनीय है।",
+  dismissReport: "खारिज करें",
+  reportConfirmed: "रिपोर्ट की पुष्टि हुई, दंड लागू",
+  reportDismissed: "रिपोर्ट खारिज",
+  reportedBy: "{name} द्वारा रिपोर्ट किया गया",
+  reportedPlayer: "रिपोर्ट किया गया खिलाड़ी",
+  reportMatch: "मैच: {day} {date}",
 } as const;
 
 export default hi;

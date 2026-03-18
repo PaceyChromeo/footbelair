@@ -244,6 +244,19 @@ rulesSec8Title: "8. Contact",
   emailWeatherDescription: "Consulte la météo de la semaine pour anticiper les conditions de jeu.",
   emailWeatherLink: "Voir les prévisions →",
   emailFooter: "Tous les jours à 12h30 · 12 places par match",
+
+  // No-show reports
+  reportsTab: "Signalements",
+  pendingReports: "Signalements en attente",
+  noPendingReports: "Aucun signalement en attente",
+  confirmReport: "Confirmer et pénaliser",
+  confirmReportDescription: "Confirmer ce signalement appliquera une pénalité de no-show à {name}. Cette action est irréversible.",
+  dismissReport: "Rejeter",
+  reportConfirmed: "Signalement confirmé, pénalité appliquée",
+  reportDismissed: "Signalement rejeté",
+  reportedBy: "Signalé par {name}",
+  reportedPlayer: "Joueur signalé",
+  reportMatch: "Match : {day} {date}",
 } as const;
 
 export default fr;
