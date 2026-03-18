@@ -125,8 +125,8 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-muted-foreground">{t("loading")}</div>
+      <div className="flex min-h-screen items-center justify-center bg-slate-900">
+        <div className="text-white/70">{t("loading")}</div>
       </div>
     );
   }
@@ -141,18 +141,18 @@ export default function ProfilePage() {
       <div className="min-h-screen bg-gradient-to-b from-slate-900/70 via-slate-800/50 to-emerald-950/40 backdrop-blur-[2px]">
         <Header />
         <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-8">
-          <Card className="w-full max-w-lg backdrop-blur-xl bg-white/80 border border-white/30 shadow-2xl rounded-2xl">
+          <Card className="w-full max-w-lg backdrop-blur-xl bg-black/40 border border-white/10 shadow-2xl rounded-[2rem]">
             <CardHeader className="space-y-4 pb-2">
-              <Link href="/" className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 transition-colors">
+              <Link href="/" className="inline-flex items-center gap-1 text-sm text-white/70 hover:text-white transition-colors">
                 <ArrowLeft className="h-4 w-4" />
                 {t("back")}
               </Link>
-              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">{t("profileTitle")}</CardTitle>
+              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">{t("profileTitle")}</CardTitle>
             </CardHeader>
 
             <CardContent className="space-y-8">
               <section className="space-y-3">
-                <Label>{t("profilePhoto")}</Label>
+                <Label className="text-white/80">{t("profilePhoto")}</Label>
                 <div className="flex flex-col items-center gap-3">
                   <button
                     type="button"
@@ -160,9 +160,9 @@ export default function ProfilePage() {
                     className="group relative rounded-full"
                     disabled={photoLoading}
                   >
-                    <Avatar className="h-24 w-24 ring-4 ring-emerald-300/50 transition group-hover:ring-emerald-400/80">
+                    <Avatar className="h-24 w-24 ring-4 ring-emerald-400/50 transition group-hover:ring-emerald-400/80">
                       <AvatarImage src={profile.photoURL || undefined} alt={profile.displayName} />
-                      <AvatarFallback className="text-2xl font-semibold text-emerald-700">
+                      <AvatarFallback className="text-2xl font-semibold text-white bg-transparent">
                         {profile.displayName.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
@@ -184,19 +184,20 @@ export default function ProfilePage() {
                     }}
                   />
                   {photoLoading && (
-                    <p className="text-sm text-muted-foreground">{t("loading")}</p>
+                    <p className="text-sm text-white/70">{t("loading")}</p>
                   )}
-                  {photoError && <p className="text-sm text-red-600">{photoError}</p>}
+                  {photoError && <p className="text-sm text-red-400">{photoError}</p>}
                 </div>
               </section>
 
               <section className="space-y-3">
-                <Label htmlFor="profile-display-name">{t("profileDisplayName")}</Label>
+                <Label htmlFor="profile-display-name" className="text-white/80">{t("profileDisplayName")}</Label>
                 <div className="flex gap-2">
                   <Input
                     id="profile-display-name"
                     value={displayName}
                     onChange={(event) => setDisplayName(event.target.value)}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-emerald-400/50"
                   />
                   <Button
                     type="button"
@@ -207,47 +208,50 @@ export default function ProfilePage() {
                     {nameLoading ? t("loading") : t("profileSave")}
                   </Button>
                 </div>
-                {nameError && <p className="text-sm text-red-600">{nameError}</p>}
-                {nameSuccess && <p className="text-sm text-emerald-700">{nameSuccess}</p>}
+                {nameError && <p className="text-sm text-red-400">{nameError}</p>}
+                {nameSuccess && <p className="text-sm text-emerald-400">{nameSuccess}</p>}
               </section>
 
               <section className="space-y-3">
-                <Label>{t("profileEmail")}</Label>
+                <Label className="text-white/80">{t("profileEmail")}</Label>
                 <Input
                   type="email"
                   value={profile.email}
                   disabled
-                  className="bg-white/50"
+                  className="bg-white/5 text-white/50 border-white/10"
                 />
               </section>
 
               <section className="space-y-3">
-                <Label className="text-base font-semibold">{t("profileChangePassword")}</Label>
+                <Label className="text-base font-semibold text-white/80">{t("profileChangePassword")}</Label>
                 <div className="space-y-2">
-                  <Label htmlFor="profile-current-password">{t("profileCurrentPassword")}</Label>
+                  <Label htmlFor="profile-current-password" className="text-white/80">{t("profileCurrentPassword")}</Label>
                   <Input
                     id="profile-current-password"
                     type="password"
                     value={currentPassword}
                     onChange={(event) => setCurrentPassword(event.target.value)}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-emerald-400/50"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="profile-new-password">{t("profileNewPassword")}</Label>
+                  <Label htmlFor="profile-new-password" className="text-white/80">{t("profileNewPassword")}</Label>
                   <Input
                     id="profile-new-password"
                     type="password"
                     value={newPassword}
                     onChange={(event) => setNewPassword(event.target.value)}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-emerald-400/50"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="profile-confirm-password">{t("profileConfirmPassword")}</Label>
+                  <Label htmlFor="profile-confirm-password" className="text-white/80">{t("profileConfirmPassword")}</Label>
                   <Input
                     id="profile-confirm-password"
                     type="password"
                     value={confirmPassword}
                     onChange={(event) => setConfirmPassword(event.target.value)}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-emerald-400/50"
                   />
                 </div>
                 <Button
@@ -258,8 +262,8 @@ export default function ProfilePage() {
                 >
                   {passwordLoading ? t("loading") : t("profileSave")}
                 </Button>
-                {passwordError && <p className="text-sm text-red-600">{passwordError}</p>}
-                {passwordSuccess && <p className="text-sm text-emerald-700">{passwordSuccess}</p>}
+                {passwordError && <p className="text-sm text-red-400">{passwordError}</p>}
+                {passwordSuccess && <p className="text-sm text-emerald-400">{passwordSuccess}</p>}
               </section>
             </CardContent>
           </Card>

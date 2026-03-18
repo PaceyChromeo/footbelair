@@ -146,26 +146,26 @@ export default function LoginPage() {
         style={{ backgroundImage: "url('https://images.unsplash.com/photo-1556056504-5c7696c4c28d?w=1920&q=80&auto=format')" }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-emerald-950/50" />
-        <Card className="relative z-10 w-full max-w-md backdrop-blur-xl bg-white/80 border border-white/30 shadow-2xl rounded-2xl">
+        <Card className="relative z-10 w-full max-w-md backdrop-blur-xl bg-black/40 border border-white/10 shadow-2xl rounded-[2rem]">
           <CardHeader className="text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
-              <Mail className="h-8 w-8 text-emerald-600" />
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20">
+              <Mail className="h-8 w-8 text-emerald-400" />
             </div>
-            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">{t("emailVerificationRequired")}</CardTitle>
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">{t("emailVerificationRequired")}</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <p className="text-center text-sm text-slate-600">
+            <p className="text-center text-sm text-white/60">
               {t("emailVerificationMessage").replace("{email}", user?.email || "")}
             </p>
 
             {resendSuccess && (
-              <p className="text-sm text-emerald-600 bg-emerald-50/80 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-emerald-200/50 text-center">
+              <p className="text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-2.5 text-center">
                 {t("verificationEmailResent")}
               </p>
             )}
 
             {error && (
-              <p className="text-sm text-red-600 bg-red-50/80 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-red-200/50 text-center">{error}</p>
+              <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-2.5 text-center">{error}</p>
             )}
 
             <Button
@@ -180,7 +180,7 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={handleBackToLogin}
-              className="text-sm text-emerald-600 hover:text-emerald-700 font-medium transition-colors text-center"
+              className="text-sm text-emerald-400 hover:text-emerald-300 font-medium transition-colors text-center"
             >
               {t("backToLoginFromVerification")}
             </button>
@@ -196,13 +196,18 @@ export default function LoginPage() {
       style={{ backgroundImage: "url('https://images.unsplash.com/photo-1556056504-5c7696c4c28d?w=1920&q=80&auto=format')" }}
     >
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-emerald-950/50" />
-      <Card className="relative z-10 w-full max-w-md backdrop-blur-xl bg-white/80 border border-white/30 shadow-2xl rounded-2xl">
+      <Card className="relative z-10 w-full max-w-md backdrop-blur-xl bg-black/40 border border-white/10 shadow-2xl rounded-[2rem]">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 text-6xl animate-bounce">⚽</div>
-          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">{t("appName")}</CardTitle>
+          <div className="mx-auto mb-4 flex flex-col items-center gap-3">
+            <img src="/soccer-ball.png" alt="Football" className="h-14 w-14 drop-shadow-lg invert brightness-200 animate-bounce" />
+            <div className="flex flex-col items-center leading-none">
+              <span className="text-4xl font-black tracking-[0.2em] text-white uppercase drop-shadow-sm">FOOT</span>
+              <span className="text-xs tracking-[0.5em] text-emerald-300 uppercase">BEL-AIR</span>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <Button onClick={signInWithGoogle} size="lg" variant="outline" className="w-full gap-2 rounded-xl border-2 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/50 transition-all duration-300 h-12 text-base font-medium">
+          <Button onClick={signInWithGoogle} size="lg" variant="outline" className="w-full gap-2 rounded-xl bg-white/10 border-white/20 text-white hover:bg-white/20 transition-all duration-300 h-12 text-base font-medium">
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -214,52 +219,52 @@ export default function LoginPage() {
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+              <span className="w-full border-t border-white/10" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">{t("orDivider")}</span>
+              <span className="bg-black/40 px-2 text-white/50">{t("orDivider")}</span>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
             {mode === "signup" && (
               <div className="space-y-1.5">
-                <Label htmlFor="displayName">{t("displayNameLabel")}</Label>
+                <Label htmlFor="displayName" className="text-white/80">{t("displayNameLabel")}</Label>
                 <Input
                   id="displayName"
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
                   placeholder={t("displayNamePlaceholder")}
-                  className="rounded-xl h-11 border-slate-200 focus:border-emerald-400 transition-colors"
+                  className="rounded-xl h-11 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-emerald-400/50 transition-colors"
                   required
                 />
               </div>
             )}
 
             <div className="space-y-1.5">
-              <Label htmlFor="email">{t("emailLabel")}</Label>
+              <Label htmlFor="email" className="text-white/80">{t("emailLabel")}</Label>
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t("emailPlaceholder")}
-                className="rounded-xl h-11 border-slate-200 focus:border-emerald-400 transition-colors"
+                className="rounded-xl h-11 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-emerald-400/50 transition-colors"
                 required
               />
             </div>
 
             {mode !== "reset" && (
               <div className="space-y-1.5">
-                <Label htmlFor="password">{t("passwordLabel")}</Label>
+                <Label htmlFor="password" className="text-white/80">{t("passwordLabel")}</Label>
                 <Input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={t("passwordPlaceholder")}
-                  className="rounded-xl h-11 border-slate-200 focus:border-emerald-400 transition-colors"
+                  className="rounded-xl h-11 bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-emerald-400/50 transition-colors"
                   required
                   minLength={6}
                 />
@@ -267,10 +272,10 @@ export default function LoginPage() {
             )}
 
             {error && (
-              <p className="text-sm text-red-600 bg-red-50/80 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-red-200/50">{error}</p>
+              <p className="text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-2.5">{error}</p>
             )}
             {success && (
-              <p className="text-sm text-emerald-600 bg-emerald-50/80 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-emerald-200/50">{success}</p>
+              <p className="text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-2.5">{success}</p>
             )}
 
             <Button type="submit" size="lg" className="w-full h-12 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold text-base shadow-lg shadow-emerald-500/25 transition-all duration-300 active:scale-[0.98]" disabled={submitting}>
@@ -287,44 +292,44 @@ export default function LoginPage() {
           <div className="flex flex-col items-center gap-1 text-sm">
             {mode === "login" && (
               <>
-                <button type="button" onClick={() => switchMode("signup")} className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors">
+                <button type="button" onClick={() => switchMode("signup")} className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
                   {t("noAccountYet")}
                 </button>
-                <button type="button" onClick={() => switchMode("reset")} className="text-muted-foreground hover:underline">
+                <button type="button" onClick={() => switchMode("reset")} className="text-white/50 hover:text-white/70 hover:underline">
                   {t("forgotPassword")}
                 </button>
               </>
             )}
             {mode === "signup" && (
-              <button type="button" onClick={() => switchMode("login")} className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors">
+              <button type="button" onClick={() => switchMode("login")} className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
                 {t("alreadyHaveAccount")}
               </button>
             )}
             {mode === "reset" && (
-              <button type="button" onClick={() => switchMode("login")} className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors">
+              <button type="button" onClick={() => switchMode("login")} className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
                 {t("backToLogin")}
               </button>
             )}
           </div>
 
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-center text-xs text-white/40">
             {t("loginFooter")}
           </p>
 
           <div className="flex justify-center">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-muted-foreground hover:text-foreground">
+                <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-white/60 hover:text-white hover:bg-white/10">
                   <Globe className="h-4 w-4" />
                   <span className="text-xs">{localeLabels[locale]}</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="center">
+              <DropdownMenuContent align="center" className="backdrop-blur-xl bg-slate-900/90 border border-white/10 text-white">
                 {localeList.map((loc: Locale) => (
                   <DropdownMenuItem
                     key={loc}
                     onClick={() => setLocale(loc)}
-                    className={locale === loc ? "bg-muted font-medium" : ""}
+                    className={locale === loc ? "bg-white/20 font-medium" : "hover:bg-white/10 focus:bg-white/10"}
                   >
                     {localeLabels[loc]}
                   </DropdownMenuItem>

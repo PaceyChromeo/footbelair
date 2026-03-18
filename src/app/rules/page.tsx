@@ -23,8 +23,8 @@ export default function RulesPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-muted-foreground">{t("loading")}</div>
+      <div className="flex min-h-screen items-center justify-center bg-slate-900">
+        <div className="text-white/70">{t("loading")}</div>
       </div>
     );
   }
@@ -40,10 +40,10 @@ export default function RulesPage() {
         <Header />
         <main className="mx-auto max-w-3xl px-6 py-8">
           <div className="mb-8 text-center">
-            <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg mb-3">
+            <h1 className="text-3xl md:text-4xl font-black text-white drop-shadow-lg mb-3">
               {t("rulesPageTitle")}
             </h1>
-            <p className="text-sm text-white/70 max-w-xl mx-auto">
+            <p className="text-sm text-white/60 max-w-xl mx-auto">
               {t("rulesIntro")}
             </p>
           </div>
@@ -66,10 +66,10 @@ export default function RulesPage() {
             </RuleSection>
 
             <RuleSection icon={<AlertTriangle className="h-5 w-5" />} title={t("rulesSec3Title")} highlight>
-              <p className="text-amber-700 font-medium mb-2">{t("rulesSec3_intro")}</p>
+              <p className="text-amber-400 font-medium mb-2">{t("rulesSec3_intro")}</p>
               <ul className="space-y-2">
-                <li className="font-medium text-red-700">🚫 {t("rulesSec3_noshow")}</li>
-                <li className="font-medium text-red-700">🚫 {t("rulesSec3_lateCancel")}</li>
+                <li className="font-medium text-red-400">🚫 {t("rulesSec3_noshow")}</li>
+                <li className="font-medium text-red-400">🚫 {t("rulesSec3_lateCancel")}</li>
               </ul>
             </RuleSection>
 
@@ -101,7 +101,7 @@ export default function RulesPage() {
                   href={AAA_SUBSCRIPTION_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-emerald-600 underline decoration-emerald-300 hover:text-emerald-700 hover:decoration-emerald-500 font-medium transition-colors"
+                  className="text-emerald-400 hover:text-emerald-300 underline decoration-emerald-400/30 hover:decoration-emerald-400 font-medium transition-colors"
                 >
                   →
                 </a>
@@ -120,14 +120,14 @@ export default function RulesPage() {
 
 function RuleSection({ icon, title, children, highlight }: { icon: React.ReactNode; title: string; children: React.ReactNode; highlight?: boolean }) {
   return (
-    <div className={`rounded-2xl backdrop-blur-xl border shadow-lg p-5 ${highlight ? "bg-amber-50/80 border-amber-200/50" : "bg-white/70 border-white/30"}`}>
+    <div className={`backdrop-blur-xl border shadow-2xl p-6 rounded-[2rem] ${highlight ? "bg-amber-500/10 border-amber-500/20" : "bg-black/40 border-white/10"}`}>
       <div className="flex items-center gap-2 mb-3">
-        <span className={highlight ? "text-amber-600" : "text-emerald-600"}>{icon}</span>
-        <h2 className={`text-base font-bold ${highlight ? "text-amber-800" : "bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent"}`}>
+        <span className={highlight ? "text-amber-400" : "text-emerald-400"}>{icon}</span>
+        <h2 className={`text-base font-bold ${highlight ? "text-amber-400" : "text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70"}`}>
           {title}
         </h2>
       </div>
-      <div className="text-sm text-slate-700 leading-relaxed">
+      <div className="text-sm text-white/70 leading-relaxed">
         {children}
       </div>
     </div>

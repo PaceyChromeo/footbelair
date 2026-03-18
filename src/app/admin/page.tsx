@@ -94,18 +94,18 @@ function PenaltyDialog({
           {t("applyPenalty")}
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="backdrop-blur-xl bg-slate-900/90 border border-white/10 rounded-2xl text-white">
         <DialogHeader>
           <DialogTitle>
             {t("penaltyDialogTitle", { name: playerName })}
           </DialogTitle>
         </DialogHeader>
-        <p className={`text-sm min-h-[3rem] transition-colors duration-200 ${hovered ? "text-foreground" : "text-muted-foreground"}`}>
+        <p className={`text-sm min-h-[3rem] transition-colors duration-200 ${hovered ? "text-white" : "text-white/70"}`}>
           {description}
         </p>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">{t("cancel")}</Button>
+            <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">{t("cancel")}</Button>
           </DialogClose>
           <DialogClose asChild>
             <Button
@@ -518,9 +518,9 @@ export default function AdminPage() {
         <h1 className="mb-6 text-2xl font-bold text-white drop-shadow-lg">{t("administration")}</h1>
 
         <Tabs defaultValue="matches">
-          <TabsList className="mb-4 backdrop-blur-xl bg-white/60 border border-white/30 rounded-xl">
-            <TabsTrigger value="matches">{t("matchesTab")}</TabsTrigger>
-            <TabsTrigger value="users" className="relative">
+          <TabsList className="mb-4 bg-black/40 backdrop-blur-xl border border-white/10 rounded-xl">
+            <TabsTrigger value="matches" className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/60">{t("matchesTab")}</TabsTrigger>
+            <TabsTrigger value="users" className="relative data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/60">
               {t("usersTab")}
               {pendingUsers.length > 0 && (
                 <span className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[11px] font-bold text-white">
@@ -528,7 +528,7 @@ export default function AdminPage() {
                 </span>
               )}
             </TabsTrigger>
-            <TabsTrigger value="reports" className="relative">
+            <TabsTrigger value="reports" className="relative data-[state=active]:bg-white/20 data-[state=active]:text-white text-white/60">
               {t("reportsTab")}
               {pendingReportsCount > 0 && (
                 <span className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[11px] font-bold text-white">
@@ -567,16 +567,16 @@ export default function AdminPage() {
                       {t("deleteWeek")}
                     </Button>
                   </DialogTrigger>
-                  <DialogContent>
+                  <DialogContent className="backdrop-blur-xl bg-slate-900/90 border border-white/10 rounded-2xl text-white">
                     <DialogHeader>
                       <DialogTitle>{t("deleteWeek")}</DialogTitle>
                     </DialogHeader>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-white/70">
                       {t("deleteWeekConfirm")}
                     </p>
                     <DialogFooter>
                       <DialogClose asChild>
-                        <Button variant="outline">{t("cancel")}</Button>
+                        <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">{t("cancel")}</Button>
                       </DialogClose>
                       <DialogClose asChild>
                         <Button variant="destructive" onClick={handleDeleteWeek}>
@@ -596,8 +596,8 @@ export default function AdminPage() {
             {loading ? (
               <div className="text-center text-white/70">{t("loading")}</div>
             ) : matches.length === 0 ? (
-              <Card className="backdrop-blur-xl bg-white/70 border border-white/30 rounded-2xl">
-                <CardContent className="py-8 text-center text-muted-foreground">
+              <Card className="backdrop-blur-xl bg-black/40 border border-white/10 rounded-[2rem] shadow-2xl">
+                <CardContent className="py-8 text-center text-white/50">
                   {t("noMatchesThisWeek")}
                 </CardContent>
               </Card>
@@ -615,9 +615,9 @@ export default function AdminPage() {
                   if (!match) return null;
 
                   return (
-                    <Card key={match.id} className="backdrop-blur-xl bg-white/70 border border-white/30 rounded-2xl shadow-lg">
+                    <Card key={match.id} className="backdrop-blur-xl bg-black/40 border border-white/10 rounded-[2rem] shadow-2xl">
                       <CardHeader className="pb-2">
-                        <CardTitle className="flex items-center justify-between text-base">
+                        <CardTitle className="flex items-center justify-between text-base text-white">
                           <span>
                             {t(dayTranslationKeys[day])} {format(date, "d/MM")} — 12h30
                           </span>
@@ -667,16 +667,16 @@ export default function AdminPage() {
                                       {t("confirmMatch")}
                                     </Button>
                                   </DialogTrigger>
-                                  <DialogContent>
+                                  <DialogContent className="backdrop-blur-xl bg-slate-900/90 border border-white/10 rounded-2xl text-white">
                                     <DialogHeader>
                                       <DialogTitle>{t("confirmMatchTitle")}</DialogTitle>
                                     </DialogHeader>
-                                    <p className="text-sm text-muted-foreground">
+                                    <p className="text-sm text-white/70">
                                       {t("confirmMatchDescription")}
                                     </p>
                                     <DialogFooter>
                                       <DialogClose asChild>
-                                        <Button variant="outline">{t("cancel")}</Button>
+                                        <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">{t("cancel")}</Button>
                                       </DialogClose>
                                       <DialogClose asChild>
                                         <Button
@@ -709,7 +709,7 @@ export default function AdminPage() {
                             return (
                               <div
                                 key={p.uid}
-                                className="flex items-center justify-between rounded p-1.5 hover:bg-white/50"
+                                className="flex items-center justify-between rounded p-1.5 hover:bg-white/10"
                               >
                                 <div className="flex items-center gap-2">
                                   <Avatar className="h-6 w-6">
@@ -718,7 +718,7 @@ export default function AdminPage() {
                                       {p.displayName.charAt(0)}
                                     </AvatarFallback>
                                   </Avatar>
-                                  <span className="text-sm">{p.displayName}</span>
+                                  <span className="text-sm text-white">{p.displayName}</span>
                                   {user?.penalty?.active && (
                                     <Badge variant="destructive" className="text-[10px]">
                                       {t("penalized")}
@@ -730,7 +730,7 @@ export default function AdminPage() {
                                     <Button
                                       size="sm"
                                       variant="ghost"
-                                      className="h-7 w-7 p-0 text-muted-foreground hover:text-amber-600"
+                                      className="h-7 w-7 p-0 text-white/50 hover:text-amber-400"
                                       title={t("moveToWaitingList")}
                                       onClick={() => handleMoveToWaitingList(match.id, p.uid, p.displayName)}
                                     >
@@ -739,7 +739,7 @@ export default function AdminPage() {
                                     <Button
                                       size="sm"
                                       variant="ghost"
-                                      className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive"
+                                      className="h-7 w-7 p-0 text-white/50 hover:text-red-400"
                                       onClick={() => handleAdminRemovePlayer(match.id, p.uid, p.displayName)}
                                     >
                                       <X className="h-3 w-3" />
@@ -757,8 +757,8 @@ export default function AdminPage() {
                           })}
                           {match.waitingList.length > 0 && (
                             <>
-                              <Separator className="my-2" />
-                              <p className="text-xs font-medium text-muted-foreground mb-1">
+                              <Separator className="my-2 bg-white/10" />
+                              <p className="text-xs font-medium text-white/50 mb-1">
                                 {t("waitingList")}
                               </p>
                               {[...match.waitingList].sort((a, b) => a.joinedAt.toMillis() - b.joinedAt.toMillis()).map((p) => {
@@ -766,7 +766,7 @@ export default function AdminPage() {
                                 return (
                                    <div
                                     key={p.uid}
-                                    className="flex items-center justify-between rounded p-1.5 text-muted-foreground hover:bg-white/50"
+                                    className="flex items-center justify-between rounded p-1.5 text-white/50 hover:bg-white/10"
                                   >
                                     <div className="flex items-center gap-2">
                                       <Avatar className="h-6 w-6">
@@ -787,7 +787,7 @@ export default function AdminPage() {
                                         <Button
                                           size="sm"
                                           variant="ghost"
-                                          className="h-7 w-7 p-0 text-muted-foreground hover:text-emerald-600"
+                                          className="h-7 w-7 p-0 text-white/50 hover:text-emerald-400"
                                           title={t("moveToPlayers")}
                                           onClick={() => handleMoveToPlayers(match.id, p.uid, p.displayName)}
                                         >
@@ -796,7 +796,7 @@ export default function AdminPage() {
                                         <Button
                                           size="sm"
                                           variant="ghost"
-                                          className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive"
+                                          className="h-7 w-7 p-0 text-white/50 hover:text-red-400"
                                           onClick={() => handleAdminRemovePlayer(match.id, p.uid, p.displayName)}
                                         >
                                           <X className="h-3 w-3" />
@@ -811,12 +811,12 @@ export default function AdminPage() {
                           {(match.status === "open" || match.status === "full" || match.status === "confirmed") && (
                             <Popover>
                               <PopoverTrigger asChild>
-                                <Button size="sm" variant="outline" className="mt-3 w-full text-xs">
+                                <Button size="sm" variant="outline" className="mt-3 w-full text-xs bg-white/10 border-white/20 text-white hover:bg-white/20">
                                   <UserPlus className="mr-1 h-3 w-3" />
                                   {t("addPlayer")}
                                 </Button>
                               </PopoverTrigger>
-                              <PopoverContent className="max-h-64 overflow-y-auto p-2" align="start">
+                              <PopoverContent className="max-h-64 overflow-y-auto p-2 backdrop-blur-xl bg-slate-900/90 border border-white/10 text-white" align="start">
                                 {(() => {
                                   const inMatch = new Set([
                                     ...match.players.map((p) => p.uid),
@@ -825,7 +825,7 @@ export default function AdminPage() {
                                   const available = allUsers.filter((u) => !inMatch.has(u.uid));
                                   if (available.length === 0) {
                                     return (
-                                      <p className="p-2 text-xs text-muted-foreground">
+                                      <p className="p-2 text-xs text-white/50">
                                         {t("noPlayers")}
                                       </p>
                                     );
@@ -833,7 +833,7 @@ export default function AdminPage() {
                                   return available.map((u) => (
                                     <button
                                       key={u.uid}
-                                      className="flex w-full items-center gap-2 rounded p-2 text-sm hover:bg-white/50"
+                                      className="flex w-full items-center gap-2 rounded p-2 text-sm hover:bg-white/10"
                                       onClick={() => handleAdminAddPlayer(match.id, u)}
                                     >
                                       <Avatar className="h-6 w-6">
@@ -859,22 +859,22 @@ export default function AdminPage() {
           </TabsContent>
 
           <TabsContent value="users" className="space-y-4">
-            <Card className="backdrop-blur-xl bg-white/70 border border-white/30 rounded-2xl shadow-lg">
+            <Card className="backdrop-blur-xl bg-black/40 border border-white/10 rounded-[2rem] shadow-2xl">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <AlertTriangle className="h-4 w-4 text-amber-500" />
+                <CardTitle className="flex items-center gap-2 text-base text-white">
+                  <AlertTriangle className="h-4 w-4 text-amber-400" />
                   {t("pendingUsers")} ({pendingUsers.length})
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {pendingUsers.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">{t("noPendingUsers")}</p>
+                  <p className="text-sm text-white/50">{t("noPendingUsers")}</p>
                 ) : (
                   <div className="space-y-2">
                     {pendingUsers.map((user) => (
                       <div
                         key={user.uid}
-                        className="flex items-center justify-between rounded-md p-2 hover:bg-white/50"
+                        className="flex items-center justify-between rounded-md p-2 hover:bg-white/10"
                       >
                         <div className="flex items-center gap-3">
                           <Avatar className="h-8 w-8">
@@ -884,8 +884,8 @@ export default function AdminPage() {
                             </AvatarFallback>
                           </Avatar>
                           <div>
-                            <span className="text-sm font-medium">{user.displayName}</span>
-                            <p className="text-xs text-muted-foreground">{user.email}</p>
+                            <span className="text-sm font-medium text-white">{user.displayName}</span>
+                            <p className="text-xs text-white/50">{user.email}</p>
                           </div>
                         </div>
                         <div className="flex gap-1">
@@ -905,16 +905,16 @@ export default function AdminPage() {
                                 {t("deleteUser")}
                               </Button>
                             </DialogTrigger>
-                            <DialogContent>
+                            <DialogContent className="backdrop-blur-xl bg-slate-900/90 border border-white/10 rounded-2xl text-white">
                               <DialogHeader>
                                 <DialogTitle>{t("deleteUser")}</DialogTitle>
                               </DialogHeader>
-                              <p className="text-sm text-muted-foreground">
+                              <p className="text-sm text-white/70">
                                 {t("deleteUserConfirm", { name: user.displayName })}
                               </p>
                               <DialogFooter>
                                 <DialogClose asChild>
-                                  <Button variant="outline">{t("cancel")}</Button>
+                                  <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">{t("cancel")}</Button>
                                 </DialogClose>
                                 <DialogClose asChild>
                                   <Button variant="destructive" onClick={() => handleDeleteUser(user)}>
@@ -932,9 +932,9 @@ export default function AdminPage() {
               </CardContent>
             </Card>
 
-            <Card className="backdrop-blur-xl bg-white/70 border border-white/30 rounded-2xl shadow-lg">
+            <Card className="backdrop-blur-xl bg-black/40 border border-white/10 rounded-[2rem] shadow-2xl">
               <CardHeader>
-                <CardTitle className="text-base">
+                <CardTitle className="text-base text-white">
                   {t("approvedUsers")} ({approvedUsers.length})
                 </CardTitle>
               </CardHeader>
@@ -943,7 +943,7 @@ export default function AdminPage() {
                   {approvedUsers.map((user) => (
                     <div
                       key={user.uid}
-                      className="flex items-center justify-between rounded-md p-2 hover:bg-white/50"
+                      className="flex items-center justify-between rounded-md p-2 hover:bg-white/10"
                     >
                       <div className="flex items-center gap-3">
                         <Avatar className="h-8 w-8">
@@ -954,7 +954,7 @@ export default function AdminPage() {
                         </Avatar>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium">
+                            <span className="text-sm font-medium text-white">
                               {user.displayName}
                             </span>
                             {user.role === "admin" && (
@@ -963,13 +963,13 @@ export default function AdminPage() {
                               </Badge>
                             )}
                           </div>
-                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                          <div className="flex items-center gap-3 text-xs text-white/50">
                             <span className="flex items-center gap-0.5">
                               <Ticket className="h-3 w-3" />
                               {user.quota.remaining}/10
                             </span>
                             {user.penalty?.active && user.penalty.bannedUntil && user.penalty.bannedUntil.toDate() > new Date() && (
-                              <span className="flex items-center gap-0.5 text-red-700 font-semibold">
+                              <span className="flex items-center gap-0.5 text-red-400 font-semibold">
                                 <AlertTriangle className="h-3 w-3" />
                                 {t("bannedUntil", {
                                   date: format(user.penalty.bannedUntil.toDate(), "d MMM", {
@@ -998,7 +998,7 @@ export default function AdminPage() {
                             size="sm"
                             variant="outline"
                             onClick={() => handleRemovePenalty(user.uid)}
-                            className="h-7 text-xs"
+                            className="h-7 text-xs bg-white/10 border-white/20 text-white hover:bg-white/20"
                           >
                             {t("removePenalty")}
                           </Button>
@@ -1007,7 +1007,7 @@ export default function AdminPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleToggleAdmin(user.uid, user.role)}
-                          className="h-7 text-xs"
+                          className="h-7 text-xs text-white/70 hover:text-white hover:bg-white/10"
                         >
                           {user.role === "admin" ? (
                             <>
@@ -1023,21 +1023,21 @@ export default function AdminPage() {
                         </Button>
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button size="sm" variant="ghost" className="h-7 text-xs text-destructive hover:text-destructive">
+                            <Button size="sm" variant="ghost" className="h-7 text-xs text-red-400 hover:text-red-300 hover:bg-white/10">
                               <Trash2 className="mr-1 h-3 w-3" />
                               {t("deleteUser")}
                             </Button>
                           </DialogTrigger>
-                          <DialogContent>
+                          <DialogContent className="backdrop-blur-xl bg-slate-900/90 border border-white/10 rounded-2xl text-white">
                             <DialogHeader>
                               <DialogTitle>{t("deleteUser")}</DialogTitle>
                             </DialogHeader>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-sm text-white/70">
                               {t("deleteUserConfirm", { name: user.displayName })}
                             </p>
                             <DialogFooter>
                               <DialogClose asChild>
-                                <Button variant="outline">{t("cancel")}</Button>
+                                <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">{t("cancel")}</Button>
                               </DialogClose>
                               <DialogClose asChild>
                                 <Button variant="destructive" onClick={() => handleDeleteUser(user)}>
@@ -1056,33 +1056,33 @@ export default function AdminPage() {
           </TabsContent>
 
           <TabsContent value="reports" className="space-y-4">
-            <Card className="backdrop-blur-xl bg-white/70 border border-white/30 rounded-2xl shadow-lg">
+            <Card className="backdrop-blur-xl bg-black/40 border border-white/10 rounded-[2rem] shadow-2xl">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <Flag className="h-4 w-4 text-red-500" />
+                <CardTitle className="flex items-center gap-2 text-base text-white">
+                  <Flag className="h-4 w-4 text-red-400" />
                   {t("pendingReports")} ({noShowReports.filter((r) => r.status === "pending").length})
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {noShowReports.filter((r) => r.status === "pending").length === 0 ? (
-                  <p className="text-sm text-muted-foreground">{t("noPendingReports")}</p>
+                  <p className="text-sm text-white/50">{t("noPendingReports")}</p>
                 ) : (
                   <div className="space-y-2">
                     {noShowReports.filter((r) => r.status === "pending").map((report) => (
                       <div
                         key={report.id}
-                        className="flex items-center justify-between rounded-md p-2 hover:bg-white/50"
+                        className="flex items-center justify-between rounded-md p-2 hover:bg-white/10"
                       >
                         <div className="flex items-center gap-3">
                           <Avatar className="h-8 w-8">
                             <AvatarFallback>{report.reportedPlayerName.charAt(0)}</AvatarFallback>
                           </Avatar>
                           <div>
-                            <span className="text-sm font-medium">{report.reportedPlayerName}</span>
-                            <p className="text-xs text-muted-foreground">
+                            <span className="text-sm font-medium text-white">{report.reportedPlayerName}</span>
+                            <p className="text-xs text-white/50">
                               {t("reportedBy", { name: report.reporterName })}
                             </p>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs text-white/50">
                               {t("reportMatch", { day: report.matchDay, date: report.matchDate })}
                             </p>
                           </div>
@@ -1095,16 +1095,16 @@ export default function AdminPage() {
                                 {t("confirmReport")}
                               </Button>
                             </DialogTrigger>
-                            <DialogContent>
+                            <DialogContent className="backdrop-blur-xl bg-slate-900/90 border border-white/10 rounded-2xl text-white">
                               <DialogHeader>
                                 <DialogTitle>{t("confirmReport")}</DialogTitle>
                               </DialogHeader>
-                              <p className="text-sm text-muted-foreground">
+                              <p className="text-sm text-white/70">
                                 {t("confirmReportDescription", { name: report.reportedPlayerName })}
                               </p>
                               <DialogFooter>
                                 <DialogClose asChild>
-                                  <Button variant="outline">{t("cancel")}</Button>
+                                  <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">{t("cancel")}</Button>
                                 </DialogClose>
                                 <DialogClose asChild>
                                   <Button
@@ -1120,7 +1120,7 @@ export default function AdminPage() {
                           <Button
                             size="sm"
                             variant="outline"
-                            className="h-7 text-xs"
+                            className="h-7 text-xs bg-white/10 border-white/20 text-white hover:bg-white/20"
                             onClick={() => handleDismissReport(report)}
                           >
                             {t("dismissReport")}
@@ -1136,7 +1136,7 @@ export default function AdminPage() {
         </Tabs>
 
         <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
-          <DialogContent>
+          <DialogContent className="backdrop-blur-xl bg-slate-900/90 border border-white/10 rounded-2xl text-white">
             <DialogHeader>
               <DialogTitle>{t("cancelMatchTitle")}</DialogTitle>
             </DialogHeader>
@@ -1147,7 +1147,7 @@ export default function AdminPage() {
                   name="cancelReason"
                   checked={cancelReasonType === "not_enough_players"}
                   onChange={() => setCancelReasonType("not_enough_players")}
-                  className="accent-emerald-600"
+                  className="accent-emerald-400"
                 />
                 <span className="text-sm">{t("cancelReasonNotEnoughPlayers")}</span>
               </label>
@@ -1157,7 +1157,7 @@ export default function AdminPage() {
                   name="cancelReason"
                   checked={cancelReasonType === "unplayable_field"}
                   onChange={() => setCancelReasonType("unplayable_field")}
-                  className="accent-emerald-600"
+                  className="accent-emerald-400"
                 />
                 <span className="text-sm">{t("cancelReasonUnplayableField")}</span>
               </label>
@@ -1167,7 +1167,7 @@ export default function AdminPage() {
                   name="cancelReason"
                   checked={cancelReasonType === "custom"}
                   onChange={() => setCancelReasonType("custom")}
-                  className="accent-emerald-600"
+                  className="accent-emerald-400"
                 />
                 <span className="text-sm">{t("cancelReasonCustom")}</span>
               </label>
@@ -1176,14 +1176,14 @@ export default function AdminPage() {
                   value={cancelCustomText}
                   onChange={(e) => setCancelCustomText(e.target.value)}
                   placeholder={t("cancelReasonCustomPlaceholder")}
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="w-full rounded-md bg-white/10 border border-white/20 text-white px-3 py-2 text-sm placeholder:text-white/40 focus:border-emerald-400/50 focus:outline-none focus:ring-2 focus:ring-emerald-400/20"
                   rows={3}
                 />
               )}
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">{t("cancel")}</Button>
+                <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">{t("cancel")}</Button>
               </DialogClose>
               <Button
                 variant="destructive"
