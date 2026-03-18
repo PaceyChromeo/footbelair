@@ -12,12 +12,10 @@ import {
   subscribeToPendingReportsCount,
   createWeekMatches,
   cancelMatch,
-  reopenMatch,
   declareNoShow,
   resolveNoShowReport,
   removePenalty,
   setUserRole,
-  completeMatchAndDeductQuotas,
   getWeekDates,
   joinMatch,
   leaveMatch,
@@ -52,12 +50,10 @@ import {
   AlertTriangle,
   Shield,
   ShieldOff,
-  UserX,
   UserPlus,
   X,
   CheckCircle,
   Ticket,
-  RotateCcw,
   ArrowDown,
   ArrowUp,
   Trash2,
@@ -68,6 +64,73 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import type { TranslationKeys } from "@/lib/i18n";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Gavel } from "lucide-react";
+
+function PenaltyDialog({
+  playerName,
+  playerUid,
+  onApply,
+  t,
+}: {
+  playerName: string;
+  playerUid: string;
+  onApply: (uid: string, reason: "no-show" | "late-cancellation") => void;
+  t: (key: TranslationKeys, params?: Record<string, string>) => string;
+}) {
+  const [hovered, setHovered] = useState<"no-show" | "late-cancellation" | null>(null);
+
+  const description = hovered === "no-show"
+    ? t("noShowDescription")
+    : hovered === "late-cancellation"
+      ? t("lateCancellationDescription")
+      : t("penaltyDefaultDescription");
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button size="sm" variant="ghost" className="h-7 text-xs text-destructive">
+          <Gavel className="mr-1 h-3 w-3" />
+          {t("applyPenalty")}
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            {t("penaltyDialogTitle", { name: playerName })}
+          </DialogTitle>
+        </DialogHeader>
+        <p className={`text-sm min-h-[3rem] transition-colors duration-200 ${hovered ? "text-foreground" : "text-muted-foreground"}`}>
+          {description}
+        </p>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">{t("cancel")}</Button>
+          </DialogClose>
+          <DialogClose asChild>
+            <Button
+              variant="destructive"
+              onMouseEnter={() => setHovered("no-show")}
+              onMouseLeave={() => setHovered(null)}
+              onClick={() => onApply(playerUid, "no-show")}
+            >
+              {t("confirmNoShow")}
+            </Button>
+          </DialogClose>
+          <DialogClose asChild>
+            <Button
+              variant="destructive"
+              onMouseEnter={() => setHovered("late-cancellation")}
+              onMouseLeave={() => setHovered(null)}
+              onClick={() => onApply(playerUid, "late-cancellation")}
+            >
+              {t("lateCancellation")}
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 const dayTranslationKeys: Record<DayOfWeek, TranslationKeys> = {
   monday: "monday",
@@ -195,26 +258,6 @@ export default function AdminPage() {
     } finally {
       setCancelDialogOpen(false);
       setCancelMatchId(null);
-    }
-  };
-
-  const handleCompleteMatch = async (matchId: string) => {
-    try {
-      await completeMatchAndDeductQuotas(matchId);
-      toast.success(t("matchCompleted"));
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : t("error");
-      toast.error(message);
-    }
-  };
-
-  const handleReopenMatch = async (matchId: string) => {
-    try {
-      await reopenMatch(matchId);
-      toast.success(t("matchReopened"));
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : t("error");
-      toast.error(message);
     }
   };
 
@@ -557,33 +600,14 @@ export default function AdminPage() {
                                 ? t("completed")
                                 : `${match.players.length}/${MAX_PLAYERS}`}
                             </Badge>
-                            {match.status === "open" || match.status === "full" ? (
-                              <>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => handleCompleteMatch(match.id)}
-                                >
-                                  <CheckCircle className="mr-1 h-3 w-3" />
-                                  {t("complete")}
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="destructive"
-                                  onClick={() => openCancelDialog(match.id)}
-                                >
-                                  <Ban className="mr-1 h-3 w-3" />
-                                  {t("cancel")}
-                                </Button>
-                              </>
-                            ) : (
+                            {(match.status === "open" || match.status === "full") && (
                               <Button
                                 size="sm"
-                                variant="outline"
-                                onClick={() => handleReopenMatch(match.id)}
+                                variant="destructive"
+                                onClick={() => openCancelDialog(match.id)}
                               >
-                                <RotateCcw className="mr-1 h-3 w-3" />
-                                {t("reopen")}
+                                <Ban className="mr-1 h-3 w-3" />
+                                {t("cancel")}
                               </Button>
                             )}
                           </div>
@@ -631,45 +655,12 @@ export default function AdminPage() {
                                     >
                                       <X className="h-3 w-3" />
                                     </Button>
-                                    <Dialog>
-                                      <DialogTrigger asChild>
-                                        <Button size="sm" variant="ghost" className="h-7 text-xs text-destructive">
-                                          <UserX className="mr-1 h-3 w-3" />
-                                          {t("noShow")}
-                                        </Button>
-                                      </DialogTrigger>
-                                      <DialogContent>
-                                        <DialogHeader>
-                                          <DialogTitle>
-                                            {t("declareNoShowTitle", { name: p.displayName })}
-                                          </DialogTitle>
-                                        </DialogHeader>
-                                        <p className="text-sm text-muted-foreground">
-                                          {t("noShowDescription")}
-                                        </p>
-                                        <DialogFooter>
-                                          <DialogClose asChild>
-                                            <Button variant="outline">{t("cancel")}</Button>
-                                          </DialogClose>
-                                          <DialogClose asChild>
-                                            <Button
-                                              variant="destructive"
-                                              onClick={() => handleNoShow(p.uid, "no-show")}
-                                            >
-                                              {t("confirmNoShow")}
-                                            </Button>
-                                          </DialogClose>
-                                          <DialogClose asChild>
-                                            <Button
-                                              variant="destructive"
-                                              onClick={() => handleNoShow(p.uid, "late-cancellation")}
-                                            >
-                                              {t("lateCancellation")}
-                                            </Button>
-                                          </DialogClose>
-                                        </DialogFooter>
-                                      </DialogContent>
-                                    </Dialog>
+                                    <PenaltyDialog
+                                      playerName={p.displayName}
+                                      playerUid={p.uid}
+                                      onApply={handleNoShow}
+                                      t={t}
+                                    />
                                   </div>
                                 )}
                               </div>
