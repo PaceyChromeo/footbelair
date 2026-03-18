@@ -126,14 +126,14 @@ export default function LoginPage() {
       className="flex min-h-screen items-center justify-center bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('https://images.unsplash.com/photo-1556056504-5c7696c4c28d?w=1920&q=80&auto=format')" }}
     >
-      <div className="absolute inset-0 bg-black/30" />
-      <Card className="relative z-10 w-full max-w-md shadow-2xl border-0">
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-emerald-950/50" />
+      <Card className="relative z-10 w-full max-w-md backdrop-blur-xl bg-white/80 border border-white/30 shadow-2xl rounded-2xl">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 text-5xl">⚽</div>
-          <CardTitle className="text-2xl text-emerald-800">{t("appName")}</CardTitle>
+          <div className="mx-auto mb-4 text-6xl animate-bounce">⚽</div>
+          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">{t("appName")}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <Button onClick={signInWithGoogle} size="lg" variant="outline" className="w-full gap-2">
+          <Button onClick={signInWithGoogle} size="lg" variant="outline" className="w-full gap-2 rounded-xl border-2 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/50 transition-all duration-300 h-12 text-base font-medium">
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -162,6 +162,7 @@ export default function LoginPage() {
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
                   placeholder={t("displayNamePlaceholder")}
+                  className="rounded-xl h-11 border-slate-200 focus:border-emerald-400 transition-colors"
                   required
                 />
               </div>
@@ -175,6 +176,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t("emailPlaceholder")}
+                className="rounded-xl h-11 border-slate-200 focus:border-emerald-400 transition-colors"
                 required
               />
             </div>
@@ -188,6 +190,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={t("passwordPlaceholder")}
+                  className="rounded-xl h-11 border-slate-200 focus:border-emerald-400 transition-colors"
                   required
                   minLength={6}
                 />
@@ -195,13 +198,13 @@ export default function LoginPage() {
             )}
 
             {error && (
-              <p className="text-sm text-red-600 bg-red-50 rounded-md px-3 py-2">{error}</p>
+              <p className="text-sm text-red-600 bg-red-50/80 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-red-200/50">{error}</p>
             )}
             {success && (
-              <p className="text-sm text-emerald-600 bg-emerald-50 rounded-md px-3 py-2">{success}</p>
+              <p className="text-sm text-emerald-600 bg-emerald-50/80 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-emerald-200/50">{success}</p>
             )}
 
-            <Button type="submit" size="lg" className="w-full bg-emerald-600 hover:bg-emerald-700" disabled={submitting}>
+            <Button type="submit" size="lg" className="w-full h-12 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold text-base shadow-lg shadow-emerald-500/25 transition-all duration-300 active:scale-[0.98]" disabled={submitting}>
               {submitting
                 ? t("loading")
                 : mode === "login"
@@ -215,7 +218,7 @@ export default function LoginPage() {
           <div className="flex flex-col items-center gap-1 text-sm">
             {mode === "login" && (
               <>
-                <button type="button" onClick={() => switchMode("signup")} className="text-emerald-600 hover:underline">
+                <button type="button" onClick={() => switchMode("signup")} className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors">
                   {t("noAccountYet")}
                 </button>
                 <button type="button" onClick={() => switchMode("reset")} className="text-muted-foreground hover:underline">
@@ -224,12 +227,12 @@ export default function LoginPage() {
               </>
             )}
             {mode === "signup" && (
-              <button type="button" onClick={() => switchMode("login")} className="text-emerald-600 hover:underline">
+              <button type="button" onClick={() => switchMode("login")} className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors">
                 {t("alreadyHaveAccount")}
               </button>
             )}
             {mode === "reset" && (
-              <button type="button" onClick={() => switchMode("login")} className="text-emerald-600 hover:underline">
+              <button type="button" onClick={() => switchMode("login")} className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors">
                 {t("backToLogin")}
               </button>
             )}

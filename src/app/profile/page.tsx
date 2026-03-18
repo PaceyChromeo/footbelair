@@ -138,16 +138,16 @@ export default function ProfilePage() {
       className="min-h-screen bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('https://images.unsplash.com/photo-1556056504-5c7696c4c28d?w=1920&q=80&auto=format')" }}
     >
-      <div className="min-h-screen bg-white/55">
+      <div className="min-h-screen bg-gradient-to-b from-slate-900/70 via-slate-800/50 to-emerald-950/40 backdrop-blur-[2px]">
         <Header />
         <main className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-8">
-          <Card className="w-full max-w-lg border-emerald-200/80 shadow-2xl">
+          <Card className="w-full max-w-lg backdrop-blur-xl bg-white/80 border border-white/30 shadow-2xl rounded-2xl">
             <CardHeader className="space-y-4 pb-2">
-              <Link href="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+              <Link href="/" className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 transition-colors">
                 <ArrowLeft className="h-4 w-4" />
                 {t("back")}
               </Link>
-              <CardTitle className="text-2xl text-emerald-800">{t("profileTitle")}</CardTitle>
+              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">{t("profileTitle")}</CardTitle>
             </CardHeader>
 
             <CardContent className="space-y-8">
@@ -160,13 +160,13 @@ export default function ProfilePage() {
                     className="group relative rounded-full"
                     disabled={photoLoading}
                   >
-                    <Avatar className="h-24 w-24 ring-4 ring-emerald-200/80 transition group-hover:ring-emerald-400">
+                    <Avatar className="h-24 w-24 ring-4 ring-emerald-300/50 transition group-hover:ring-emerald-400/80">
                       <AvatarImage src={profile.photoURL || undefined} alt={profile.displayName} />
                       <AvatarFallback className="text-2xl font-semibold text-emerald-700">
                         {profile.displayName.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="absolute bottom-0 right-0 rounded-full bg-emerald-600 p-1.5 text-white shadow-md">
+                    <span className="absolute bottom-0 right-0 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 p-1.5 text-white shadow-md">
                       <Camera className="h-4 w-4" />
                     </span>
                   </button>
@@ -200,7 +200,7 @@ export default function ProfilePage() {
                   />
                   <Button
                     type="button"
-                    className="bg-emerald-600 hover:bg-emerald-700"
+                    className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-md active:scale-[0.98] transition-all duration-300"
                     onClick={onSaveDisplayName}
                     disabled={nameLoading}
                   >
@@ -217,7 +217,7 @@ export default function ProfilePage() {
                   type="email"
                   value={profile.email}
                   disabled
-                  className="bg-muted"
+                  className="bg-white/50"
                 />
               </section>
 
@@ -252,7 +252,7 @@ export default function ProfilePage() {
                 </div>
                 <Button
                   type="button"
-                  className="bg-emerald-600 hover:bg-emerald-700"
+                  className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-md active:scale-[0.98] transition-all duration-300"
                   onClick={onSavePassword}
                   disabled={passwordLoading}
                 >

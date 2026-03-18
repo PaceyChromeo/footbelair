@@ -141,25 +141,27 @@ export function WeekView() {
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-center gap-3">
+      <div className="flex items-center justify-center gap-3 mb-6">
         <Button
           variant="outline"
           size="icon"
+          className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
           onClick={() => setWeekOffset((w) => w - 1)}
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <h2 className="text-2xl md:text-3xl font-bold text-emerald-800">{weekLabel}</h2>
+        <h2 className="text-2xl md:text-3xl font-bold text-white drop-shadow-lg">{weekLabel}</h2>
         <Button
           variant="outline"
           size="icon"
+          className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
           onClick={() => setWeekOffset((w) => w + 1)}
         >
           <ChevronRight className="h-4 w-4" />
         </Button>
         <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
           <PopoverTrigger asChild>
-            <Button variant="outline" size="icon">
+            <Button variant="outline" size="icon" className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm">
               <CalendarDays className="h-4 w-4" />
             </Button>
           </PopoverTrigger>
@@ -180,7 +182,7 @@ export function WeekView() {
           href="https://meteofrance.com/previsions-meteo-france/villeneuve-loubet/06270"
           target="_blank"
           rel="noopener noreferrer"
-          className="mb-4 flex items-center justify-center gap-2 rounded-lg bg-sky-50 px-4 py-2 text-sm text-sky-700 hover:bg-sky-100 transition-colors"
+          className="mb-4 flex items-center justify-center gap-2 rounded-xl backdrop-blur-xl bg-white/60 border border-white/30 px-4 py-2.5 text-sm text-sky-700 hover:bg-white/80 shadow-sm transition-colors"
         >
           <CloudSun className="h-4 w-4" />
           {t("weatherLinkLabel")}
@@ -192,7 +194,7 @@ export function WeekView() {
           {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className="h-48 animate-pulse rounded-lg bg-muted"
+              className="h-48 animate-pulse rounded-2xl bg-white/30 backdrop-blur-sm"
             />
           ))}
         </div>
@@ -206,8 +208,8 @@ export function WeekView() {
             return (
               <Card
                 key={day}
-                className={`transition-all hover:shadow-lg ${
-                  isToday ? "ring-2 ring-emerald-500 shadow-emerald-100 shadow-md" : ""
+                className={`transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] backdrop-blur-xl bg-white/70 border border-white/30 rounded-2xl ${
+                  isToday ? "ring-2 ring-emerald-400 shadow-emerald-400/20 shadow-lg" : ""
                 } ${isPast ? "opacity-60" : ""} ${
                   match?.status === "cancelled" ? "opacity-50" : ""
                 }`}
@@ -246,7 +248,7 @@ export function WeekView() {
                         </div>
                         <Badge
                           variant="default"
-                          className={`text-xs ${match.players.length >= MIN_PLAYERS ? "bg-emerald-600" : "bg-red-500"}`}
+                          className={`text-xs ${match.players.length >= MIN_PLAYERS ? "bg-gradient-to-r from-emerald-500 to-teal-500 border-0" : "bg-gradient-to-r from-red-500 to-orange-500 border-0"}`}
                         >
                           <Users className="mr-1 h-3 w-3" />
                           {match.players.length}/{MAX_PLAYERS}
@@ -283,7 +285,7 @@ export function WeekView() {
                       {!isRegistered(match) ? (
                         <Button
                           size="sm"
-                          className="w-full text-xs bg-emerald-600 hover:bg-emerald-700"
+                          className="w-full text-xs bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-md shadow-emerald-500/20 active:scale-[0.98] transition-all duration-300"
                           onClick={() => handleJoin(match.id)}
                           disabled={isPast || match.status === "completed"}
                         >
@@ -292,11 +294,11 @@ export function WeekView() {
                       ) : (
                         <div className="space-y-1">
                           {isInPlayers(match) ? (
-                            <Badge className="w-full justify-center bg-emerald-600" variant="default">
+                            <Badge className="w-full justify-center bg-gradient-to-r from-emerald-500 to-teal-500 border-0" variant="default">
                               {t("registered")}
                             </Badge>
                           ) : (
-                            <Badge className="w-full justify-center bg-amber-500 text-white" variant="secondary">
+                            <Badge className="w-full justify-center bg-gradient-to-r from-amber-500 to-orange-400 text-white border-0" variant="secondary">
                               {t("waitingListPos", { pos: getWaitingPosition(match) })}
                             </Badge>
                           )}

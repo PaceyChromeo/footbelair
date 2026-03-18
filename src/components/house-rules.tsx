@@ -9,11 +9,11 @@ export function HouseRules() {
   const { t } = useLocale();
 
   return (
-    <div className="rounded-xl border border-emerald-200 bg-white/80 backdrop-blur-sm p-5 mb-6 shadow-sm">
-      <h2 className="text-lg font-bold text-emerald-800 mb-3">
+    <div className="rounded-2xl backdrop-blur-xl bg-white/70 border border-white/30 p-6 mb-6 shadow-lg">
+      <h2 className="text-lg font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent mb-3">
         {t("houseRulesTitle")}
       </h2>
-      <ol className="list-decimal list-inside space-y-1.5 text-sm text-gray-700">
+      <ol className="list-decimal list-inside space-y-2 text-sm text-slate-700">
         <li>{t("houseRule1")}</li>
         <li>{t("houseRule2")}</li>
         <li>{t("houseRule3")}</li>
@@ -22,7 +22,7 @@ export function HouseRules() {
             href={AAA_SUBSCRIPTION_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-emerald-700 underline hover:text-emerald-900 font-medium"
+            className="text-emerald-600 underline decoration-emerald-300 hover:text-emerald-700 hover:decoration-emerald-500 font-medium transition-colors"
           >
             {t("houseRule4")}
           </a>

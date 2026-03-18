@@ -119,10 +119,10 @@ export default function MatchDetailPage() {
         className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed"
         style={{ backgroundImage: "url('https://images.unsplash.com/photo-1487466365202-1afdb86c764e?w=1920&q=80&auto=format')" }}
       >
-        <div className="min-h-screen bg-white/50">
+        <div className="min-h-screen bg-gradient-to-b from-slate-900/70 via-slate-800/50 to-emerald-950/40 backdrop-blur-[2px]">
           <Header />
           <div className="flex items-center justify-center py-20">
-            <div className="text-muted-foreground">{t("loading")}</div>
+            <div className="text-white/70">{t("loading")}</div>
           </div>
         </div>
       </div>
@@ -135,13 +135,13 @@ export default function MatchDetailPage() {
         className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed"
         style={{ backgroundImage: "url('https://images.unsplash.com/photo-1487466365202-1afdb86c764e?w=1920&q=80&auto=format')" }}
       >
-        <div className="min-h-screen bg-white/50">
+        <div className="min-h-screen bg-gradient-to-b from-slate-900/70 via-slate-800/50 to-emerald-950/40 backdrop-blur-[2px]">
           <Header />
           <div className="mx-auto max-w-5xl px-6 py-10">
-            <p className="text-center text-muted-foreground">{t("matchNotFound")}</p>
+            <p className="text-center text-white/70">{t("matchNotFound")}</p>
             <div className="mt-4 text-center">
               <Link href="/">
-                <Button variant="outline">{t("back")}</Button>
+                <Button variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm">{t("back")}</Button>
               </Link>
             </div>
           </div>
@@ -157,18 +157,18 @@ export default function MatchDetailPage() {
       className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed"
       style={{ backgroundImage: "url('https://images.unsplash.com/photo-1487466365202-1afdb86c764e?w=1920&q=80&auto=format')" }}
     >
-      <div className="min-h-screen bg-white/50">
+      <div className="min-h-screen bg-gradient-to-b from-slate-900/70 via-slate-800/50 to-emerald-950/40 backdrop-blur-[2px]">
         <Header />
         <main className="mx-auto max-w-5xl px-6 py-6">
-        <Link href="/" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+        <Link href="/" className="mb-4 inline-flex items-center gap-1 text-sm text-white/70 hover:text-white transition-colors drop-shadow-sm">
           <ArrowLeft className="h-4 w-4" />
           {t("back")}
         </Link>
 
-        <Card className="mb-6">
+        <Card className="mb-6 backdrop-blur-xl bg-white/70 border border-white/30 rounded-2xl shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>
+              <span className="bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">
                 {t(dayTranslationKeys[match.dayOfWeek])}{" "}
                 {format(matchDate, "d MMMM yyyy", { locale: dateFnsLocale })}
               </span>
@@ -214,17 +214,17 @@ export default function MatchDetailPage() {
             {match.status !== "cancelled" && match.status !== "completed" && (
               <div>
                 {!isRegistered ? (
-                  <Button onClick={handleJoin} className="w-full bg-emerald-600 hover:bg-emerald-700">
+                  <Button onClick={handleJoin} className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-md shadow-emerald-500/20 active:scale-[0.98] transition-all duration-300">
                     {t("register")}
                   </Button>
                 ) : (
                   <div className="space-y-2">
                     {isInPlayers ? (
-                      <Badge className="w-full justify-center py-2 bg-emerald-600" variant="default">
+                      <Badge className="w-full justify-center py-2 bg-gradient-to-r from-emerald-500 to-teal-500 border-0" variant="default">
                         {t("registered")}
                       </Badge>
                     ) : (
-                      <Badge className="w-full justify-center py-2 bg-amber-500 text-white" variant="secondary">
+                      <Badge className="w-full justify-center py-2 bg-gradient-to-r from-amber-500 to-orange-400 text-white border-0" variant="secondary">
                         {t("waitingListPos", { pos: waitingPosition })}
                       </Badge>
                     )}
@@ -243,7 +243,7 @@ export default function MatchDetailPage() {
         </Card>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <Card>
+          <Card className="backdrop-blur-xl bg-white/70 border border-white/30 rounded-2xl shadow-lg">
             <CardHeader>
               <CardTitle className="text-sm">
                 {t("players")} ({match.players.length}/{MAX_PLAYERS})
@@ -260,7 +260,7 @@ export default function MatchDetailPage() {
                     return (
                       <div
                         key={p.uid}
-                        className="flex items-center gap-3 rounded-md p-2 hover:bg-muted"
+                        className="flex items-center gap-3 rounded-md p-2 hover:bg-white/50"
                       >
                         <span className="w-5 text-xs text-muted-foreground">
                           {i + 1}.
@@ -291,7 +291,7 @@ export default function MatchDetailPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="backdrop-blur-xl bg-white/70 border border-white/30 rounded-2xl shadow-lg">
             <CardHeader>
               <CardTitle className="text-sm">
                 {t("waitingList")} ({match.waitingList.length})
@@ -308,7 +308,7 @@ export default function MatchDetailPage() {
                     return (
                       <div
                         key={p.uid}
-                        className="flex items-center gap-3 rounded-md p-2 hover:bg-muted"
+                        className="flex items-center gap-3 rounded-md p-2 hover:bg-white/50"
                       >
                         <span className="w-5 text-xs text-muted-foreground">
                           #{i + 1}

@@ -327,13 +327,13 @@ export default function AdminPage() {
       className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed"
       style={{ backgroundImage: "url('https://images.unsplash.com/photo-1522778119026-d647f0596c20?w=1920&q=80&auto=format')" }}
     >
-      <div className="min-h-screen bg-white/50">
+      <div className="min-h-screen bg-gradient-to-b from-slate-900/70 via-slate-800/50 to-emerald-950/40 backdrop-blur-[2px]">
         <Header />
         <main className="mx-auto max-w-7xl px-6 py-6">
-        <h1 className="mb-6 text-2xl font-bold">{t("administration")}</h1>
+        <h1 className="mb-6 text-2xl font-bold text-white drop-shadow-lg">{t("administration")}</h1>
 
         <Tabs defaultValue="matches">
-          <TabsList className="mb-4">
+          <TabsList className="mb-4 backdrop-blur-xl bg-white/60 border border-white/30 rounded-xl">
             <TabsTrigger value="matches">{t("matchesTab")}</TabsTrigger>
             <TabsTrigger value="users" className="relative">
               {t("usersTab")}
@@ -351,14 +351,16 @@ export default function AdminPage() {
                 <Button
                   variant="outline"
                   size="icon"
+                  className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
                   onClick={() => setWeekOffset((w) => w - 1)}
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
-                <span className="font-medium">{weekLabel}</span>
+                <span className="font-medium text-white">{weekLabel}</span>
                 <Button
                   variant="outline"
                   size="icon"
+                  className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
                   onClick={() => setWeekOffset((w) => w + 1)}
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -391,7 +393,7 @@ export default function AdminPage() {
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
-                <Button onClick={handleCreateWeek} disabled={creating}>
+                <Button onClick={handleCreateWeek} disabled={creating} className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-md">
                   <Plus className="mr-2 h-4 w-4" />
                   {t("createWeek")}
                 </Button>
@@ -399,9 +401,9 @@ export default function AdminPage() {
             </div>
 
             {loading ? (
-              <div className="text-center text-muted-foreground">{t("loading")}</div>
+              <div className="text-center text-white/70">{t("loading")}</div>
             ) : matches.length === 0 ? (
-              <Card>
+              <Card className="backdrop-blur-xl bg-white/70 border border-white/30 rounded-2xl">
                 <CardContent className="py-8 text-center text-muted-foreground">
                   {t("noMatchesThisWeek")}
                 </CardContent>
@@ -420,7 +422,7 @@ export default function AdminPage() {
                   if (!match) return null;
 
                   return (
-                    <Card key={match.id}>
+                    <Card key={match.id} className="backdrop-blur-xl bg-white/70 border border-white/30 rounded-2xl shadow-lg">
                       <CardHeader className="pb-2">
                         <CardTitle className="flex items-center justify-between text-base">
                           <span>
@@ -487,7 +489,7 @@ export default function AdminPage() {
                             return (
                               <div
                                 key={p.uid}
-                                className="flex items-center justify-between rounded p-1.5 hover:bg-muted"
+                                className="flex items-center justify-between rounded p-1.5 hover:bg-white/50"
                               >
                                 <div className="flex items-center gap-2">
                                   <Avatar className="h-6 w-6">
@@ -577,7 +579,7 @@ export default function AdminPage() {
                                 return (
                                    <div
                                     key={p.uid}
-                                    className="flex items-center justify-between rounded p-1.5 text-muted-foreground hover:bg-muted"
+                                    className="flex items-center justify-between rounded p-1.5 text-muted-foreground hover:bg-white/50"
                                   >
                                     <div className="flex items-center gap-2">
                                       <Avatar className="h-6 w-6">
@@ -644,7 +646,7 @@ export default function AdminPage() {
                                   return available.map((u) => (
                                     <button
                                       key={u.uid}
-                                      className="flex w-full items-center gap-2 rounded p-2 text-sm hover:bg-muted"
+                                      className="flex w-full items-center gap-2 rounded p-2 text-sm hover:bg-white/50"
                                       onClick={() => handleAdminAddPlayer(match.id, u)}
                                     >
                                       <Avatar className="h-6 w-6">
@@ -670,7 +672,7 @@ export default function AdminPage() {
           </TabsContent>
 
           <TabsContent value="users" className="space-y-4">
-            <Card>
+            <Card className="backdrop-blur-xl bg-white/70 border border-white/30 rounded-2xl shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
                   <AlertTriangle className="h-4 w-4 text-amber-500" />
@@ -685,7 +687,7 @@ export default function AdminPage() {
                     {pendingUsers.map((user) => (
                       <div
                         key={user.uid}
-                        className="flex items-center justify-between rounded-md p-2 hover:bg-muted"
+                        className="flex items-center justify-between rounded-md p-2 hover:bg-white/50"
                       >
                         <div className="flex items-center gap-3">
                           <Avatar className="h-8 w-8">
@@ -704,7 +706,7 @@ export default function AdminPage() {
                             size="sm"
                             variant="default"
                             onClick={() => handleApproveUser(user)}
-                            className="h-7 text-xs bg-emerald-600 hover:bg-emerald-700"
+                            className="h-7 text-xs bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 border-0"
                           >
                             <UserCheck className="mr-1 h-3 w-3" />
                             {t("approveUser")}
@@ -743,7 +745,7 @@ export default function AdminPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="backdrop-blur-xl bg-white/70 border border-white/30 rounded-2xl shadow-lg">
               <CardHeader>
                 <CardTitle className="text-base">
                   {t("approvedUsers")} ({approvedUsers.length})
@@ -754,7 +756,7 @@ export default function AdminPage() {
                   {approvedUsers.map((user) => (
                     <div
                       key={user.uid}
-                      className="flex items-center justify-between rounded-md p-2 hover:bg-muted"
+                      className="flex items-center justify-between rounded-md p-2 hover:bg-white/50"
                     >
                       <div className="flex items-center gap-3">
                         <Avatar className="h-8 w-8">
