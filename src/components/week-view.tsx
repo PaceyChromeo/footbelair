@@ -396,7 +396,7 @@ export function WeekView() {
                               )}
                               <Button
                                 variant="outline"
-                                className="w-full h-10 rounded-xl border-white/10 text-white hover:bg-white/5 hover:text-red-400 hover:border-red-400/30 transition-all duration-300"
+                                className="w-full h-10 rounded-xl bg-white text-black border-0 hover:bg-red-50 hover:text-red-600 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
                                 onClick={() => handleLeave(match.id)}
                                 disabled={isPast || match.status === "completed"}
                               >
