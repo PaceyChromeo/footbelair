@@ -164,6 +164,9 @@ const ar = {
   profilePasswordChanged: "تم تغيير كلمة المرور",
   profileReauthRequired: "انتهت الجلسة. يرجى تسجيل الخروج ثم تسجيل الدخول مرة أخرى قبل تغيير البريد الإلكتروني",
   profileErrorReauth: "كلمة المرور الحالية غير صحيحة",
+
+  // Weather
+  weatherLinkLabel: "☀️ طقس الأسبوع في فيلنوف-لوبيه",
 } as const;
 
 export default ar;

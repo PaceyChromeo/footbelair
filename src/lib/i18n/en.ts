@@ -167,6 +167,9 @@ const en = {
   profilePasswordChanged: "Password changed",
   profileReauthRequired: "Session expired. Please log out and log back in before changing your email",
   profileErrorReauth: "Current password is incorrect",
+
+  // Weather
+  weatherLinkLabel: "☀️ Weekly weather in Villeneuve-Loubet",
 } as const;
 
 export default en;

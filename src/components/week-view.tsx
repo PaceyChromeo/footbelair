@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { ChevronLeft, ChevronRight, Users, Clock, AlertTriangle, CalendarDays } from "lucide-react";
+import { ChevronLeft, ChevronRight, Users, Clock, AlertTriangle, CalendarDays, CloudSun } from "lucide-react";
 import { Timestamp } from "firebase/firestore";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -174,6 +174,18 @@ export function WeekView() {
           </PopoverContent>
         </Popover>
       </div>
+
+      {!loading && matches.length > 0 && (
+        <a
+          href="https://meteofrance.com/previsions-meteo-france/villeneuve-loubet/06270"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mb-4 flex items-center justify-center gap-2 rounded-lg bg-sky-50 px-4 py-2 text-sm text-sky-700 hover:bg-sky-100 transition-colors"
+        >
+          <CloudSun className="h-4 w-4" />
+          {t("weatherLinkLabel")}
+        </a>
+      )}
 
       {loading ? (
         <div className="grid gap-4 md:grid-cols-5">

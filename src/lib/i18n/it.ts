@@ -164,6 +164,9 @@ const it = {
   profilePasswordChanged: "Password cambiata",
   profileReauthRequired: "Sessione scaduta. Esci e accedi di nuovo prima di modificare l'email",
   profileErrorReauth: "Password attuale non corretta",
+
+  // Weather
+  weatherLinkLabel: "☀️ Meteo della settimana a Villeneuve-Loubet",
 } as const;
 
 export default it;

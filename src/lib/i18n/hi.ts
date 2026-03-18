@@ -166,6 +166,9 @@ const hi = {
   profilePasswordChanged: "पासवर्ड बदला गया",
   profileReauthRequired: "सत्र समाप्त हो गया। ईमेल बदलने से पहले लॉग आउट करें और फिर से लॉग इन करें",
   profileErrorReauth: "वर्तमान पासवर्ड गलत है",
+
+  // Weather
+  weatherLinkLabel: "☀️ विलेन्यूव-लूबे में सप्ताह का मौसम",
 } as const;
 
 export default hi;
