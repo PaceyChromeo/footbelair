@@ -17,7 +17,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, Clock, Users, Ticket, AlertTriangle } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { ArrowLeft, Clock, Users, Ticket, AlertTriangle, Flag } from "lucide-react";
 import { Timestamp } from "firebase/firestore";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -40,6 +49,8 @@ export default function MatchDetailPage() {
   const [match, setMatch] = useState<Match | null>(null);
   const [usersMap, setUsersMap] = useState<Map<string, UserProfile>>(new Map());
   const [loading, setLoading] = useState(true);
+  const [reportingPlayer, setReportingPlayer] = useState<{ uid: string; displayName: string } | null>(null);
+  const [reportSending, setReportSending] = useState(false);
 
   const matchId = params.id as string;
 
@@ -80,19 +91,56 @@ export default function MatchDetailPage() {
       await joinMatch(match.id, entry, usersMap);
       toast.success(t("registeredToast"));
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : t("error");
-      toast.error(message);
+      if (err instanceof Error && err.message === "BANNED") {
+        toast.error(t("bannedCannotRegister"));
+      } else {
+        const message = err instanceof Error ? err.message : t("error");
+        toast.error(message);
+      }
     }
   };
 
   const handleLeave = async () => {
     if (!profile || !match) return;
     try {
-      await leaveMatch(match.id, profile.uid, usersMap);
-      toast.success(t("unregisteredToast"));
+      const result = await leaveMatch(match.id, profile.uid, usersMap);
+      if (result.autoLateCancelApplied) {
+        toast.warning(t("lateCancelPenaltyApplied"));
+      } else {
+        toast.success(t("unregisteredToast"));
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : t("error");
       toast.error(message);
+    }
+  };
+
+  const handleReportNoShow = async () => {
+    if (!profile || !match || !reportingPlayer) return;
+    setReportSending(true);
+    try {
+      const adminEmails = Array.from(usersMap.values())
+        .filter((u) => u.role === "admin" && u.email)
+        .map((u) => u.email!);
+      const matchDate = format(match.date.toDate(), "d MMMM yyyy", { locale: dateFnsLocale });
+      const matchDay = t(dayTranslationKeys[match.dayOfWeek]);
+      await fetch("/api/report-noshow", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reporterName: profile.displayName,
+          reportedPlayerName: reportingPlayer.displayName,
+          matchDate,
+          matchDay,
+          adminEmails,
+        }),
+      });
+      toast.success(t("reportNoShowSent"));
+    } catch {
+      toast.error(t("error"));
+    } finally {
+      setReportSending(false);
+      setReportingPlayer(null);
     }
   };
 
@@ -282,6 +330,15 @@ export default function MatchDetailPage() {
                           {hasPenalty && (
                             <AlertTriangle className="h-3 w-3 text-destructive" />
                           )}
+                          {match.status === "completed" && profile && p.uid !== profile.uid && (
+                            <button
+                              onClick={() => setReportingPlayer({ uid: p.uid, displayName: p.displayName })}
+                              className="ml-1 flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium text-red-600 bg-red-50 border border-red-200 hover:bg-red-100 hover:border-red-300 transition-colors"
+                            >
+                              <Flag className="h-3 w-3" />
+                              {t("reportNoShow")}
+                            </button>
+                          )}
                         </div>
                       </div>
                     );
@@ -341,6 +398,32 @@ export default function MatchDetailPage() {
             </CardContent>
           </Card>
         </div>
+
+        <Dialog open={!!reportingPlayer} onOpenChange={(open) => !open && setReportingPlayer(null)}>
+          <DialogContent className="backdrop-blur-xl bg-white/90 border border-white/30 rounded-2xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-red-600">
+                <Flag className="h-5 w-5" />
+                {reportingPlayer ? t("reportNoShowTitle", { name: reportingPlayer.displayName }) : ""}
+              </DialogTitle>
+            </DialogHeader>
+            <p className="text-sm text-muted-foreground">
+              {t("reportNoShowDescription")}
+            </p>
+            <DialogFooter className="gap-2 sm:gap-0">
+              <DialogClose asChild>
+                <Button variant="outline">{t("cancel")}</Button>
+              </DialogClose>
+              <Button
+                variant="destructive"
+                onClick={handleReportNoShow}
+                disabled={reportSending}
+              >
+                {reportSending ? t("loading") : t("reportNoShow")}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </main>
       </div>
     </div>

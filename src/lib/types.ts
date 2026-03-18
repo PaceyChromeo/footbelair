@@ -24,7 +24,8 @@ export interface PlayerEntry {
 
 export interface Penalty {
   active: boolean;
-  until: Timestamp;
+  until: Timestamp; // WL-priority penalty end (penalized = sorted last)
+  bannedUntil?: Timestamp; // hard ban end (no-show only: cannot register at all)
   reason: "no-show" | "late-cancellation";
   declaredBy: string; // admin uid
   declaredAt: Timestamp;
@@ -64,7 +65,8 @@ export interface Match {
 export const MAX_PLAYERS = 12;
 export const MIN_PLAYERS = 10;
 export const MAX_QUOTA = 10;
-export const PENALTY_DURATION_DAYS = 14;
+export const PENALTY_DURATION_DAYS = 14; // WL priority penalty (both no-show and late-cancel)
+export const NO_SHOW_BAN_DAYS = 14; // hard ban: cannot subscribe at all (no-show only)
 export const LATE_CANCEL_HOURS = 4;
 
 export const DAYS_ORDER: DayOfWeek[] = [

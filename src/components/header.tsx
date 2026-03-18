@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { LogOut, Shield, User, UserCircle, Ticket, Globe } from "lucide-react";
+import { LogOut, Shield, User, UserCircle, Ticket, Globe, ScrollText } from "lucide-react";
 
 export function Header() {
   const { profile, signInWithGoogle, signOut, loading } = useAuth();
@@ -100,6 +100,14 @@ export function Header() {
                       <Link href="/" className="flex items-center gap-2">
                         <User className="h-4 w-4" />
                         {t("navMatches")}
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {profile.status !== "pending" && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/rules" className="flex items-center gap-2">
+                        <ScrollText className="h-4 w-4" />
+                        {t("navRules")}
                       </Link>
                     </DropdownMenuItem>
                   )}

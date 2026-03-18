@@ -24,6 +24,8 @@ import {
   MIN_PLAYERS,
   MAX_QUOTA,
   PENALTY_DURATION_DAYS,
+  NO_SHOW_BAN_DAYS,
+  LATE_CANCEL_HOURS,
   DayOfWeek,
   CancellationReason,
 } from "@/lib/types";
@@ -188,6 +190,14 @@ export async function joinMatch(
   const matchSnap = await getDoc(matchRef);
   if (!matchSnap.exists()) throw new Error("Match not found");
 
+  const userProfile = usersMap.get(player.uid);
+  if (userProfile?.penalty?.active && userProfile.penalty.bannedUntil) {
+    const bannedUntilDate = userProfile.penalty.bannedUntil.toDate();
+    if (bannedUntilDate > new Date()) {
+      throw new Error("BANNED");
+    }
+  }
+
   const match = { id: matchSnap.id, ...matchSnap.data() } as Match;
 
   const alreadyIn = [...match.players, ...match.waitingList].find(
@@ -213,12 +223,17 @@ export async function leaveMatch(
   uid: string,
   usersMap: Map<string, UserProfile>,
   isLateCancel: boolean = false
-): Promise<void> {
+): Promise<{ autoLateCancelApplied: boolean }> {
   const matchRef = doc(db, "matches", matchId);
   const matchSnap = await getDoc(matchRef);
   if (!matchSnap.exists()) throw new Error("Match not found");
 
   const match = { id: matchSnap.id, ...matchSnap.data() } as Match;
+
+  const matchStart = match.date.toDate();
+  const now = new Date();
+  const hoursUntilMatch = (matchStart.getTime() - now.getTime()) / (1000 * 60 * 60);
+  const autoLateCancel = !isLateCancel && hoursUntilMatch >= 0 && hoursUntilMatch < LATE_CANCEL_HOURS;
 
   const allEntries = [...match.players, ...match.waitingList].filter(
     (p) => p.uid !== uid
@@ -233,6 +248,26 @@ export async function leaveMatch(
     waitingList,
     status: newStatus,
   });
+
+  if (autoLateCancel || isLateCancel) {
+    const penaltyUntil = new Date();
+    penaltyUntil.setDate(penaltyUntil.getDate() + PENALTY_DURATION_DAYS);
+
+    const userRef = doc(db, "users", uid);
+    await updateDoc(userRef, {
+      penalty: {
+        active: true,
+        until: Timestamp.fromDate(penaltyUntil),
+        reason: "late-cancellation" as const,
+        declaredBy: "system",
+        declaredAt: Timestamp.now(),
+      },
+    });
+
+    return { autoLateCancelApplied: true };
+  }
+
+  return { autoLateCancelApplied: false };
 }
 
 export async function declareNoShow(
@@ -241,18 +276,38 @@ export async function declareNoShow(
   reason: "no-show" | "late-cancellation"
 ): Promise<void> {
   const userRef = doc(db, "users", targetUid);
-  const penaltyUntil = new Date();
-  penaltyUntil.setDate(penaltyUntil.getDate() + PENALTY_DURATION_DAYS);
+  const now = new Date();
 
-  await updateDoc(userRef, {
-    penalty: {
-      active: true,
-      until: Timestamp.fromDate(penaltyUntil),
-      reason,
-      declaredBy: adminUid,
-      declaredAt: Timestamp.now(),
-    },
-  });
+  if (reason === "no-show") {
+    const bannedUntil = new Date(now);
+    bannedUntil.setDate(bannedUntil.getDate() + NO_SHOW_BAN_DAYS);
+    const penaltyUntil = new Date(now);
+    penaltyUntil.setDate(penaltyUntil.getDate() + NO_SHOW_BAN_DAYS + PENALTY_DURATION_DAYS);
+
+    await updateDoc(userRef, {
+      penalty: {
+        active: true,
+        until: Timestamp.fromDate(penaltyUntil),
+        bannedUntil: Timestamp.fromDate(bannedUntil),
+        reason,
+        declaredBy: adminUid,
+        declaredAt: Timestamp.now(),
+      },
+    });
+  } else {
+    const penaltyUntil = new Date(now);
+    penaltyUntil.setDate(penaltyUntil.getDate() + PENALTY_DURATION_DAYS);
+
+    await updateDoc(userRef, {
+      penalty: {
+        active: true,
+        until: Timestamp.fromDate(penaltyUntil),
+        reason,
+        declaredBy: adminUid,
+        declaredAt: Timestamp.now(),
+      },
+    });
+  }
 }
 
 export async function removePenalty(targetUid: string): Promise<void> {

@@ -783,6 +783,16 @@ export default function AdminPage() {
                               <Ticket className="h-3 w-3" />
                               {user.quota.remaining}/10
                             </span>
+                            {user.penalty?.active && user.penalty.bannedUntil && user.penalty.bannedUntil.toDate() > new Date() && (
+                              <span className="flex items-center gap-0.5 text-red-700 font-semibold">
+                                <AlertTriangle className="h-3 w-3" />
+                                {t("bannedUntil", {
+                                  date: format(user.penalty.bannedUntil.toDate(), "d MMM", {
+                                    locale: dateFnsLocale,
+                                  }),
+                                })}
+                              </span>
+                            )}
                             {user.penalty?.active && (
                               <span className="flex items-center gap-0.5 text-destructive">
                                 <AlertTriangle className="h-3 w-3" />

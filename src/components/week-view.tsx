@@ -85,16 +85,24 @@ export function WeekView() {
       await joinMatch(matchId, entry, usersMap);
       toast.success(t("registeredToast"));
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : t("error");
-      toast.error(message);
+      if (err instanceof Error && err.message === "BANNED") {
+        toast.error(t("bannedCannotRegister"));
+      } else {
+        const message = err instanceof Error ? err.message : t("error");
+        toast.error(message);
+      }
     }
   };
 
   const handleLeave = async (matchId: string) => {
     if (!profile) return;
     try {
-      await leaveMatch(matchId, profile.uid, usersMap);
-      toast.success(t("unregisteredToast"));
+      const result = await leaveMatch(matchId, profile.uid, usersMap);
+      if (result.autoLateCancelApplied) {
+        toast.warning(t("lateCancelPenaltyApplied"));
+      } else {
+        toast.success(t("unregisteredToast"));
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : t("error");
       toast.error(message);
