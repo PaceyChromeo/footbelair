@@ -127,6 +127,9 @@ const ar = {
   userDeleted: "تم حذف {name}",
   noPendingUsers: "لا توجد حسابات معلقة",
 
+  emailsSent: "تم إرسال {count} بريد(ات) إلكتروني(ة)",
+  emailsSendError: "خطأ في إرسال رسائل الإشعار",
+
   // Language
   language: "اللغة",
   langFr: "Français",

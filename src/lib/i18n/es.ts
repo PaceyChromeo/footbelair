@@ -129,6 +129,10 @@ const es = {
   userDeleted: "{name} eliminado",
   noPendingUsers: "No hay cuentas pendientes",
 
+  // Email notifications
+  emailsSent: "{count} email(s) de notificación enviado(s)",
+  emailsSendError: "Error al enviar los emails de notificación",
+
   // Language
   language: "Idioma",
   langFr: "Français",

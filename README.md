@@ -26,9 +26,13 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
 NEXT_PUBLIC_FIREBASE_APP_ID=
 NEXT_PUBLIC_RECAPTCHA_SITE_KEY=
 RECAPTCHA_SECRET_KEY=
+RESEND_API_KEY=
 ```
 
 Get a reCAPTCHA v3 site key at https://www.google.com/recaptcha/admin (choose "Score based (v3)").
+
+Get a Resend API key at https://resend.com/api-keys (free tier: 100 emails/day, 3000/month).
+Optionally set `RESEND_FROM_ADDRESS` (e.g. `AAA-BelAir <notifications@yourdomain.com>`) if you have a verified domain. Defaults to `onboarding@resend.dev` (dev only).
 
 ## Useful Scripts
 

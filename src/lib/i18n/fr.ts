@@ -129,6 +129,10 @@ const fr = {
   userDeleted: "{name} supprimé",
   noPendingUsers: "Aucun compte en attente",
 
+  // Email notifications
+  emailsSent: "{count} email(s) de notification envoyé(s)",
+  emailsSendError: "Erreur lors de l'envoi des emails de notification",
+
   // Language
   language: "Langue",
   langFr: "Français",

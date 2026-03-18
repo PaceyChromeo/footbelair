@@ -129,6 +129,9 @@ const hi = {
   userDeleted: "{name} हटाया गया",
   noPendingUsers: "कोई लंबित खाता नहीं",
 
+  emailsSent: "{count} सूचना ईमेल भेजे गए",
+  emailsSendError: "सूचना ईमेल भेजने में त्रुटि",
+
   // Language
   language: "भाषा",
   langFr: "Français",

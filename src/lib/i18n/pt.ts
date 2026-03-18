@@ -129,6 +129,9 @@ const pt = {
   userDeleted: "{name} excluído",
   noPendingUsers: "Nenhuma conta pendente",
 
+  emailsSent: "{count} email(s) de notificação enviado(s)",
+  emailsSendError: "Erro ao enviar os emails de notificação",
+
   // Language
   language: "Idioma",
   langFr: "Français",

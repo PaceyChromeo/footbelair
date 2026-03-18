@@ -127,6 +127,9 @@ const it = {
   userDeleted: "{name} eliminato",
   noPendingUsers: "Nessun account in attesa",
 
+  emailsSent: "{count} email di notifica inviata/e",
+  emailsSendError: "Errore nell'invio delle email di notifica",
+
   // Language
   language: "Lingua",
   langFr: "Français",
