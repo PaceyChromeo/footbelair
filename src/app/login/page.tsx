@@ -13,7 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Globe } from "lucide-react";
+import { Globe, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
@@ -22,7 +22,7 @@ import { FirebaseError } from "firebase/app";
 type AuthMode = "login" | "signup" | "reset";
 
 export default function LoginPage() {
-  const { signInWithGoogle, signInWithEmail, signUpWithEmail, resetPassword, profile, loading } = useAuth();
+  const { signInWithGoogle, signInWithEmail, signUpWithEmail, resetPassword, resendVerificationEmail, signOut, profile, user, loading, emailNeedsVerification } = useAuth();
   const { t, locale, setLocale } = useLocale();
   const router = useRouter();
   const { executeRecaptcha } = useGoogleReCaptcha();
@@ -34,6 +34,8 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState(false);
 
   useEffect(() => {
     if (profile && !loading) {
@@ -119,6 +121,73 @@ export default function LoginPage() {
     setMode(newMode);
     setError("");
     setSuccess("");
+  }
+
+  async function handleResendVerification() {
+    setResending(true);
+    setResendSuccess(false);
+    try {
+      await resendVerificationEmail();
+      setResendSuccess(true);
+    } catch {
+      setError(t("authErrorGeneric"));
+    }
+    setResending(false);
+  }
+
+  async function handleBackToLogin() {
+    await signOut();
+  }
+
+  if (emailNeedsVerification) {
+    return (
+      <div
+        className="flex min-h-screen items-center justify-center bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1556056504-5c7696c4c28d?w=1920&q=80&auto=format')" }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-emerald-950/50" />
+        <Card className="relative z-10 w-full max-w-md backdrop-blur-xl bg-white/80 border border-white/30 shadow-2xl rounded-2xl">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
+              <Mail className="h-8 w-8 text-emerald-600" />
+            </div>
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">{t("emailVerificationRequired")}</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <p className="text-center text-sm text-slate-600">
+              {t("emailVerificationMessage").replace("{email}", user?.email || "")}
+            </p>
+
+            {resendSuccess && (
+              <p className="text-sm text-emerald-600 bg-emerald-50/80 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-emerald-200/50 text-center">
+                {t("verificationEmailResent")}
+              </p>
+            )}
+
+            {error && (
+              <p className="text-sm text-red-600 bg-red-50/80 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-red-200/50 text-center">{error}</p>
+            )}
+
+            <Button
+              onClick={handleResendVerification}
+              disabled={resending}
+              size="lg"
+              className="w-full h-12 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold text-base shadow-lg shadow-emerald-500/25 transition-all duration-300 active:scale-[0.98]"
+            >
+              {resending ? t("loading") : t("resendVerificationEmail")}
+            </Button>
+
+            <button
+              type="button"
+              onClick={handleBackToLogin}
+              className="text-sm text-emerald-600 hover:text-emerald-700 font-medium transition-colors text-center"
+            >
+              {t("backToLoginFromVerification")}
+            </button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (

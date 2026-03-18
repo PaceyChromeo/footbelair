@@ -14,6 +14,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
+  sendEmailVerification,
   updateProfile,
   updateEmail as firebaseUpdateEmail,
   updatePassword as firebaseUpdatePassword,
@@ -36,13 +37,19 @@ export class SignupError extends Error {
   }
 }
 
+function isEmailPasswordUser(user: User): boolean {
+  return user.providerData.some((p) => p.providerId === "password");
+}
+
 interface AuthContextType {
   user: User | null;
   profile: UserProfile | null;
   loading: boolean;
+  emailNeedsVerification: boolean;
   signInWithGoogle: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string, displayName: string) => Promise<void>;
+  resendVerificationEmail: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updateUserDisplayName: (newName: string) => Promise<void>;
   updateUserEmail: (newEmail: string) => Promise<void>;
@@ -55,9 +62,11 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   profile: null,
   loading: true,
+  emailNeedsVerification: false,
   signInWithGoogle: async () => {},
   signInWithEmail: async () => {},
   signUpWithEmail: async () => {},
+  resendVerificationEmail: async () => {},
   resetPassword: async () => {},
   updateUserDisplayName: async () => {},
   updateUserEmail: async () => {},  updateUserPassword: async () => {},
@@ -182,17 +191,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [signingUp, setSigningUp] = useState(false);
+  const [emailNeedsVerification, setEmailNeedsVerification] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (signingUp) return;
       if (firebaseUser) {
+        // For email/password users, check if email is verified
+        if (isEmailPasswordUser(firebaseUser) && !firebaseUser.emailVerified) {
+          setUser(firebaseUser);
+          setProfile(null);
+          setEmailNeedsVerification(true);
+          setLoading(false);
+          return;
+        }
+        setEmailNeedsVerification(false);
         setUser(firebaseUser);
         const userProfile = await syncUserToFirestore(firebaseUser);
         setProfile(userProfile);
       } else {
         setUser(null);
         setProfile(null);
+        setEmailNeedsVerification(false);
       }
       setLoading(false);
     });
@@ -205,7 +225,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signInWithEmail = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(auth, email, password);
+    const credential = await signInWithEmailAndPassword(auth, email, password);
+    if (isEmailPasswordUser(credential.user) && !credential.user.emailVerified) {
+      setUser(credential.user);
+      setProfile(null);
+      setEmailNeedsVerification(true);
+      return;
+    }
+  };
+
+  const resendVerificationEmail = async () => {
+    if (!user) throw new Error("auth/no-current-user");
+    await sendEmailVerification(user);
   };
 
   const signUpWithEmail = async (email: string, password: string, displayName: string) => {
@@ -232,8 +263,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         await updateProfile(credential.user, { displayName });
         const userProfile = await syncUserToFirestore(credential.user, displayName);
+        await sendEmailVerification(credential.user);
         setUser(credential.user);
-        setProfile(userProfile);
+        setProfile(null);
+        setEmailNeedsVerification(true);
       } catch (err) {
         if (err instanceof SignupError) {
           throw err;
@@ -298,9 +331,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         profile,
         loading,
+        emailNeedsVerification,
         signInWithGoogle,
         signInWithEmail,
         signUpWithEmail,
+        resendVerificationEmail,
         resetPassword,
         updateUserDisplayName,
         updateUserEmail,

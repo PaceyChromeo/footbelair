@@ -35,6 +35,12 @@ const en = {
   authErrorTooManyRequests: "Too many attempts. Try again later.",
   authErrorGeneric: "An error occurred. Please try again.",
   authErrorCaptcha: "Bot verification failed. Please try again.",
+  emailVerificationSent: "A verification email has been sent. Check your inbox.",
+  emailVerificationRequired: "Verify your email",
+  emailVerificationMessage: "A verification email has been sent to {email}. Click the link in the email to activate your account.",
+  resendVerificationEmail: "Resend verification email",
+  verificationEmailResent: "Verification email resent!",
+  backToLoginFromVerification: "Back to sign in",
   logout: "Log out",
 
   // Header / Nav

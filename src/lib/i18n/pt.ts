@@ -35,6 +35,12 @@ const pt = {
   authErrorTooManyRequests: "Muitas tentativas. Tente novamente mais tarde.",
   authErrorGeneric: "Ocorreu um erro. Tente novamente.",
   authErrorCaptcha: "A verificação anti-robô falhou. Tente novamente.",
+  emailVerificationSent: "Um email de verificação foi enviado. Verifique sua caixa de entrada.",
+  emailVerificationRequired: "Verifique seu email",
+  emailVerificationMessage: "Um email de verificação foi enviado para {email}. Clique no link do email para ativar sua conta.",
+  resendVerificationEmail: "Reenviar email de verificação",
+  verificationEmailResent: "Email de verificação reenviado!",
+  backToLoginFromVerification: "Voltar ao login",
   logout: "Sair",
 
   // Header / Nav

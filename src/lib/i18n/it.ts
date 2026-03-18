@@ -35,6 +35,12 @@ const it = {
   authErrorTooManyRequests: "Troppi tentativi. Riprova più tardi.",
   authErrorGeneric: "Si è verificato un errore. Riprova.",
   authErrorCaptcha: "Verifica anti-robot fallita. Riprova.",
+  emailVerificationSent: "È stata inviata un'email di verifica. Controlla la tua casella di posta.",
+  emailVerificationRequired: "Verifica la tua email",
+  emailVerificationMessage: "È stata inviata un'email di verifica a {email}. Clicca sul link nell'email per attivare il tuo account.",
+  resendVerificationEmail: "Reinvia email di verifica",
+  verificationEmailResent: "Email di verifica reinviata!",
+  backToLoginFromVerification: "Torna all'accesso",
   logout: "Esci",
 
   // Header / Nav

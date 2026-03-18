@@ -35,6 +35,12 @@ const ar = {
   authErrorTooManyRequests: "محاولات كثيرة جداً. حاول مرة أخرى لاحقاً.",
   authErrorGeneric: "حدث خطأ. حاول مرة أخرى.",
   authErrorCaptcha: "فشل التحقق من أنك لست روبوتاً. حاول مرة أخرى.",
+  emailVerificationSent: "تم إرسال بريد إلكتروني للتحقق. تحقق من صندوق الوارد الخاص بك.",
+  emailVerificationRequired: "تحقق من بريدك الإلكتروني",
+  emailVerificationMessage: "تم إرسال بريد إلكتروني للتحقق إلى {email}. انقر على الرابط في البريد الإلكتروني لتفعيل حسابك.",
+  resendVerificationEmail: "إعادة إرسال بريد التحقق",
+  verificationEmailResent: "تم إعادة إرسال بريد التحقق!",
+  backToLoginFromVerification: "العودة لتسجيل الدخول",
   logout: "تسجيل الخروج",
 
   // Header / Nav

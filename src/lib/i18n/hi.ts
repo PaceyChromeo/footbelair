@@ -35,6 +35,12 @@ const hi = {
   authErrorTooManyRequests: "बहुत अधिक प्रयास। बाद में पुनः प्रयास करें।",
   authErrorGeneric: "एक त्रुटि हुई। कृपया पुनः प्रयास करें।",
   authErrorCaptcha: "बॉट सत्यापन विफल रहा। कृपया पुनः प्रयास करें।",
+  emailVerificationSent: "एक सत्यापन ईमेल भेजा गया है। अपना इनबॉक्स जांचें।",
+  emailVerificationRequired: "अपना ईमेल सत्यापित करें",
+  emailVerificationMessage: "{email} पर एक सत्यापन ईमेल भेजा गया है। अपना खाता सक्रिय करने के लिए ईमेल में लिंक पर क्लिक करें।",
+  resendVerificationEmail: "सत्यापन ईमेल पुनः भेजें",
+  verificationEmailResent: "सत्यापन ईमेल पुनः भेजा गया!",
+  backToLoginFromVerification: "साइन इन पर वापस जाएं",
   logout: "लॉग आउट",
 
   // Header / Nav

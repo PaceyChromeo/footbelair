@@ -35,6 +35,12 @@ const fr = {
   authErrorTooManyRequests: "Trop de tentatives. Réessaie plus tard.",
   authErrorGeneric: "Une erreur est survenue. Réessaie.",
   authErrorCaptcha: "La vérification anti-robot a échoué. Réessaie.",
+  emailVerificationSent: "Un email de vérification a été envoyé. Vérifie ta boîte de réception.",
+  emailVerificationRequired: "Vérifie ton email",
+  emailVerificationMessage: "Un email de vérification a été envoyé à {email}. Clique sur le lien dans l'email pour activer ton compte.",
+  resendVerificationEmail: "Renvoyer l'email de vérification",
+  verificationEmailResent: "Email de vérification renvoyé !",
+  backToLoginFromVerification: "Retour à la connexion",
   logout: "Déconnexion",
 
   // Header / Nav
