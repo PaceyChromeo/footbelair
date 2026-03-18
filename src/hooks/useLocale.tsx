@@ -13,6 +13,8 @@ import {
   type TranslationKeys,
   translations,
 } from "@/lib/i18n";
+import { doc, setDoc } from "firebase/firestore";
+import { db, auth } from "@/lib/firebase";
 import { fr as dateFnsFr } from "date-fns/locale";
 import { es as dateFnsEs } from "date-fns/locale";
 import { hi as dateFnsHi } from "date-fns/locale";
@@ -64,13 +66,23 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setLocaleState(getInitialLocale());
+    const initial = getInitialLocale();
+    setLocaleState(initial);
     setMounted(true);
+    const uid = auth.currentUser?.uid;
+    if (uid) {
+      setDoc(doc(db, "users", uid), { locale: initial }, { merge: true }).catch(() => {});
+    }
   }, []);
 
   const setLocale = useCallback((newLocale: Locale) => {
     setLocaleState(newLocale);
     localStorage.setItem(STORAGE_KEY, newLocale);
+    // Sync locale to Firestore so emails are sent in the user's language
+    const uid = auth.currentUser?.uid;
+    if (uid) {
+      setDoc(doc(db, "users", uid), { locale: newLocale }, { merge: true }).catch(() => {});
+    }
   }, []);
 
   const t = useCallback(

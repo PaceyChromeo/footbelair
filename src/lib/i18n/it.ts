@@ -173,6 +173,17 @@ const it = {
 
   // Weather
   weatherLinkLabel: "☀️ Meteo della settimana a Villeneuve-Loubet",
+
+  // Email content
+  emailSubject: "⚽ Partite della settimana aperte — {weekLabel}",
+  emailHeading: "Le partite della settimana sono aperte!",
+  emailWeekOf: "Settimana del",
+  emailBody: "Le iscrizioni sono aperte per le partite di questa settimana. Prenota il tuo posto ora — i posti vanno a ruba!",
+  emailCta: "Iscriviti alle partite",
+  emailWeatherLabel: "🌤️ Meteo Villeneuve-Loubet",
+  emailWeatherDescription: "Controlla il meteo della settimana per anticipare le condizioni di gioco.",
+  emailWeatherLink: "Vedi previsioni →",
+  emailFooter: "Ogni giorno alle 12:30 · 12 posti per partita",
 } as const;
 
 export default it;

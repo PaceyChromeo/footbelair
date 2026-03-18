@@ -175,6 +175,17 @@ const hi = {
 
   // Weather
   weatherLinkLabel: "☀️ विलेन्यूव-लूबे में सप्ताह का मौसम",
+
+  // Email content
+  emailSubject: "⚽ सप्ताह के मैच खुले हैं — {weekLabel}",
+  emailHeading: "सप्ताह के मैच अब खुले हैं!",
+  emailWeekOf: "सप्ताह",
+  emailBody: "इस सप्ताह के मैचों के लिए पंजीकरण खुला है। अभी अपनी जगह बुक करें — स्थान तेजी से भरते हैं!",
+  emailCta: "मैचों के लिए पंजीकरण करें",
+  emailWeatherLabel: "🌤️ विलेन्यूव-लूबे मौसम",
+  emailWeatherDescription: "खेल की स्थिति का अनुमान लगाने के लिए सप्ताह का मौसम देखें।",
+  emailWeatherLink: "पूर्वानुमान देखें →",
+  emailFooter: "हर दिन दोपहर 12:30 बजे · प्रति मैच 12 स्थान",
 } as const;
 
 export default hi;

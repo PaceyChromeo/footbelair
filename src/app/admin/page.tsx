@@ -116,16 +116,18 @@ export default function AdminPage() {
       await createWeekMatches(weekOffset, profile.uid);
       toast.success(t("weekCreated"));
 
-      const emails = approvedUsers.map((u) => u.email).filter(Boolean);
-      if (emails.length > 0) {
+      const recipients = approvedUsers
+        .filter((u) => u.email)
+        .map((u) => ({ email: u.email, locale: u.locale || "fr" }));
+      if (recipients.length > 0) {
         try {
           const res = await fetch("/api/notify-matches", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ emails, weekLabel }),
+            body: JSON.stringify({ recipients, weekLabel }),
           });
           if (res.ok) {
-            toast.success(t("emailsSent", { count: String(emails.length) }));
+            toast.success(t("emailsSent", { count: String(recipients.length) }));
           } else {
             toast.error(t("emailsSendError"));
           }

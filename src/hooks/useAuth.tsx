@@ -159,6 +159,7 @@ async function syncUserToFirestore(user: User, displayNameOverride?: string): Pr
     photoURL: user.photoURL,
     role: "player",
     status: "pending",
+    locale: "fr",
     quota: { remaining: MAX_QUOTA, month: currentMonth },
     penalty: null,
     createdAt: Timestamp.now(),

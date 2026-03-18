@@ -176,6 +176,17 @@ const en = {
 
   // Weather
   weatherLinkLabel: "☀️ Weekly weather in Villeneuve-Loubet",
+
+  // Email content
+  emailSubject: "⚽ Weekly matches are open — {weekLabel}",
+  emailHeading: "Weekly matches are now open!",
+  emailWeekOf: "Week of",
+  emailBody: "Registration is open for this week's matches. Book your spot now — places go fast!",
+  emailCta: "Register for matches",
+  emailWeatherLabel: "🌤️ Villeneuve-Loubet Weather",
+  emailWeatherDescription: "Check the weekly forecast to anticipate playing conditions.",
+  emailWeatherLink: "View forecast →",
+  emailFooter: "Every day at 12:30 PM · 12 spots per match",
 } as const;
 
 export default en;

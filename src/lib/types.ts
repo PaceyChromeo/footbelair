@@ -1,4 +1,5 @@
 import { Timestamp } from "firebase/firestore";
+import type { Locale } from "@/lib/i18n";
 
 export type DayOfWeek = "monday" | "tuesday" | "wednesday" | "thursday" | "friday";
 
@@ -41,6 +42,7 @@ export interface UserProfile {
   photoURL: string | null;
   role: UserRole;
   status: UserStatus;
+  locale?: Locale;
   quota: UserQuota;
   penalty: Penalty | null;
   createdAt: Timestamp;

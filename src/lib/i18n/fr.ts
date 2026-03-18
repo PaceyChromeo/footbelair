@@ -176,6 +176,17 @@ const fr = {
 
   // Weather
   weatherLinkLabel: "☀️ Météo de la semaine à Villeneuve-Loubet",
+
+  // Email content
+  emailSubject: "⚽ Matchs de la semaine ouverts — {weekLabel}",
+  emailHeading: "Les matchs de la semaine sont ouverts !",
+  emailWeekOf: "Semaine du",
+  emailBody: "Les inscriptions sont ouvertes pour les matchs de cette semaine. Réserve ta place dès maintenant — les places partent vite !",
+  emailCta: "S'inscrire aux matchs",
+  emailWeatherLabel: "🌤️ Météo Villeneuve-Loubet",
+  emailWeatherDescription: "Consulte la météo de la semaine pour anticiper les conditions de jeu.",
+  emailWeatherLink: "Voir les prévisions →",
+  emailFooter: "Tous les jours à 12h30 · 12 places par match",
 } as const;
 
 export default fr;

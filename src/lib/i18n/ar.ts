@@ -173,6 +173,17 @@ const ar = {
 
   // Weather
   weatherLinkLabel: "☀️ طقس الأسبوع في فيلنوف-لوبيه",
+
+  // Email content
+  emailSubject: "⚽ مباريات الأسبوع مفتوحة — {weekLabel}",
+  emailHeading: "مباريات الأسبوع مفتوحة الآن!",
+  emailWeekOf: "أسبوع",
+  emailBody: "التسجيل مفتوح لمباريات هذا الأسبوع. احجز مكانك الآن — الأماكن تنفد بسرعة!",
+  emailCta: "التسجيل في المباريات",
+  emailWeatherLabel: "🌤️ طقس فيلنوف-لوبيه",
+  emailWeatherDescription: "تحقق من طقس الأسبوع لتوقع ظروف اللعب.",
+  emailWeatherLink: "عرض التوقعات →",
+  emailFooter: "كل يوم الساعة 12:30 · 12 مكان لكل مباراة",
 } as const;
 
 export default ar;

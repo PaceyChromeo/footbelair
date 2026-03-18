@@ -176,6 +176,17 @@ const es = {
 
   // Weather
   weatherLinkLabel: "☀️ Clima de la semana en Villeneuve-Loubet",
+
+  // Email content
+  emailSubject: "⚽ Partidos de la semana abiertos — {weekLabel}",
+  emailHeading: "¡Los partidos de la semana están abiertos!",
+  emailWeekOf: "Semana del",
+  emailBody: "Las inscripciones están abiertas para los partidos de esta semana. Reserva tu plaza ahora — ¡las plazas vuelan!",
+  emailCta: "Inscribirse a los partidos",
+  emailWeatherLabel: "🌤️ Clima Villeneuve-Loubet",
+  emailWeatherDescription: "Consulta el clima de la semana para anticipar las condiciones de juego.",
+  emailWeatherLink: "Ver previsiones →",
+  emailFooter: "Todos los días a las 12:30 · 12 plazas por partido",
 } as const;
 
 export default es;
