@@ -14,7 +14,6 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
-  sendEmailVerification,
   updateProfile,
   updateEmail as firebaseUpdateEmail,
   updatePassword as firebaseUpdatePassword,
@@ -237,7 +236,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const resendVerificationEmail = async () => {
     if (!user) throw new Error("auth/no-current-user");
-    await sendEmailVerification(user);
+    await fetch("/api/send-verification", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: user.email,
+        displayName: user.displayName || "",
+        locale: profile?.locale || "fr",
+      }),
+    });
   };
 
   const signUpWithEmail = async (email: string, password: string, displayName: string) => {
@@ -264,7 +271,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         await updateProfile(credential.user, { displayName });
         const userProfile = await syncUserToFirestore(credential.user, displayName);
-        await sendEmailVerification(credential.user);
+        await fetch("/api/send-verification", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: credential.user.email,
+            displayName,
+            locale: userProfile.locale || "fr",
+          }),
+        });
         setUser(credential.user);
         setProfile(null);
         setEmailNeedsVerification(true);
