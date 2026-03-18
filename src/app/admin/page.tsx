@@ -27,7 +27,7 @@ import {
   setUserStatus,
   deleteUserAccount,
 } from "@/lib/matches";
-import { Match, UserProfile, DayOfWeek, MAX_PLAYERS, CancellationReason, CancellationReasonType, NoShowReport } from "@/lib/types";
+import { Match, UserProfile, DayOfWeek, MAX_PLAYERS, MIN_PLAYERS, CancellationReason, CancellationReasonType, NoShowReport } from "@/lib/types";
 import { Timestamp } from "firebase/firestore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -536,6 +536,13 @@ export default function AdminPage() {
                                   : match.status === "completed"
                                   ? "secondary"
                                   : "default"
+                              }
+                              className={
+                                match.status !== "cancelled" && match.status !== "completed"
+                                  ? match.players.length >= MIN_PLAYERS
+                                    ? "bg-gradient-to-r from-emerald-500 to-teal-500 border-0"
+                                    : "bg-gradient-to-r from-red-500 to-orange-500 border-0"
+                                  : ""
                               }
                             >
                               {match.status === "cancelled"
