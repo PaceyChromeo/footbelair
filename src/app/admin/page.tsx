@@ -211,6 +211,35 @@ export default function AdminPage() {
     try {
       await declareNoShow(targetUid, profile.uid, reason);
       toast.success(t("penaltyApplied"));
+
+      const targetUser = usersMap.get(targetUid);
+      if (targetUser?.email) {
+        const now = new Date();
+        const penaltyUntil = new Date(now);
+        let bannedUntil: string | undefined;
+
+        if (reason === "no-show") {
+          const banned = new Date(now);
+          banned.setDate(banned.getDate() + 14);
+          bannedUntil = banned.toISOString();
+          penaltyUntil.setDate(penaltyUntil.getDate() + 28);
+        } else {
+          penaltyUntil.setDate(penaltyUntil.getDate() + 14);
+        }
+
+        fetch("/api/penalty-notification", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            playerEmail: targetUser.email,
+            playerName: targetUser.displayName,
+            playerLocale: targetUser.locale || "fr",
+            reason,
+            bannedUntil,
+            penaltyUntil: penaltyUntil.toISOString(),
+          }),
+        }).catch(() => {});
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : t("error");
       toast.error(message);

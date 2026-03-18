@@ -100,6 +100,23 @@ export function WeekView() {
       const result = await leaveMatch(matchId, profile.uid, usersMap);
       if (result.autoLateCancelApplied) {
         toast.warning(t("lateCancelPenaltyApplied"));
+
+        if (profile.email) {
+          const penaltyUntil = new Date();
+          penaltyUntil.setDate(penaltyUntil.getDate() + 14);
+
+          fetch("/api/penalty-notification", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              playerEmail: profile.email,
+              playerName: profile.displayName,
+              playerLocale: profile.locale || "fr",
+              reason: "late-cancellation",
+              penaltyUntil: penaltyUntil.toISOString(),
+            }),
+          }).catch(() => {});
+        }
       } else {
         toast.success(t("unregisteredToast"));
       }
