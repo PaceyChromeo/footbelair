@@ -41,10 +41,6 @@ const fr = {
   resendVerificationEmail: "Renvoyer l'email de vérification",
   verificationEmailResent: "Email de vérification renvoyé !",
   backToLoginFromVerification: "Retour à la connexion",
-  emailVerifiedSuccess: "Email vérifié !",
-  emailVerifiedMessage: "Ton adresse email a été vérifiée avec succès. Tu peux maintenant te connecter.",
-  emailVerificationFailed: "Échec de la vérification",
-  emailVerificationFailedMessage: "Le lien de vérification est invalide ou a expiré. Essaie de te reconnecter et de renvoyer l'email.",
   logout: "Déconnexion",
 
   // Header / Nav

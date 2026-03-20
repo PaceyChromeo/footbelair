@@ -41,10 +41,6 @@ const en = {
   resendVerificationEmail: "Resend verification email",
   verificationEmailResent: "Verification email resent!",
   backToLoginFromVerification: "Back to sign in",
-  emailVerifiedSuccess: "Email verified!",
-  emailVerifiedMessage: "Your email address has been successfully verified. You can now sign in.",
-  emailVerificationFailed: "Verification failed",
-  emailVerificationFailedMessage: "The verification link is invalid or has expired. Try signing in again and resending the email.",
   logout: "Log out",
 
   // Header / Nav

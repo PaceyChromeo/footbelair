@@ -41,10 +41,6 @@ const es = {
   resendVerificationEmail: "Reenviar email de verificación",
   verificationEmailResent: "¡Email de verificación reenviado!",
   backToLoginFromVerification: "Volver al inicio de sesión",
-  emailVerifiedSuccess: "¡Email verificado!",
-  emailVerifiedMessage: "Tu dirección de email ha sido verificada con éxito. Ya puedes iniciar sesión.",
-  emailVerificationFailed: "Error de verificación",
-  emailVerificationFailedMessage: "El enlace de verificación es inválido o ha expirado. Intenta iniciar sesión de nuevo y reenviar el email.",
   logout: "Cerrar sesión",
 
   // Header / Nav

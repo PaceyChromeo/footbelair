@@ -41,10 +41,6 @@ const pt = {
   resendVerificationEmail: "Reenviar email de verificação",
   verificationEmailResent: "Email de verificação reenviado!",
   backToLoginFromVerification: "Voltar ao login",
-  emailVerifiedSuccess: "Email verificado!",
-  emailVerifiedMessage: "Seu endereço de email foi verificado com sucesso. Agora você pode fazer login.",
-  emailVerificationFailed: "Falha na verificação",
-  emailVerificationFailedMessage: "O link de verificação é inválido ou expirou. Tente fazer login novamente e reenviar o email.",
   logout: "Sair",
 
   // Header / Nav

@@ -41,10 +41,6 @@ const ar = {
   resendVerificationEmail: "إعادة إرسال بريد التحقق",
   verificationEmailResent: "تم إعادة إرسال بريد التحقق!",
   backToLoginFromVerification: "العودة لتسجيل الدخول",
-  emailVerifiedSuccess: "تم التحقق من البريد الإلكتروني!",
-  emailVerifiedMessage: "تم التحقق من عنوان بريدك الإلكتروني بنجاح. يمكنك الآن تسجيل الدخول.",
-  emailVerificationFailed: "فشل التحقق",
-  emailVerificationFailedMessage: "رابط التحقق غير صالح أو منتهي الصلاحية. حاول تسجيل الدخول مرة أخرى وإعادة إرسال البريد الإلكتروني.",
   logout: "تسجيل الخروج",
 
   // Header / Nav

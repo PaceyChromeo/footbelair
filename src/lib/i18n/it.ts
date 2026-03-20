@@ -41,10 +41,6 @@ const it = {
   resendVerificationEmail: "Reinvia email di verifica",
   verificationEmailResent: "Email di verifica reinviata!",
   backToLoginFromVerification: "Torna all'accesso",
-  emailVerifiedSuccess: "Email verificata!",
-  emailVerifiedMessage: "Il tuo indirizzo email è stato verificato con successo. Ora puoi accedere.",
-  emailVerificationFailed: "Verifica fallita",
-  emailVerificationFailedMessage: "Il link di verifica non è valido o è scaduto. Prova ad accedere di nuovo e a rinviare l'email.",
   logout: "Esci",
 
   // Header / Nav

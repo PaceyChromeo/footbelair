@@ -41,10 +41,6 @@ const hi = {
   resendVerificationEmail: "सत्यापन ईमेल पुनः भेजें",
   verificationEmailResent: "सत्यापन ईमेल पुनः भेजा गया!",
   backToLoginFromVerification: "साइन इन पर वापस जाएं",
-  emailVerifiedSuccess: "ईमेल सत्यापित!",
-  emailVerifiedMessage: "आपका ईमेल पता सफलतापूर्वक सत्यापित हो गया है। अब आप साइन इन कर सकते हैं।",
-  emailVerificationFailed: "सत्यापन विफल",
-  emailVerificationFailedMessage: "सत्यापन लिंक अमान्य है या समाप्त हो गया है। पुनः साइन इन करने और ईमेल भेजने का प्रयास करें।",
   logout: "लॉग आउट",
 
   // Header / Nav
