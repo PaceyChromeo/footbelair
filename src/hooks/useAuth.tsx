@@ -155,7 +155,31 @@ async function syncUserToFirestore(user: User, displayNameOverride?: string): Pr
   };
 
   await setDoc(userRef, newProfile);
+
+  notifyAdminsOfNewAccount(newProfile).catch(() => {});
+
   return newProfile;
+}
+
+async function notifyAdminsOfNewAccount(newUser: UserProfile): Promise<void> {
+  const usersRef = collection(db, "users");
+  const adminQuery = query(usersRef, where("role", "==", "admin"));
+  const adminSnap = await getDocs(adminQuery);
+  const adminEmails = adminSnap.docs
+    .map((d) => d.data().email as string)
+    .filter(Boolean);
+
+  if (adminEmails.length === 0) return;
+
+  await fetch("/api/new-account-notification", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      playerName: newUser.displayName,
+      playerEmail: newUser.email,
+      adminEmails,
+    }),
+  });
 }
 
 function compressAndEncodeImage(file: File, maxSize: number, quality: number): Promise<string> {
