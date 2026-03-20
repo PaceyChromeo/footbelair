@@ -407,85 +407,107 @@ export default function MatchDetailPage() {
             </CardContent>
           </Card>
 
-          <div className="flex flex-col md:flex-row gap-6">
-            <div className="flex-1">
-              <Card className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-[2rem] shadow-2xl h-full flex flex-col">
-                <CardHeader className="border-b border-white/5 pb-4">
-                  <CardTitle className="text-sm font-semibold text-white flex justify-between items-center">
-                    <span>{t("players")}</span>
-                    <Badge className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 text-xs">
-                      {match.players.length}/{MAX_PLAYERS}
-                    </Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 pt-4 space-y-2">
-                  {match.players.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-20 text-white/30 h-full">
-                      <Users className="h-12 w-12 mb-4 opacity-20" />
-                      <p className="text-sm font-medium">{t("noPlayers")}</p>
-                    </div>
-                  ) : (
-                    [...match.players].sort((a, b) => a.joinedAt.toMillis() - b.joinedAt.toMillis()).map((p, i) => renderPlayerRow(p, i))
-                  )}
-                </CardContent>
-              </Card>
-            </div>
+          {(() => {
+            const sortedPlayers = [...match.players].sort((a, b) => a.joinedAt.toMillis() - b.joinedAt.toMillis());
+            const half = Math.ceil(sortedPlayers.length / 2);
+            const col1 = sortedPlayers.slice(0, half);
+            const col2 = sortedPlayers.slice(half);
 
-            <div className="w-full md:w-80 flex-shrink-0">
-              <Card className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-[2rem] shadow-2xl h-full flex flex-col min-h-[300px]">
-                <CardHeader className="border-b border-white/5 pb-4">
-                  <CardTitle className="text-sm font-semibold text-white flex justify-between items-center">
-                    <span>{t("waitingList")}</span>
-                    <Badge className="bg-orange-500/20 text-orange-400 border border-orange-500/30 px-2 py-0.5 text-xs">
-                      {match.waitingList.length}
-                    </Badge>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 pt-4 space-y-2">
-                  {match.waitingList.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-12 text-white/30 h-full">
-                      <Users className="h-8 w-8 mb-3 opacity-20" />
-                      <p className="text-xs font-medium">{t("noWaiting")}</p>
-                    </div>
-                  ) : (
-                    [...match.waitingList].sort((a, b) => a.joinedAt.toMillis() - b.joinedAt.toMillis()).map((p, i) => {
-                      const user = usersMap.get(p.uid);
-                      const hasPenalty = user?.penalty?.active;
-                      return (
-                        <div key={p.uid} className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/5 transition-colors group/wl border border-transparent hover:border-white/10">
-                          <div className="w-5 text-xs font-bold text-white/30 group-hover/wl:text-white/70">
-                            #{i + 1}
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-[2rem] shadow-2xl flex flex-col">
+                  <CardHeader className="border-b border-white/5 pb-3 px-5 pt-5">
+                    <CardTitle className="text-sm font-semibold text-white flex justify-between items-center">
+                      <span>{t("players")}</span>
+                      <Badge className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 text-xs">
+                        {match.players.length}/{MAX_PLAYERS}
+                      </Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 pt-3 pb-4 space-y-1">
+                    {match.players.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center py-10 text-white/30">
+                        <Users className="h-10 w-10 mb-3 opacity-20" />
+                        <p className="text-sm font-medium">{t("noPlayers")}</p>
+                      </div>
+                    ) : (
+                      col1.map((p, i) => renderPlayerRow(p, i))
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-[2rem] shadow-2xl flex flex-col">
+                  <CardHeader className="border-b border-white/5 pb-3 px-5 pt-5">
+                    <CardTitle className="text-sm font-semibold text-white flex justify-between items-center">
+                      <span className="text-white/40">{t("players")} ({half + 1}–{sortedPlayers.length})</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 pt-3 pb-4 space-y-1">
+                    {col2.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center py-10 text-white/30">
+                        <p className="text-xs font-medium text-white/20">—</p>
+                      </div>
+                    ) : (
+                      col2.map((p, i) => renderPlayerRow(p, half + i))
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-black/40 backdrop-blur-xl border border-white/10 rounded-[2rem] shadow-2xl flex flex-col">
+                  <CardHeader className="border-b border-white/5 pb-3 px-5 pt-5">
+                    <CardTitle className="text-sm font-semibold text-white flex justify-between items-center">
+                      <span>{t("waitingList")}</span>
+                      <Badge className="bg-orange-500/20 text-orange-400 border border-orange-500/30 px-2 py-0.5 text-xs">
+                        {match.waitingList.length}
+                      </Badge>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="flex-1 pt-3 pb-4 space-y-1">
+                    {match.waitingList.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center py-10 text-white/30">
+                        <Users className="h-8 w-8 mb-3 opacity-20" />
+                        <p className="text-xs font-medium">{t("noWaiting")}</p>
+                      </div>
+                    ) : (
+                      [...match.waitingList].sort((a, b) => a.joinedAt.toMillis() - b.joinedAt.toMillis()).map((p, i) => {
+                        const user = usersMap.get(p.uid);
+                        const hasPenalty = user?.penalty?.active;
+                        return (
+                          <div key={p.uid} className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition-colors group/wl border border-transparent hover:border-white/10">
+                            <div className="w-5 text-xs font-bold text-white/30 group-hover/wl:text-white/70">
+                              #{i + 1}
+                            </div>
+                            <Avatar className="h-8 w-8 border border-white/10">
+                              <AvatarImage src={p.photoURL || undefined} />
+                              <AvatarFallback className="bg-black/50 text-white text-[10px]">
+                                {p.displayName.charAt(0)}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm text-white/90 truncate font-medium">{p.displayName}</p>
+                              {user && (
+                                <div className="flex items-center gap-2 mt-0.5">
+                                  <span className="flex items-center gap-0.5 text-[10px] text-emerald-400/80">
+                                    <Ticket className="h-2.5 w-2.5" />
+                                    {user.quota.remaining}
+                                  </span>
+                                  {hasPenalty && (
+                                    <Badge variant="destructive" className="text-[8px] px-1 py-0 h-3 border-0">
+                                      {t("penalized")}
+                                    </Badge>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                          <Avatar className="h-8 w-8 border border-white/10">
-                             <AvatarImage src={p.photoURL || undefined} />
-                             <AvatarFallback className="bg-black/50 text-white text-[10px]">
-                               {p.displayName.charAt(0)}
-                             </AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1 min-w-0">
-                             <p className="text-sm text-white/90 truncate font-medium">{p.displayName}</p>
-                             {user && (
-                               <div className="flex items-center gap-2 mt-0.5">
-                                 <span className="flex items-center gap-0.5 text-[10px] text-emerald-400/80">
-                                   <Ticket className="h-2.5 w-2.5" />
-                                   {user.quota.remaining}
-                                 </span>
-                                 {hasPenalty && (
-                                   <Badge variant="destructive" className="text-[8px] px-1 py-0 h-3 border-0">
-                                     {t("penalized")}
-                                   </Badge>
-                                 )}
-                               </div>
-                             )}
-                          </div>
-                        </div>
-                      );
-                    })
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+                        );
+                      })
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            );
+          })()}
 
           <Dialog open={!!reportingPlayer} onOpenChange={(open) => !open && setReportingPlayer(null)}>
             <DialogContent className="backdrop-blur-xl bg-slate-900/90 border border-white/10 rounded-2xl text-white">
