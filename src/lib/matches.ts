@@ -179,11 +179,18 @@ export async function deleteWeekMatches(weekOffset: number): Promise<void> {
 }
 
 
+export interface JoinMatchResult {
+  matchStatus: MatchStatus;
+  players: PlayerEntry[];
+  waitingList: PlayerEntry[];
+  previousPlayerCount: number;
+}
+
 export async function joinMatch(
   matchId: string,
   player: PlayerEntry,
   usersMap: Map<string, UserProfile>
-): Promise<void> {
+): Promise<JoinMatchResult> {
   const matchRef = doc(db, "matches", matchId);
   const matchSnap = await getDoc(matchRef);
   if (!matchSnap.exists()) throw new Error("Match not found");
@@ -207,6 +214,8 @@ export async function joinMatch(
   );
   if (alreadyIn) throw new Error("Already registered");
 
+  const previousPlayerCount = match.players.length;
+
   const allEntries = [...match.players, ...match.waitingList, player];
   const sorted = sortByPriority(allEntries, usersMap);
   const { players, waitingList } = splitPlayersAndWaitingList(sorted, MAX_PLAYERS);
@@ -220,6 +229,8 @@ export async function joinMatch(
     waitingList,
     status: newStatus,
   });
+
+  return { matchStatus: newStatus, players, waitingList, previousPlayerCount };
 }
 
 export interface LeaveMatchResult {
@@ -228,6 +239,7 @@ export interface LeaveMatchResult {
   promotedPlayers: PlayerEntry[];
   players: PlayerEntry[];
   waitingList: PlayerEntry[];
+  previousPlayerCount: number;
 }
 
 export async function leaveMatch(
@@ -248,6 +260,7 @@ export async function leaveMatch(
   const autoLateCancel = !isLateCancel && hoursUntilMatch >= 0 && hoursUntilMatch < LATE_CANCEL_HOURS;
 
   const previousPlayerUids = new Set(match.players.map((p) => p.uid));
+  const previousPlayerCount = match.players.length;
 
   const allEntries = [...match.players, ...match.waitingList].filter(
     (p) => p.uid !== uid
@@ -284,10 +297,10 @@ export async function leaveMatch(
       },
     });
 
-    return { autoLateCancelApplied: true, matchStatus: newStatus, promotedPlayers, players, waitingList };
+    return { autoLateCancelApplied: true, matchStatus: newStatus, promotedPlayers, players, waitingList, previousPlayerCount };
   }
 
-  return { autoLateCancelApplied: false, matchStatus: newStatus, promotedPlayers, players, waitingList };
+  return { autoLateCancelApplied: false, matchStatus: newStatus, promotedPlayers, players, waitingList, previousPlayerCount };
 }
 
 export async function declareNoShow(

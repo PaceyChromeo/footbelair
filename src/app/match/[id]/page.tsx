@@ -91,8 +91,75 @@ export default function MatchDetailPage() {
         photoURL: profile.photoURL,
         joinedAt: Timestamp.now(),
       };
-      await joinMatch(match.id, entry, usersMap);
+      const result = await joinMatch(match.id, entry, usersMap);
       toast.success(t("registeredToast"));
+
+      if (result.matchStatus === "confirmed") {
+        const matchDate = format(match.date.toDate(), "d MMMM yyyy", { locale: dateFnsLocale });
+        const matchDay = t(dayTranslationKeys[match.dayOfWeek]);
+
+        const formatChange =
+          result.previousPlayerCount === 10 && result.players.length === 12
+            ? "5v5-to-6v6"
+            : null;
+
+        // 5v5→6v6: the promoted player was in WL but is now in players (the 11th person)
+        let promotedPlayer: { email: string; locale: string; displayName: string } | null = null;
+        if (formatChange === "5v5-to-6v6") {
+          const previousPlayerUids = new Set(
+            match.players.map((p) => p.uid)
+          );
+          const promoted = result.players.find(
+            (p) => p.uid !== profile.uid && !previousPlayerUids.has(p.uid)
+          );
+          if (promoted) {
+            const promotedUser = usersMap.get(promoted.uid);
+            if (promotedUser?.email) {
+              promotedPlayer = {
+                email: promotedUser.email,
+                locale: promotedUser.locale ?? "fr",
+                displayName: promoted.displayName,
+              };
+            }
+          }
+        }
+
+        const allPlayerEmails = result.players
+          .reduce<Array<{ email: string; locale: string; displayName: string }>>((acc, p) => {
+            const user = usersMap.get(p.uid);
+            if (user?.email) {
+              acc.push({ email: user.email, locale: user.locale ?? "fr", displayName: p.displayName });
+            }
+            return acc;
+          }, []);
+
+        const waitingListEmails = result.waitingList
+          .reduce<Array<{ email: string; locale: string; displayName: string }>>((acc, p) => {
+            const user = usersMap.get(p.uid);
+            if (user?.email) {
+              acc.push({ email: user.email, locale: user.locale ?? "fr", displayName: p.displayName });
+            }
+            return acc;
+          }, []);
+
+        fetch("/api/roster-update", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event: "player-joined",
+            playerName: profile.displayName,
+            formatChange,
+            promotedPlayer,
+            demotedPlayer: null,
+            allPlayerEmails,
+            waitingListEmails,
+            matchDay,
+            matchDate,
+            players: result.players.map((p) => ({ displayName: p.displayName })),
+            waitingList: result.waitingList.map((p) => ({ displayName: p.displayName })),
+          }),
+        }).catch(() => {});
+      }
     } catch (err: unknown) {
       if (err instanceof Error && err.message === "BANNED") {
         toast.error(t("bannedCannotRegister"));
@@ -130,18 +197,50 @@ export default function MatchDetailPage() {
         toast.success(t("unregisteredToast"));
       }
 
-      if (result.matchStatus === "confirmed" && result.promotedPlayers.length > 0) {
+      if (result.matchStatus === "confirmed") {
         const matchDate = format(match.date.toDate(), "d MMMM yyyy", { locale: dateFnsLocale });
         const matchDay = t(dayTranslationKeys[match.dayOfWeek]);
 
-        const promotedPlayer = result.promotedPlayers[0];
-        const promotedUser = usersMap.get(promotedPlayer.uid);
+        const formatChange: "6v6-to-5v5" | null =
+          result.previousPlayerCount === 12 && result.players.length === 10
+            ? "6v6-to-5v5"
+            : null;
+
+        const promotedPlayer = result.promotedPlayers[0] ?? null;
+        const promotedUser = promotedPlayer ? usersMap.get(promotedPlayer.uid) : null;
         const promotedRecipient = promotedUser?.email
           ? { email: promotedUser.email, locale: promotedUser.locale ?? "fr", displayName: promotedPlayer.displayName }
           : null;
 
-        const existingPlayerEmails = result.players
-          .filter((p) => !result.promotedPlayers.some((pp) => pp.uid === p.uid))
+        // 6v6→5v5: the demoted player was in players but is now in WL (the 11th person)
+        let demotedRecipient: { email: string; locale: string; displayName: string } | null = null;
+        if (formatChange === "6v6-to-5v5") {
+          const currentPlayerUids = new Set(result.players.map((p) => p.uid));
+          const demoted = result.waitingList.find(
+            (p) => match.players.some((mp) => mp.uid === p.uid) && !currentPlayerUids.has(p.uid)
+          );
+          if (demoted) {
+            const demotedUser = usersMap.get(demoted.uid);
+            if (demotedUser?.email) {
+              demotedRecipient = {
+                email: demotedUser.email,
+                locale: demotedUser.locale ?? "fr",
+                displayName: demoted.displayName,
+              };
+            }
+          }
+        }
+
+        const allPlayerEmails = result.players
+          .reduce<Array<{ email: string; locale: string; displayName: string }>>((acc, p) => {
+            const user = usersMap.get(p.uid);
+            if (user?.email) {
+              acc.push({ email: user.email, locale: user.locale ?? "fr", displayName: p.displayName });
+            }
+            return acc;
+          }, []);
+
+        const waitingListEmails = result.waitingList
           .reduce<Array<{ email: string; locale: string; displayName: string }>>((acc, p) => {
             const user = usersMap.get(p.uid);
             if (user?.email) {
@@ -154,8 +253,13 @@ export default function MatchDetailPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            existingPlayerEmails,
+            event: "player-left",
+            playerName: profile.displayName,
+            formatChange,
             promotedPlayer: promotedRecipient,
+            demotedPlayer: demotedRecipient,
+            allPlayerEmails,
+            waitingListEmails,
             matchDay,
             matchDate,
             players: result.players.map((p) => ({ displayName: p.displayName })),

@@ -378,6 +378,19 @@ export default function AdminPage() {
     try {
       await setUserStatus(user.uid, "approved");
       toast.success(t("userApproved", { name: user.displayName }));
+
+      if (user.email) {
+        fetch("/api/account-approved", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            playerName: user.displayName,
+            playerEmail: user.email,
+          }),
+        }).catch((err) => {
+          console.error("Failed to send approval email:", err);
+        });
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : t("error");
       toast.error(message);
