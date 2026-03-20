@@ -267,6 +267,7 @@ rulesSec8Title: "8. Contacto",
   thisWeek: "Esta semana",
   nextWeek: "Próxima semana",
   schedule: "Calendario",
+  blockedEmailDomain: "No estás autorizado a usar tu correo electrónico profesional para registrarte.",
 } as const;
 
 export default es;

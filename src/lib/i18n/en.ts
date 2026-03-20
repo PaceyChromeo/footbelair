@@ -267,6 +267,7 @@ rulesSec8Title: "8. Contact",
   thisWeek: "This Week",
   nextWeek: "Next Week",
   schedule: "Schedule",
+  blockedEmailDomain: "You are not authorized to use your professional email address to sign up.",
 } as const;
 
 export default en;

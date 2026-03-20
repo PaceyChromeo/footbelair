@@ -266,6 +266,7 @@ rulesSec8Title: "8. संपर्क",
   thisWeek: "इस सप्ताह",
   nextWeek: "अगले सप्ताह",
   schedule: "कार्यक्रम",
+  blockedEmailDomain: "आप अपने पेशेवर ईमेल पते का उपयोग करके साइन अप करने के लिए अधिकृत नहीं हैं।",
 } as const;
 
 export default hi;

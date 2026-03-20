@@ -26,7 +26,14 @@ import { doc, getDoc, setDoc, Timestamp, collection, query, where, getDocs } fro
 import { auth, googleProvider, db } from "@/lib/firebase";
 import { UserProfile } from "@/lib/types";
 
-export type SignupErrorCode = "email-already-exists" | "name-already-exists";
+export type SignupErrorCode = "email-already-exists" | "name-already-exists" | "blocked-email-domain";
+
+const BLOCKED_EMAIL_DOMAINS = ["@amadeus.com"];
+
+function isBlockedEmail(email: string): boolean {
+  const lower = email.toLowerCase();
+  return BLOCKED_EMAIL_DOMAINS.some((domain) => lower.endsWith(domain));
+}
 
 export class SignupError extends Error {
   code: SignupErrorCode;
@@ -180,6 +187,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (signingUp) return;
       if (firebaseUser) {
+        // Block accounts with blocked email domains
+        if (firebaseUser.email && isBlockedEmail(firebaseUser.email)) {
+          await firebaseSignOut(auth);
+          setUser(null);
+          setProfile(null);
+          setLoading(false);
+          return;
+        }
+
         // For email/password users, check if email is verified
         if (isEmailPasswordUser(firebaseUser) && !firebaseUser.emailVerified) {
           setUser(firebaseUser);
@@ -204,7 +220,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [signingUp]);
 
   const signInWithGoogle = async () => {
-    await signInWithPopup(auth, googleProvider);
+    const result = await signInWithPopup(auth, googleProvider);
+    if (result.user.email && isBlockedEmail(result.user.email)) {
+      await result.user.delete();
+      throw new SignupError("blocked-email-domain");
+    }
   };
 
   const signInWithEmail = async (email: string, password: string) => {
@@ -225,6 +245,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUpWithEmail = async (email: string, password: string, displayName: string) => {
     setSigningUp(true);
     try {
+      if (isBlockedEmail(email)) {
+        throw new SignupError("blocked-email-domain");
+      }
+
       const credential = await createUserWithEmailAndPassword(auth, email, password);
 
       try {

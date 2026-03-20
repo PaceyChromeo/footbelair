@@ -103,7 +103,9 @@ export default function LoginPage() {
       }
     } catch (err: unknown) {
       const e = err as { code?: string };
-      if (e.code === "email-already-exists") {
+      if (e.code === "blocked-email-domain") {
+        setError(t("blockedEmailDomain"));
+      } else if (e.code === "email-already-exists") {
         setError(t("authErrorEmailInUse"));
       } else if (e.code === "name-already-exists") {
         setError(t("authErrorNameInUse"));
@@ -207,7 +209,19 @@ export default function LoginPage() {
           </div>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
-          <Button onClick={signInWithGoogle} size="lg" variant="outline" className="w-full gap-2 rounded-xl bg-white/10 border-white/20 text-white hover:bg-white/20 transition-all duration-300 h-12 text-base font-medium">
+          <Button onClick={async () => {
+            setError("");
+            try {
+              await signInWithGoogle();
+            } catch (err: unknown) {
+              const e = err as { code?: string };
+              if (e.code === "blocked-email-domain") {
+                setError(t("blockedEmailDomain"));
+              } else {
+                setError(t("authErrorGeneric"));
+              }
+            }
+          }} size="lg" variant="outline" className="w-full gap-2 rounded-xl bg-white/10 border-white/20 text-white hover:bg-white/20 transition-all duration-300 h-12 text-base font-medium">
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
