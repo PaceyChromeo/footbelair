@@ -156,7 +156,9 @@ async function syncUserToFirestore(user: User, displayNameOverride?: string): Pr
 
   await setDoc(userRef, newProfile);
 
-  notifyAdminsOfNewAccount(newProfile).catch(() => {});
+  notifyAdminsOfNewAccount(newProfile).catch((err) => {
+    console.error("Failed to notify admins of new account:", err);
+  });
 
   return newProfile;
 }
@@ -171,7 +173,7 @@ async function notifyAdminsOfNewAccount(newUser: UserProfile): Promise<void> {
 
   if (adminEmails.length === 0) return;
 
-  await fetch("/api/new-account-notification", {
+  const res = await fetch("/api/new-account-notification", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -180,6 +182,11 @@ async function notifyAdminsOfNewAccount(newUser: UserProfile): Promise<void> {
       adminEmails,
     }),
   });
+
+  if (!res.ok) {
+    const body = await res.text();
+    console.error("Admin notification failed:", res.status, body);
+  }
 }
 
 function compressAndEncodeImage(file: File, maxSize: number, quality: number): Promise<string> {
