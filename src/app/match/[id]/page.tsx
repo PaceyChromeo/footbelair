@@ -228,7 +228,7 @@ export default function MatchDetailPage() {
     return (
       <div
         className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1487466365202-1afdb86c764e?w=1920&q=80&auto=format')" }}
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=1920&q=80&auto=format')" }}
       >
         <div className="min-h-screen bg-gradient-to-b from-slate-900/70 via-slate-800/50 to-emerald-950/40 backdrop-blur-[2px]">
           <Header />
@@ -244,7 +244,7 @@ export default function MatchDetailPage() {
     return (
       <div
         className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1487466365202-1afdb86c764e?w=1920&q=80&auto=format')" }}
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=1920&q=80&auto=format')" }}
       >
         <div className="min-h-screen bg-gradient-to-b from-slate-900/70 via-slate-800/50 to-emerald-950/40 backdrop-blur-[2px]">
           <Header />
@@ -317,7 +317,7 @@ export default function MatchDetailPage() {
   return (
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed"
-      style={{ backgroundImage: "url('https://images.unsplash.com/photo-1487466365202-1afdb86c764e?w=1920&q=80&auto=format')" }}
+      style={{ backgroundImage: "url('https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=1920&q=80&auto=format')" }}
     >
       <div className="min-h-screen bg-gradient-to-b from-slate-900/70 via-slate-800/50 to-emerald-950/40 backdrop-blur-[2px]">
         <Header />
