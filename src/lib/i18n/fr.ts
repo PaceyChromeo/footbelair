@@ -274,6 +274,9 @@ rulesSec8Title: "8. Contact",
   lateCancelWarningTitle: "Annulation tardive",
   lateCancelWarningDescription: "Le match commence dans moins de 4 heures. Si tu te désinscris maintenant, tu seras pénalisé pendant 2 semaines : tu seras placé en dernière position dans les files d'attente.",
   confirmUnregister: "Je me désinscris quand même",
+  thisWeek: "Cette semaine",
+  nextWeek: "Semaine prochaine",
+  schedule: "Calendrier",
 } as const;
 
 export default fr;

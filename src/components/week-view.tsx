@@ -196,7 +196,7 @@ export function WeekView() {
           </div>
           <div className="flex flex-col">
             <span className="text-emerald-400 font-semibold text-sm tracking-wider uppercase mb-1">
-              {weekOffset === 0 ? "This Week" : weekOffset === 1 ? "Next Week" : "Schedule"}
+              {weekOffset === 0 ? t("thisWeek") : weekOffset === 1 ? t("nextWeek") : t("schedule")}
             </span>
             <h2 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70 tracking-tight">
               {weekLabel}
@@ -261,7 +261,7 @@ export function WeekView() {
           ))}
         </div>
       ) : (
-        <div className="flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-5 gap-6 pb-8 hide-scrollbar">
+        <div className="flex overflow-x-auto snap-x snap-mandatory md:grid md:grid-cols-5 gap-6 py-3 px-2 pb-8 -mx-2 hide-scrollbar">
           {weekDates.map(({ day, date }) => {
             const match = getMatchForDay(day, date);
             const isPast = date < new Date() && date.toDateString() !== new Date().toDateString();

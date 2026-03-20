@@ -264,6 +264,9 @@ rulesSec8Title: "8. Contacto",
   lateCancelWarningTitle: "Cancelación tardía",
   lateCancelWarningDescription: "El partido empieza en menos de 4 horas. Si te desinscribes ahora, serás penalizado durante 2 semanas: serás colocado en última posición en las listas de espera.",
   confirmUnregister: "Desincribirme de todas formas",
+  thisWeek: "Esta semana",
+  nextWeek: "Próxima semana",
+  schedule: "Calendario",
 } as const;
 
 export default es;

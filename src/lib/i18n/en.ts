@@ -264,6 +264,9 @@ rulesSec8Title: "8. Contact",
   lateCancelWarningTitle: "Late cancellation",
   lateCancelWarningDescription: "The match starts in less than 4 hours. If you unsubscribe now, you will be penalized for 2 weeks: you will be placed last in all waiting lists.",
   confirmUnregister: "Unsubscribe anyway",
+  thisWeek: "This Week",
+  nextWeek: "Next Week",
+  schedule: "Schedule",
 } as const;
 
 export default en;

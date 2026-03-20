@@ -261,6 +261,9 @@ rulesSec8Title: "8. Contatto",
   lateCancelWarningTitle: "Cancellazione tardiva",
   lateCancelWarningDescription: "La partita inizia tra meno di 4 ore. Se ti cancelli ora, sarai penalizzato per 2 settimane: sarai posizionato ultimo nelle liste d'attesa.",
   confirmUnregister: "Cancellami comunque",
+  thisWeek: "Questa settimana",
+  nextWeek: "Prossima settimana",
+  schedule: "Calendario",
 } as const;
 
 export default it;

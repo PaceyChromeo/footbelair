@@ -263,6 +263,9 @@ rulesSec8Title: "8. संपर्क",
   lateCancelWarningTitle: "देर से रद्दीकरण",
   lateCancelWarningDescription: "मैच 4 घंटे से कम समय में शुरू होगा। यदि आप अभी सदस्यता रद्द करते हैं, तो आपको 2 सप्ताह के लिए दंडित किया जाएगा: आपको प्रतीक्षा सूचियों में अंतिम स्थान पर रखा जाएगा।",
   confirmUnregister: "फिर भी सदस्यता रद्द करें",
+  thisWeek: "इस सप्ताह",
+  nextWeek: "अगले सप्ताह",
+  schedule: "कार्यक्रम",
 } as const;
 
 export default hi;
