@@ -25,7 +25,7 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import { ArrowLeft, Users, Ticket, AlertTriangle, Flag, Activity, ArrowRight } from "lucide-react";
+import { ArrowLeft, Users, Ticket, Flag, Activity, ArrowRight } from "lucide-react";
 import { Timestamp } from "firebase/firestore";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -263,58 +263,53 @@ export default function MatchDetailPage() {
 
   const matchDate = match.date.toDate();
 
-  const renderPlayer = (p: PlayerEntry) => {
+  const renderPlayerRow = (p: PlayerEntry, index: number) => {
     const user = usersMap.get(p.uid);
     const hasPenalty = user?.penalty?.active;
-    
+
     return (
-      <div key={p.uid} className="group/avatar relative flex flex-col items-center w-[70px]">
-        <div className="relative">
-          <Avatar className="h-10 w-10 md:h-12 md:w-12 border-2 border-white/20 shadow-lg group-hover/avatar:scale-110 group-hover/avatar:border-white/50 transition-all duration-300 z-10 bg-black/40">
-            <AvatarImage src={p.photoURL || undefined} className="object-cover" />
-            <AvatarFallback className="bg-transparent text-white text-xs font-medium">
-              {p.displayName.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
-          
-          <div className="absolute -top-1.5 -right-1.5 flex gap-1 z-20">
-            {hasPenalty && (
-               <div className="bg-red-500 rounded-full p-0.5 shadow-lg">
-                 <AlertTriangle className="h-2.5 w-2.5 text-white" />
-               </div>
-            )}
-          </div>
-          
-          {match.status === "completed" && profile && p.uid !== profile.uid && (
-            <div className="absolute -bottom-1.5 -right-1.5 z-20">
-              {reportedPlayers.has(p.uid) ? (
-                <div className="bg-amber-500 rounded-full p-1 shadow-lg cursor-help" title={t("playerReported")}>
-                  <Flag className="h-2.5 w-2.5 text-white" />
-                </div>
-              ) : (
-                <button
-                  onClick={(e) => { e.preventDefault(); setReportingPlayer({ uid: p.uid, displayName: p.displayName }); }}
-                  className="bg-red-500/90 hover:bg-red-500 rounded-full p-1 shadow-lg transition-colors group-hover/avatar:scale-110"
-                  title={t("reportNoShow")}
-                >
-                  <Flag className="h-2.5 w-2.5 text-white" />
-                </button>
+      <div key={p.uid} className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/5 transition-colors group/pl border border-transparent hover:border-white/10">
+        <div className="w-5 text-xs font-bold text-white/30 group-hover/pl:text-white/70">
+          #{index + 1}
+        </div>
+        <Avatar className="h-8 w-8 border border-white/10">
+          <AvatarImage src={p.photoURL || undefined} />
+          <AvatarFallback className="bg-black/50 text-white text-[10px]">
+            {p.displayName.charAt(0)}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm text-white/90 truncate font-medium">{p.displayName}</p>
+          {user && (
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className="flex items-center gap-0.5 text-[10px] text-emerald-400/80">
+                <Ticket className="h-2.5 w-2.5" />
+                {user.quota.remaining}
+              </span>
+              {hasPenalty && (
+                <Badge variant="destructive" className="text-[8px] px-1 py-0 h-3 border-0">
+                  {t("penalized")}
+                </Badge>
               )}
             </div>
           )}
         </div>
-        
-        <div className="mt-2 flex flex-col items-center max-w-full">
-          <span className="text-[10px] md:text-xs text-center font-medium text-white/90 truncate w-full px-1 drop-shadow-md">
-            {p.displayName.split(' ')[0]}
-          </span>
-          {user && (
-            <span className="flex items-center gap-0.5 text-[9px] md:text-[10px] text-emerald-300 font-bold bg-black/40 px-1.5 py-0.5 rounded-full mt-0.5 backdrop-blur-md border border-white/5">
-              <Ticket className="h-2.5 w-2.5" />
-              {user.quota.remaining}
-            </span>
-          )}
-        </div>
+        {match.status === "completed" && profile && p.uid !== profile.uid && (
+          reportedPlayers.has(p.uid) ? (
+            <Badge className="bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] px-2 py-0.5 gap-1">
+              <Flag className="h-3 w-3" />
+              {t("playerReported")}
+            </Badge>
+          ) : (
+            <button
+              onClick={() => setReportingPlayer({ uid: p.uid, displayName: p.displayName })}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-medium hover:bg-red-500/20 hover:border-red-500/30 transition-colors"
+            >
+              <Flag className="h-3 w-3" />
+              {t("reportNoShow")}
+            </button>
+          )
+        )}
       </div>
     );
   };
@@ -423,72 +418,14 @@ export default function MatchDetailPage() {
                     </Badge>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1 p-6 relative flex flex-col justify-center">
+                <CardContent className="flex-1 pt-4 space-y-2">
                   {match.players.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-20 text-white/30 h-full">
                       <Users className="h-12 w-12 mb-4 opacity-20" />
                       <p className="text-sm font-medium">{t("noPlayers")}</p>
                     </div>
-                  ) : match.players.length >= 10 ? (
-                    <div className="relative w-full max-w-[440px] mx-auto aspect-[1/1.4] bg-gradient-to-b from-emerald-900/80 to-emerald-800/80 rounded-xl border border-white/20 overflow-hidden shadow-[inset_0_0_40px_rgba(0,0,0,0.4)] flex flex-col justify-between py-6 my-4">
-                      <div className="absolute inset-0 pointer-events-none opacity-30">
-                         <div className="absolute top-1/2 left-0 w-full h-[2px] bg-white -translate-y-1/2" />
-                         <div className="absolute top-1/2 left-1/2 w-24 h-24 rounded-full border-[2px] border-white -translate-x-1/2 -translate-y-1/2" />
-                         <div className="absolute top-1/2 left-1/2 w-2 h-2 bg-white rounded-full -translate-x-1/2 -translate-y-1/2" />
-                         <div className="absolute top-0 left-1/2 w-40 h-16 border-[2px] border-t-0 border-white -translate-x-1/2" />
-                         <div className="absolute bottom-0 left-1/2 w-40 h-16 border-[2px] border-b-0 border-white -translate-x-1/2" />
-                         <div className="absolute top-0 left-1/2 w-20 h-6 border-[2px] border-t-0 border-white -translate-x-1/2" />
-                         <div className="absolute bottom-0 left-1/2 w-20 h-6 border-[2px] border-b-0 border-white -translate-x-1/2" />
-                      </div>
-
-                      {(() => {
-                        const sorted = [...match.players].sort((a, b) => a.joinedAt.toMillis() - b.joinedAt.toMillis());
-                        const half = Math.floor(sorted.length / 2);
-                        const teamA = sorted.slice(0, half);
-                        const teamB = sorted.slice(half);
-
-                        const getRowsA = (team: PlayerEntry[]) => {
-                          if (team.length === 6) return [team.slice(0,3), team.slice(3,5), team.slice(5,6)];
-                          if (team.length === 5) return [team.slice(0,2), team.slice(2,4), team.slice(4,5)];
-                          return [team];
-                        };
-                        const getRowsB = (team: PlayerEntry[]) => {
-                          if (team.length === 6) return [team.slice(5,6), team.slice(3,5), team.slice(0,3)];
-                          if (team.length === 5) return [team.slice(4,5), team.slice(2,4), team.slice(0,2)];
-                          return [team];
-                        };
-
-                        return (
-                          <>
-                            <div className="relative z-10 flex flex-col justify-around w-full h-1/2 pt-2">
-                              {getRowsA(teamA).map((row, i) => (
-                                <div key={`rowA-${i}`} className="flex justify-evenly w-full px-2">
-                                  {row.map((p) => renderPlayer(p))}
-                                </div>
-                              ))}
-                            </div>
-                            <div className="relative z-10 flex flex-col justify-around w-full h-1/2 pb-2">
-                              {getRowsB(teamB).map((row, i) => (
-                                <div key={`rowB-${i}`} className="flex justify-evenly w-full px-2">
-                                  {row.map((p) => renderPlayer(p))}
-                                </div>
-                              ))}
-                            </div>
-                          </>
-                        );
-                      })()}
-                    </div>
                   ) : (
-                    <div className="flex flex-wrap justify-center gap-x-6 gap-y-8 py-8 px-4">
-                      {[...match.players].sort((a, b) => a.joinedAt.toMillis() - b.joinedAt.toMillis()).map((p) => renderPlayer(p))}
-                      {Array.from({ length: Math.max(0, MAX_PLAYERS - match.players.length) }).map((_, i) => (
-                        <div key={`empty-${i}`} className="flex flex-col items-center justify-start w-[70px]">
-                          <div className="h-10 w-10 md:h-12 md:w-12 rounded-full border-2 border-dashed border-white/10 flex items-center justify-center opacity-50 bg-black/20">
-                            <span className="text-xs text-white/30">+</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                    [...match.players].sort((a, b) => a.joinedAt.toMillis() - b.joinedAt.toMillis()).map((p, i) => renderPlayerRow(p, i))
                   )}
                 </CardContent>
               </Card>

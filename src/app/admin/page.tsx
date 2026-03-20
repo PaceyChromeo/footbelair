@@ -963,6 +963,7 @@ export default function AdminPage() {
                               </Badge>
                             )}
                           </div>
+                          <p className="text-xs text-white/50">{user.email}</p>
                           <div className="flex items-center gap-3 text-xs text-white/50">
                             <span className="flex items-center gap-0.5">
                               <Ticket className="h-3 w-3" />
