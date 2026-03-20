@@ -381,14 +381,21 @@ export async function adminMoveToPlayers(
   const entry = match.waitingList.find((p) => p.uid === uid);
   if (!entry) throw new Error("Player not in waiting list");
 
-  const movedEntry: PlayerEntry = { ...entry, joinedAt: Timestamp.now(), adminPlaced: undefined };
-  const newWL = match.waitingList.filter((p) => p.uid !== uid);
-  const newPlayers = [...match.players, movedEntry];
+  const { adminPlaced: _, ...rest } = entry;
+  const movedEntry: PlayerEntry = { ...rest, joinedAt: Timestamp.now() };
+  const allEntries = [
+    ...match.players,
+    ...match.waitingList.filter((p) => p.uid !== uid),
+    movedEntry,
+  ];
+  const sorted = sortByPriority(allEntries, usersMap);
+  const { players, waitingList } = splitPlayersAndWaitingList(sorted, MAX_PLAYERS);
+
   const newStatus = match.status === "confirmed"
     ? "confirmed"
-    : newPlayers.length >= MAX_PLAYERS ? "full" : "open";
+    : players.length >= MAX_PLAYERS ? "full" : "open";
 
-  await updateDoc(matchRef, { players: newPlayers, waitingList: newWL, status: newStatus });
+  await updateDoc(matchRef, { players, waitingList, status: newStatus });
 }
 
 export async function adminMoveToWaitingList(
@@ -405,13 +412,19 @@ export async function adminMoveToWaitingList(
   if (!demoted) throw new Error("Player not in players list");
 
   const demotedEntry: PlayerEntry = { ...demoted, adminPlaced: true, joinedAt: Timestamp.now() };
-  const newPlayers = match.players.filter((p) => p.uid !== uid);
-  const newWL = [...match.waitingList, demotedEntry];
+  const allEntries = [
+    ...match.players.filter((p) => p.uid !== uid),
+    ...match.waitingList,
+    demotedEntry,
+  ];
+  const sorted = sortByPriority(allEntries, usersMap);
+  const { players, waitingList } = splitPlayersAndWaitingList(sorted, MAX_PLAYERS);
+
   const newStatus = match.status === "confirmed"
     ? "confirmed"
-    : newPlayers.length >= MAX_PLAYERS ? "full" : "open";
+    : players.length >= MAX_PLAYERS ? "full" : "open";
 
-  await updateDoc(matchRef, { players: newPlayers, waitingList: newWL, status: newStatus });
+  await updateDoc(matchRef, { players, waitingList, status: newStatus });
 }
 
 export async function adminRemovePlayer(
