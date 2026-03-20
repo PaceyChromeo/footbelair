@@ -200,7 +200,7 @@ rulesSec8Title: "8. Contacto",
   rulesSec8_contact: "Para qualquer dúvida, comentário ou sugestão, pode contactar Ivan TCHOMGUE MIEGUEM ou David RODRIGUEZ ROCHA via Teams.",
     bannedCannotRegister: "Está proibido de se inscrever. A proibição termina em {date}.",
     lateCancelPenaltyApplied: "Penalidade por cancelamento tardio aplicada — 2 semanas na lista de espera.",
-    reportNoShow: "Reportar no-show",
+    reportNoShow: "Reportar",
     reportNoShowTitle: "Reportar {name} como no-show?",
     reportNoShowDescription: "Será enviado um email aos admins para que possam verificar e aplicar a penalidade se necessário.",
     reportNoShowSent: "Relatório de no-show enviado aos admins",
@@ -259,6 +259,9 @@ rulesSec8Title: "8. Contacto",
   matchAlreadyConfirmed: "Jogo já confirmado",
   rosterUpdated: "A lista de jogadores foi atualizada",
   kickedFromMatch: "Você foi removido deste jogo por um admin. Apenas um admin pode reinscrever você.",
+  lateCancelWarningTitle: "Cancelamento tardio",
+  lateCancelWarningDescription: "O jogo começa em menos de 4 horas. Se você se desinscrever agora, será penalizado por 2 semanas: será colocado na última posição nas listas de espera.",
+  confirmUnregister: "Desinscrever mesmo assim",
 } as const;
 
 export default pt;

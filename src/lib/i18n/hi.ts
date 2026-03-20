@@ -201,7 +201,7 @@ rulesSec8Title: "8. संपर्क",
   rulesSec8_contact: "किसी भी प्रश्न, टिप्पणी या सुझाव के लिए, आप Ivan TCHOMGUE MIEGUEM या David RODRIGUEZ ROCHA से Teams पर संपर्क कर सकते हैं।",
    bannedCannotRegister: "आप पंजीकरण से प्रतिबंधित हैं। प्रतिबंध {date} को समाप्त होता है।",
    lateCancelPenaltyApplied: "देर से रद्दीकरण दंड लागू — 2 सप्ताह प्रतीक्षा सूची में।",
-   reportNoShow: "नो-शो की रिपोर्ट करें",
+   reportNoShow: "रिपोर्ट",
    reportNoShowTitle: "{name} को नो-शो के रूप में रिपोर्ट करें?",
    reportNoShowDescription: "एडमिन को एक ईमेल भेजा जाएगा ताकि वे सत्यापित कर सकें और आवश्यक होने पर दंड लागू कर सकें।",
    reportNoShowSent: "नो-शो रिपोर्ट एडमिन को भेजी गई",
@@ -260,6 +260,9 @@ rulesSec8Title: "8. संपर्क",
   matchAlreadyConfirmed: "मैच पहले से पुष्टि हो चुका है",
   rosterUpdated: "खिलाड़ी सूची अपडेट हो गई है",
   kickedFromMatch: "आपको एक एडमिन द्वारा इस मैच से हटा दिया गया है। केवल एक एडमिन आपको फिर से पंजीकृत कर सकता है।",
+  lateCancelWarningTitle: "देर से रद्दीकरण",
+  lateCancelWarningDescription: "मैच 4 घंटे से कम समय में शुरू होगा। यदि आप अभी सदस्यता रद्द करते हैं, तो आपको 2 सप्ताह के लिए दंडित किया जाएगा: आपको प्रतीक्षा सूचियों में अंतिम स्थान पर रखा जाएगा।",
+  confirmUnregister: "फिर भी सदस्यता रद्द करें",
 } as const;
 
 export default hi;

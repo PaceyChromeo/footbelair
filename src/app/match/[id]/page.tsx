@@ -12,7 +12,7 @@ import {
   leaveMatch,
   createNoShowReport,
 } from "@/lib/matches";
-import { Match, UserProfile, DayOfWeek, MAX_PLAYERS, MIN_PLAYERS } from "@/lib/types";
+import { Match, UserProfile, DayOfWeek, MAX_PLAYERS, MIN_PLAYERS, LATE_CANCEL_HOURS } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -53,6 +53,7 @@ export default function MatchDetailPage() {
   const [reportingPlayer, setReportingPlayer] = useState<{ uid: string; displayName: string } | null>(null);
   const [reportSending, setReportSending] = useState(false);
   const [reportedPlayers, setReportedPlayers] = useState<Set<string>>(new Set());
+  const [showLeaveWarning, setShowLeaveWarning] = useState(false);
 
   const matchId = params.id as string;
 
@@ -398,7 +399,15 @@ export default function MatchDetailPage() {
                       )}
                       <Button
                         variant="outline"
-                        onClick={handleLeave}
+                        onClick={() => {
+                          if (!match) return;
+                          const hoursUntil = (match.date.toDate().getTime() - Date.now()) / (1000 * 60 * 60);
+                          if (hoursUntil >= 0 && hoursUntil < LATE_CANCEL_HOURS) {
+                            setShowLeaveWarning(true);
+                          } else {
+                            handleLeave();
+                          }
+                        }}
                         className="w-full h-10 rounded-xl bg-white text-black border-0 hover:bg-red-50 hover:text-red-600 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
                       >
                         {t("unregister")}
@@ -503,6 +512,34 @@ export default function MatchDetailPage() {
                   disabled={reportSending}
                 >
                   {reportSending ? t("loading") : t("reportNoShow")}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={showLeaveWarning} onOpenChange={setShowLeaveWarning}>
+            <DialogContent className="backdrop-blur-xl bg-slate-900/90 border border-white/10 rounded-2xl text-white">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2 text-orange-500">
+                  <Activity className="h-5 w-5" />
+                  {t("lateCancelWarningTitle")}
+                </DialogTitle>
+              </DialogHeader>
+              <p className="text-sm text-white/70">
+                {t("lateCancelWarningDescription")}
+              </p>
+              <DialogFooter className="gap-2 sm:gap-0 mt-4">
+                <DialogClose asChild>
+                  <Button variant="outline" className="bg-transparent border-white/10 text-white hover:bg-white/10">{t("cancel")}</Button>
+                </DialogClose>
+                <Button
+                  className="bg-orange-600 text-white hover:bg-orange-700"
+                  onClick={() => {
+                    setShowLeaveWarning(false);
+                    handleLeave();
+                  }}
+                >
+                  {t("confirmUnregister")}
                 </Button>
               </DialogFooter>
             </DialogContent>
