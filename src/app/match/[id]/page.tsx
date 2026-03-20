@@ -133,32 +133,49 @@ export default function MatchDetailPage() {
             return acc;
           }, []);
 
-        const waitingListEmails = result.waitingList
-          .reduce<Array<{ email: string; locale: string; displayName: string }>>((acc, p) => {
-            const user = usersMap.get(p.uid);
-            if (user?.email) {
-              acc.push({ email: user.email, locale: user.locale ?? "fr", displayName: p.displayName });
-            }
-            return acc;
-          }, []);
+        // Match rescued: 9→10 — notify the 9 others (exclude joining player)
+        if (result.previousPlayerCount === 9 && result.players.length === 10) {
+          const othersEmails = allPlayerEmails.filter((e) => e.email !== profile.email);
+          fetch("/api/match-danger", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              event: "match-rescued",
+              playerName: profile.displayName,
+              allPlayerEmails: othersEmails,
+              matchDay,
+              matchDate,
+              players: result.players.map((p) => ({ displayName: p.displayName })),
+            }),
+          }).catch(() => {});
+        } else {
+          const waitingListEmails = result.waitingList
+            .reduce<Array<{ email: string; locale: string; displayName: string }>>((acc, p) => {
+              const user = usersMap.get(p.uid);
+              if (user?.email) {
+                acc.push({ email: user.email, locale: user.locale ?? "fr", displayName: p.displayName });
+              }
+              return acc;
+            }, []);
 
-        fetch("/api/roster-update", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            event: "player-joined",
-            playerName: profile.displayName,
-            formatChange,
-            promotedPlayer,
-            demotedPlayer: null,
-            allPlayerEmails,
-            waitingListEmails,
-            matchDay,
-            matchDate,
-            players: result.players.map((p) => ({ displayName: p.displayName })),
-            waitingList: result.waitingList.map((p) => ({ displayName: p.displayName })),
-          }),
-        }).catch(() => {});
+          fetch("/api/roster-update", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              event: "player-joined",
+              playerName: profile.displayName,
+              formatChange,
+              promotedPlayer,
+              demotedPlayer: null,
+              allPlayerEmails,
+              waitingListEmails,
+              matchDay,
+              matchDate,
+              players: result.players.map((p) => ({ displayName: p.displayName })),
+              waitingList: result.waitingList.map((p) => ({ displayName: p.displayName })),
+            }),
+          }).catch(() => {});
+        }
       }
     } catch (err: unknown) {
       if (err instanceof Error && err.message === "BANNED") {
@@ -240,32 +257,48 @@ export default function MatchDetailPage() {
             return acc;
           }, []);
 
-        const waitingListEmails = result.waitingList
-          .reduce<Array<{ email: string; locale: string; displayName: string }>>((acc, p) => {
-            const user = usersMap.get(p.uid);
-            if (user?.email) {
-              acc.push({ email: user.email, locale: user.locale ?? "fr", displayName: p.displayName });
-            }
-            return acc;
-          }, []);
+        // Match in danger: 10→9 — notify the 9 remaining players
+        if (result.previousPlayerCount === 10 && result.players.length === 9) {
+          fetch("/api/match-danger", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              event: "match-in-danger",
+              playerName: profile.displayName,
+              allPlayerEmails,
+              matchDay,
+              matchDate,
+              players: result.players.map((p) => ({ displayName: p.displayName })),
+            }),
+          }).catch(() => {});
+        } else {
+          const waitingListEmails = result.waitingList
+            .reduce<Array<{ email: string; locale: string; displayName: string }>>((acc, p) => {
+              const user = usersMap.get(p.uid);
+              if (user?.email) {
+                acc.push({ email: user.email, locale: user.locale ?? "fr", displayName: p.displayName });
+              }
+              return acc;
+            }, []);
 
-        fetch("/api/roster-update", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            event: "player-left",
-            playerName: profile.displayName,
-            formatChange,
-            promotedPlayer: promotedRecipient,
-            demotedPlayer: demotedRecipient,
-            allPlayerEmails,
-            waitingListEmails,
-            matchDay,
-            matchDate,
-            players: result.players.map((p) => ({ displayName: p.displayName })),
-            waitingList: result.waitingList.map((p) => ({ displayName: p.displayName })),
-          }),
-        }).catch(() => {});
+          fetch("/api/roster-update", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              event: "player-left",
+              playerName: profile.displayName,
+              formatChange,
+              promotedPlayer: promotedRecipient,
+              demotedPlayer: demotedRecipient,
+              allPlayerEmails,
+              waitingListEmails,
+              matchDay,
+              matchDate,
+              players: result.players.map((p) => ({ displayName: p.displayName })),
+              waitingList: result.waitingList.map((p) => ({ displayName: p.displayName })),
+            }),
+          }).catch(() => {});
+        }
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : t("error");
