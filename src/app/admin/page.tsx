@@ -32,7 +32,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
@@ -619,7 +618,7 @@ export default function AdminPage() {
                       <CardHeader className="pb-2">
                         <CardTitle className="flex items-center justify-between text-base text-white">
                           <span>
-                            {t(dayTranslationKeys[day])} {format(date, "d/MM")} — 12h30
+                            {t(dayTranslationKeys[day])} {format(date, "d/MM")}
                           </span>
                           <div className="flex items-center gap-2">
                             <Badge
@@ -703,30 +702,36 @@ export default function AdminPage() {
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <div className="space-y-1">
-                          {[...match.players].sort((a, b) => a.joinedAt.toMillis() - b.joinedAt.toMillis()).map((p) => {
+                        {(() => {
+                          const sorted = [...match.players].sort((a, b) => a.joinedAt.toMillis() - b.joinedAt.toMillis());
+                          const half = Math.ceil(sorted.length / 2);
+                          const col1 = sorted.slice(0, half);
+                          const col2 = sorted.slice(half);
+                          const isActive = match.status === "open" || match.status === "full" || match.status === "confirmed";
+
+                          const renderAdminPlayer = (p: (typeof sorted)[0]) => {
                             const user = usersMap.get(p.uid);
                             return (
                               <div
                                 key={p.uid}
                                 className="flex items-center justify-between rounded p-1.5 hover:bg-white/10"
                               >
-                                <div className="flex items-center gap-2">
-                                  <Avatar className="h-6 w-6">
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <Avatar className="h-6 w-6 flex-shrink-0">
                                     <AvatarImage src={p.photoURL || undefined} />
                                     <AvatarFallback className="text-[10px]">
                                       {p.displayName.charAt(0)}
                                     </AvatarFallback>
                                   </Avatar>
-                                  <span className="text-sm text-white">{p.displayName}</span>
+                                  <span className="text-sm text-white truncate">{p.displayName}</span>
                                   {user?.penalty?.active && (
-                                    <Badge variant="destructive" className="text-[10px]">
+                                    <Badge variant="destructive" className="text-[10px] flex-shrink-0">
                                       {t("penalized")}
                                     </Badge>
                                   )}
                                 </div>
-                                {(match.status === "open" || match.status === "full" || match.status === "confirmed") && (
-                                  <div className="flex gap-1">
+                                {isActive && (
+                                  <div className="flex gap-1 flex-shrink-0">
                                     <Button
                                       size="sm"
                                       variant="ghost"
@@ -754,102 +759,117 @@ export default function AdminPage() {
                                 )}
                               </div>
                             );
-                          })}
-                          {match.waitingList.length > 0 && (
-                            <>
-                              <Separator className="my-2 bg-white/10" />
-                              <p className="text-xs font-medium text-white/50 mb-1">
-                                {t("waitingList")}
-                              </p>
-                              {[...match.waitingList].sort((a, b) => a.joinedAt.toMillis() - b.joinedAt.toMillis()).map((p) => {
-                                const user = usersMap.get(p.uid);
-                                return (
-                                   <div
-                                    key={p.uid}
-                                    className="flex items-center justify-between rounded p-1.5 text-white/50 hover:bg-white/10"
-                                  >
-                                    <div className="flex items-center gap-2">
-                                      <Avatar className="h-6 w-6">
-                                        <AvatarImage src={p.photoURL || undefined} />
-                                        <AvatarFallback className="text-[10px]">
-                                          {p.displayName.charAt(0)}
-                                        </AvatarFallback>
-                                      </Avatar>
-                                      <span className="text-sm">{p.displayName}</span>
-                                      {user?.penalty?.active && (
-                                        <Badge variant="destructive" className="text-[10px]">
-                                          {t("penalized")}
-                                        </Badge>
-                                      )}
-                                    </div>
-                                {(match.status === "open" || match.status === "full" || match.status === "confirmed") && (
-                                      <div className="flex gap-1">
-                                        <Button
-                                          size="sm"
-                                          variant="ghost"
-                                          className="h-7 w-7 p-0 text-white/50 hover:text-emerald-400"
-                                          title={t("moveToPlayers")}
-                                          onClick={() => handleMoveToPlayers(match.id, p.uid, p.displayName)}
-                                        >
-                                          <ArrowUp className="h-3 w-3" />
-                                        </Button>
-                                        <Button
-                                          size="sm"
-                                          variant="ghost"
-                                          className="h-7 w-7 p-0 text-white/50 hover:text-red-400"
-                                          onClick={() => handleAdminRemovePlayer(match.id, p.uid, p.displayName)}
-                                        >
-                                          <X className="h-3 w-3" />
-                                        </Button>
-                                      </div>
-                                    )}
-                                  </div>
-                                );
-                              })}
-                            </>
-                          )}
-                          {(match.status === "open" || match.status === "full" || match.status === "confirmed") && (
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button size="sm" variant="outline" className="mt-3 w-full text-xs bg-white/10 border-white/20 text-white hover:bg-white/20">
-                                  <UserPlus className="mr-1 h-3 w-3" />
-                                  {t("addPlayer")}
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent className="max-h-64 overflow-y-auto p-2 backdrop-blur-xl bg-slate-900/90 border border-white/10 text-white" align="start">
-                                {(() => {
-                                  const inMatch = new Set([
-                                    ...match.players.map((p) => p.uid),
-                                    ...match.waitingList.map((p) => p.uid),
-                                  ]);
-                                  const available = allUsers.filter((u) => !inMatch.has(u.uid));
-                                  if (available.length === 0) {
+                          };
+
+                          return (
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                              <div className="space-y-1">
+                                <p className="text-xs font-medium text-white/50 mb-1">
+                                  {t("players")} ({match.players.length}/{MAX_PLAYERS})
+                                </p>
+                                {col1.map(renderAdminPlayer)}
+                              </div>
+                              <div className="space-y-1 md:mt-5">
+                                {col2.length > 0 && col2.map(renderAdminPlayer)}
+                              </div>
+                              <div className="space-y-1">
+                                <p className="text-xs font-medium text-orange-400/70 mb-1">
+                                  {t("waitingList")} ({match.waitingList.length})
+                                </p>
+                                {match.waitingList.length === 0 ? (
+                                  <p className="text-xs text-white/30">—</p>
+                                ) : (
+                                  [...match.waitingList].sort((a, b) => a.joinedAt.toMillis() - b.joinedAt.toMillis()).map((p) => {
+                                    const user = usersMap.get(p.uid);
                                     return (
-                                      <p className="p-2 text-xs text-white/50">
-                                        {t("noPlayers")}
-                                      </p>
+                                      <div
+                                        key={p.uid}
+                                        className="flex items-center justify-between rounded p-1.5 text-white/50 hover:bg-white/10"
+                                      >
+                                        <div className="flex items-center gap-2 min-w-0">
+                                          <Avatar className="h-6 w-6 flex-shrink-0">
+                                            <AvatarImage src={p.photoURL || undefined} />
+                                            <AvatarFallback className="text-[10px]">
+                                              {p.displayName.charAt(0)}
+                                            </AvatarFallback>
+                                          </Avatar>
+                                          <span className="text-sm truncate">{p.displayName}</span>
+                                          {user?.penalty?.active && (
+                                            <Badge variant="destructive" className="text-[10px] flex-shrink-0">
+                                              {t("penalized")}
+                                            </Badge>
+                                          )}
+                                        </div>
+                                        {isActive && (
+                                          <div className="flex gap-1 flex-shrink-0">
+                                            <Button
+                                              size="sm"
+                                              variant="ghost"
+                                              className="h-7 w-7 p-0 text-white/50 hover:text-emerald-400"
+                                              title={t("moveToPlayers")}
+                                              onClick={() => handleMoveToPlayers(match.id, p.uid, p.displayName)}
+                                            >
+                                              <ArrowUp className="h-3 w-3" />
+                                            </Button>
+                                            <Button
+                                              size="sm"
+                                              variant="ghost"
+                                              className="h-7 w-7 p-0 text-white/50 hover:text-red-400"
+                                              onClick={() => handleAdminRemovePlayer(match.id, p.uid, p.displayName)}
+                                            >
+                                              <X className="h-3 w-3" />
+                                            </Button>
+                                          </div>
+                                        )}
+                                      </div>
                                     );
-                                  }
-                                  return available.map((u) => (
-                                    <button
-                                      key={u.uid}
-                                      className="flex w-full items-center gap-2 rounded p-2 text-sm hover:bg-white/10"
-                                      onClick={() => handleAdminAddPlayer(match.id, u)}
-                                    >
-                                      <Avatar className="h-6 w-6">
-                                        <AvatarImage src={u.photoURL || undefined} />
-                                        <AvatarFallback className="text-[10px]">
-                                          {u.displayName.charAt(0)}
-                                        </AvatarFallback>
-                                      </Avatar>
-                                      {u.displayName}
-                                    </button>
-                                  ));
-                                })()}
-                              </PopoverContent>
-                            </Popover>
-                          )}
-                        </div>
+                                  })
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })()}
+                        {(match.status === "open" || match.status === "full" || match.status === "confirmed") && (
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button size="sm" variant="outline" className="mt-3 w-full text-xs bg-white/10 border-white/20 text-white hover:bg-white/20">
+                                <UserPlus className="mr-1 h-3 w-3" />
+                                {t("addPlayer")}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="max-h-64 overflow-y-auto p-2 backdrop-blur-xl bg-slate-900/90 border border-white/10 text-white" align="start">
+                              {(() => {
+                                const inMatch = new Set([
+                                  ...match.players.map((p) => p.uid),
+                                  ...match.waitingList.map((p) => p.uid),
+                                ]);
+                                const available = allUsers.filter((u) => !inMatch.has(u.uid));
+                                if (available.length === 0) {
+                                  return (
+                                    <p className="p-2 text-xs text-white/50">
+                                      {t("noPlayers")}
+                                    </p>
+                                  );
+                                }
+                                return available.map((u) => (
+                                  <button
+                                    key={u.uid}
+                                    className="flex w-full items-center gap-2 rounded p-2 text-sm hover:bg-white/10"
+                                    onClick={() => handleAdminAddPlayer(match.id, u)}
+                                  >
+                                    <Avatar className="h-6 w-6">
+                                      <AvatarImage src={u.photoURL || undefined} />
+                                      <AvatarFallback className="text-[10px]">
+                                        {u.displayName.charAt(0)}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    {u.displayName}
+                                  </button>
+                                ));
+                              })()}
+                            </PopoverContent>
+                          </Popover>
+                        )}
                       </CardContent>
                     </Card>
                   );
