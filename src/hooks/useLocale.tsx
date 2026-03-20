@@ -20,7 +20,6 @@ import { es as dateFnsEs } from "date-fns/locale";
 import { hi as dateFnsHi } from "date-fns/locale";
 import { pt as dateFnsPt } from "date-fns/locale";
 import { enUS as dateFnsEn } from "date-fns/locale";
-import { arSA as dateFnsAr } from "date-fns/locale";
 import { it as dateFnsIt } from "date-fns/locale";
 import type { Locale as DateFnsLocale } from "date-fns";
 
@@ -30,7 +29,6 @@ const dateFnsLocales: Record<Locale, DateFnsLocale> = {
   es: dateFnsEs,
   hi: dateFnsHi,
   pt: dateFnsPt,
-  ar: dateFnsAr,
   it: dateFnsIt,
 };
 

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-type SupportedLocale = "fr" | "en" | "es" | "hi" | "pt" | "ar" | "it";
+type SupportedLocale = "fr" | "en" | "es" | "hi" | "pt" | "it";
 
-const VALID_LOCALES: SupportedLocale[] = ["fr", "en", "es", "hi", "pt", "ar", "it"];
+const VALID_LOCALES: SupportedLocale[] = ["fr", "en", "es", "hi", "pt", "it"];
 
 function isValidLocale(v: unknown): v is SupportedLocale {
   return typeof v === "string" && VALID_LOCALES.includes(v as SupportedLocale);
@@ -72,33 +72,20 @@ const emailTranslations: Record<SupportedLocale, {
     waitingListTitle: "प्रतीक्षा सूची",
     cta: "मैच देखें",
   },
-  pt: {
-    promotedSubject: "🎉 Você joga! — {matchDay} {matchDate}",
-    promotedHeading: "Agora está na lista de jogadores!",
-    promotedBody:
-      "Devido a um cancelamento, agora faz parte dos jogadores para o jogo de {matchDay} {matchDate}. Aqui está a lista atualizada.",
-    rosterSubject: "📋 Lista atualizada — {matchDay} {matchDate}",
-    rosterHeading: "A lista de jogadores foi atualizada",
-    rosterBody:
-      "A lista de jogadores para o jogo de {matchDay} {matchDate} mudou. Aqui está a lista atualizada.",
-    playersTitle: "Jogadores",
-    waitingListTitle: "Lista de espera",
-    cta: "Ver jogo",
-  },
-  ar: {
-    promotedSubject: "🎉 أنت تلعب! — {matchDay} {matchDate}",
-    promotedHeading: "أنت الآن في قائمة اللاعبين!",
-    promotedBody:
-      "بسبب إلغاء، أنت الآن ضمن اللاعبين لمباراة {matchDay} {matchDate}. هنا القائمة المحدثة.",
-    rosterSubject: "📋 القائمة محدثة — {matchDay} {matchDate}",
-    rosterHeading: "تم تحديث قائمة اللاعبين",
-    rosterBody:
-      "تغيرت قائمة اللاعبين لمباراة {matchDay} {matchDate}. هنا القائمة المحدثة.",
-    playersTitle: "اللاعبون",
-    waitingListTitle: "قائمة الانتظار",
-    cta: "عرض المباراة",
-  },
-  it: {
+   pt: {
+     promotedSubject: "🎉 Você joga! — {matchDay} {matchDate}",
+     promotedHeading: "Agora está na lista de jogadores!",
+     promotedBody:
+       "Devido a um cancelamento, agora faz parte dos jogadores para o jogo de {matchDay} {matchDate}. Aqui está a lista atualizada.",
+     rosterSubject: "📋 Lista atualizada — {matchDay} {matchDate}",
+     rosterHeading: "A lista de jogadores foi atualizada",
+     rosterBody:
+       "A lista de jogadores para o jogo de {matchDay} {matchDate} mudou. Aqui está a lista atualizada.",
+     playersTitle: "Jogadores",
+     waitingListTitle: "Lista de espera",
+     cta: "Ver jogo",
+   },
+   it: {
     promotedSubject: "🎉 Giochi! — {matchDay} {matchDate}",
     promotedHeading: "Ora sei nella lista dei giocatori!",
     promotedBody:
@@ -135,8 +122,8 @@ function buildRosterEmailHtml(
   isPromoted: boolean,
 ): string {
   const t = emailTranslations[locale];
-  const dir = locale === "ar" ? "rtl" : "ltr";
-  const lang = locale === "ar" ? "ar" : locale;
+  const dir = "ltr";
+  const lang = locale;
 
   const headingText = isPromoted ? t.promotedHeading : t.rosterHeading;
   const bodyText = (isPromoted ? t.promotedBody : t.rosterBody)

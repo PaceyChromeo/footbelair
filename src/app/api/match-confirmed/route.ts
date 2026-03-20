@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-type SupportedLocale = "fr" | "en" | "es" | "hi" | "pt" | "ar" | "it";
+type SupportedLocale = "fr" | "en" | "es" | "hi" | "pt" | "it";
 
-const VALID_LOCALES: SupportedLocale[] = ["fr", "en", "es", "hi", "pt", "ar", "it"];
+const VALID_LOCALES: SupportedLocale[] = ["fr", "en", "es", "hi", "pt", "it"];
 
 function isValidLocale(v: unknown): v is SupportedLocale {
   return typeof v === "string" && VALID_LOCALES.includes(v as SupportedLocale);
@@ -46,25 +46,16 @@ const emailTranslations: Record<SupportedLocale, Record<string, string>> = {
     cta: "मैच देखें",
     footer: "AAA-BelAir · मैच पुष्टि",
   },
-  pt: {
-    subject: "✅ Jogo confirmado — {matchDay} {matchDate}",
-    heading: "O jogo está confirmado!",
-    playersTitle: "Jogadores",
-    waitingListTitle: "Lista de espera",
-    body: "O jogo de {matchDay} {matchDate} está confirmado! Aqui está a lista de jogadores.",
-    cta: "Ver jogo",
-    footer: "AAA-BelAir · Jogo confirmado",
-  },
-  ar: {
-    subject: "✅ تم تأكيد المباراة — {matchDay} {matchDate}",
-    heading: "تم تأكيد المباراة!",
-    playersTitle: "اللاعبون",
-    waitingListTitle: "قائمة الانتظار",
-    body: "تم تأكيد مباراة {matchDay} {matchDate}! هنا قائمة اللاعبين.",
-    cta: "عرض المباراة",
-    footer: "AAA-BelAir · مباراة مؤكدة",
-  },
-  it: {
+   pt: {
+     subject: "✅ Jogo confirmado — {matchDay} {matchDate}",
+     heading: "O jogo está confirmado!",
+     playersTitle: "Jogadores",
+     waitingListTitle: "Lista de espera",
+     body: "O jogo de {matchDay} {matchDate} está confirmado! Aqui está a lista de jogadores.",
+     cta: "Ver jogo",
+     footer: "AAA-BelAir · Jogo confirmado",
+   },
+   it: {
     subject: "✅ Partita confermata — {matchDay} {matchDate}",
     heading: "La partita è confermata!",
     playersTitle: "Giocatori",
@@ -97,8 +88,8 @@ function buildEmailHtml(
   waitingList: { displayName: string }[]
 ): string {
   const t = emailTranslations[locale];
-  const dir = locale === "ar" ? "rtl" : "ltr";
-  const lang = locale === "ar" ? "ar" : locale;
+  const dir = "ltr";
+  const lang = locale;
 
   
   const playersHtml = players

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-type SupportedLocale = "fr" | "en" | "es" | "hi" | "pt" | "ar" | "it";
+type SupportedLocale = "fr" | "en" | "es" | "hi" | "pt" | "it";
 
-const VALID_LOCALES: SupportedLocale[] = ["fr", "en", "es", "hi", "pt", "ar", "it"];
+const VALID_LOCALES: SupportedLocale[] = ["fr", "en", "es", "hi", "pt", "it"];
 
 function isValidLocale(v: unknown): v is SupportedLocale {
   return typeof v === "string" && VALID_LOCALES.includes(v as SupportedLocale);
@@ -105,39 +105,23 @@ const emailTranslations: Record<SupportedLocale, PenaltyTranslations> = {
     cta: "मेरा खाता देखें",
     footer: "AAA-BelAir · दंड सूचना",
   },
-  pt: {
-    subject: "⚠️ Penalidade aplicada — AAA-BelAir",
-    heading: "Uma penalidade foi aplicada à sua conta",
-    reasonLabel: "Motivo",
-    reasonNoShow: "Ausência não comunicada (no-show)",
-    reasonLateCancel: "Cancelamento tardio (menos de 4 horas antes do jogo)",
-    implicationsLabel: "Consequências",
-    noShowImplications: "Proibição de inscrição durante 2 semanas (até {bannedUntil}), seguida de 2 semanas no final da lista de espera (até {penaltyUntil}).",
-    lateCancelImplications: "Colocado no final da lista de espera durante 2 semanas (até {penaltyUntil}).",
-    hardBanLabel: "Suspensão total",
-    softBanLabel: "Prioridade reduzida",
-    complaintLabel: "Contestação",
-    complaintText: "Se deseja contestar esta decisão, pode contactar Ivan TCHOMGUE MIEGUEM ou David RODRIGUEZ ROCHA via Teams.",
-    cta: "Ver minha conta",
-    footer: "AAA-BelAir · Notificação de penalidade",
-  },
-  ar: {
-    subject: "⚠️ تم تطبيق عقوبة — AAA-BelAir",
-    heading: "تم تطبيق عقوبة على حسابك",
-    reasonLabel: "السبب",
-    reasonNoShow: "غياب بدون إبلاغ (عدم حضور)",
-    reasonLateCancel: "إلغاء متأخر (أقل من 4 ساعات قبل المباراة)",
-    implicationsLabel: "العواقب",
-    noShowImplications: "حظر التسجيل لمدة أسبوعين (حتى {bannedUntil})، يليه أسبوعان في أسفل قائمة الانتظار (حتى {penaltyUntil}).",
-    lateCancelImplications: "وضعك في أسفل قائمة الانتظار لمدة أسبوعين (حتى {penaltyUntil}).",
-    hardBanLabel: "إيقاف كامل",
-    softBanLabel: "أولوية منخفضة",
-    complaintLabel: "اعتراض",
-    complaintText: "إذا كنت ترغب في الاعتراض على هذا القرار، يمكنك التواصل مع Ivan TCHOMGUE MIEGUEM أو David RODRIGUEZ ROCHA عبر Teams.",
-    cta: "عرض حسابي",
-    footer: "AAA-BelAir · إشعار عقوبة",
-  },
-  it: {
+   pt: {
+     subject: "⚠️ Penalidade aplicada — AAA-BelAir",
+     heading: "Uma penalidade foi aplicada à sua conta",
+     reasonLabel: "Motivo",
+     reasonNoShow: "Ausência não comunicada (no-show)",
+     reasonLateCancel: "Cancelamento tardio (menos de 4 horas antes do jogo)",
+     implicationsLabel: "Consequências",
+     noShowImplications: "Proibição de inscrição durante 2 semanas (até {bannedUntil}), seguida de 2 semanas no final da lista de espera (até {penaltyUntil}).",
+     lateCancelImplications: "Colocado no final da lista de espera durante 2 semanas (até {penaltyUntil}).",
+     hardBanLabel: "Suspensão total",
+     softBanLabel: "Prioridade reduzida",
+     complaintLabel: "Contestação",
+     complaintText: "Se deseja contestar esta decisão, pode contactar Ivan TCHOMGUE MIEGUEM ou David RODRIGUEZ ROCHA via Teams.",
+     cta: "Ver minha conta",
+     footer: "AAA-BelAir · Notificação de penalidade",
+   },
+   it: {
     subject: "⚠️ Penalità applicata — AAA-BelAir",
     heading: "Una penalità è stata applicata al tuo account",
     reasonLabel: "Motivo",
@@ -164,8 +148,8 @@ function buildEmailHtml(
   playerName: string
 ): string {
   const t = emailTranslations[locale];
-  const dir = locale === "ar" ? "rtl" : "ltr";
-  const lang = locale === "ar" ? "ar" : locale;
+  const dir = locale === "hi" ? "ltr" : "ltr";
+  const lang = locale;
 
   const isNoShow = reason === "no-show";
   const reasonText = isNoShow ? t.reasonNoShow : t.reasonLateCancel;
@@ -282,7 +266,7 @@ export async function POST(req: NextRequest) {
 
   const formatDate = (iso: string): string => {
     const d = new Date(iso);
-    return d.toLocaleDateString(locale === "ar" ? "ar-SA" : locale, {
+    return d.toLocaleDateString(locale, {
       day: "numeric",
       month: "long",
       year: "numeric",

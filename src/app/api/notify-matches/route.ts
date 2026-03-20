@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-type SupportedLocale = "fr" | "en" | "es" | "hi" | "pt" | "ar" | "it";
+type SupportedLocale = "fr" | "en" | "es" | "hi" | "pt" | "it";
 
-const VALID_LOCALES: SupportedLocale[] = ["fr", "en", "es", "hi", "pt", "ar", "it"];
+const VALID_LOCALES: SupportedLocale[] = ["fr", "en", "es", "hi", "pt", "it"];
 
 function isValidLocale(v: unknown): v is SupportedLocale {
   return typeof v === "string" && VALID_LOCALES.includes(v as SupportedLocale);
@@ -54,29 +54,18 @@ const emailTranslations: Record<SupportedLocale, Record<string, string>> = {
     weatherLink: "पूर्वानुमान देखें →",
     footer: "हर दिन दोपहर 12:30 बजे · प्रति मैच 12 स्थान",
   },
-  pt: {
-    subject: "⚽ Jogos da semana abertos — {weekLabel}",
-    heading: "Os jogos da semana estão abertos!",
-    weekOf: "Semana de",
-    body: "As inscrições estão abertas para os jogos desta semana. Reserve seu lugar agora — as vagas acabam rápido!",
-    cta: "Inscrever-se nos jogos",
-    weatherLabel: "🌤️ Clima Villeneuve-Loubet",
-    weatherDescription: "Confira o clima da semana para antecipar as condições de jogo.",
-    weatherLink: "Ver previsões →",
-    footer: "Todos os dias às 12h30 · 12 vagas por jogo",
-  },
-  ar: {
-    subject: "⚽ مباريات الأسبوع مفتوحة — {weekLabel}",
-    heading: "مباريات الأسبوع مفتوحة الآن!",
-    weekOf: "أسبوع",
-    body: "التسجيل مفتوح لمباريات هذا الأسبوع. احجز مكانك الآن — الأماكن تنفد بسرعة!",
-    cta: "التسجيل في المباريات",
-    weatherLabel: "🌤️ طقس فيلنوف-لوبيه",
-    weatherDescription: "تحقق من طقس الأسبوع لتوقع ظروف اللعب.",
-    weatherLink: "عرض التوقعات →",
-    footer: "كل يوم الساعة 12:30 · 12 مكان لكل مباراة",
-  },
-  it: {
+   pt: {
+     subject: "⚽ Jogos da semana abertos — {weekLabel}",
+     heading: "Os jogos da semana estão abertos!",
+     weekOf: "Semana de",
+     body: "As inscrições estão abertas para os jogos desta semana. Reserve seu lugar agora — as vagas acabam rápido!",
+     cta: "Inscrever-se nos jogos",
+     weatherLabel: "🌤️ Clima Villeneuve-Loubet",
+     weatherDescription: "Confira o clima da semana para antecipar as condições de jogo.",
+     weatherLink: "Ver previsões →",
+     footer: "Todos os dias às 12h30 · 12 vagas por jogo",
+   },
+   it: {
     subject: "⚽ Partite della settimana aperte — {weekLabel}",
     heading: "Le partite della settimana sono aperte!",
     weekOf: "Settimana del",
@@ -106,8 +95,8 @@ function getAppUrl(): string {
 
 function buildEmailHtml(weekLabel: string, appUrl: string, locale: SupportedLocale): string {
   const t = emailTranslations[locale];
-  const dir = locale === "ar" ? "rtl" : "ltr";
-  const lang = locale === "ar" ? "ar" : locale;
+  const dir = "ltr";
+  const lang = locale;
 
   return `
 <!DOCTYPE html>
