@@ -18,10 +18,10 @@ import {
   removePenalty,
   setUserRole,
   getWeekDates,
-  joinMatch,
-  leaveMatch,
   adminMoveToPlayers,
   adminMoveToWaitingList,
+  adminRemovePlayer,
+  adminAddPlayer,
   deleteWeekMatches,
   setUserStatus,
   deleteUserAccount,
@@ -53,7 +53,6 @@ import {
   UserPlus,
   X,
   CheckCircle,
-  Ticket,
   ArrowDown,
   ArrowUp,
   Trash2,
@@ -328,14 +327,14 @@ export default function AdminPage() {
 
   const handleAdminAddPlayer = async (matchId: string, user: UserProfile) => {
     try {
-      await joinMatch(
+      await adminAddPlayer(
         matchId,
         {
           uid: user.uid,
           displayName: user.displayName,
           photoURL: user.photoURL,
           joinedAt: Timestamp.now(),
-  },
+        },
         usersMap
       );
       toast.success(t("playerAdded", { name: user.displayName }));
@@ -347,7 +346,7 @@ export default function AdminPage() {
 
   const handleAdminRemovePlayer = async (matchId: string, uid: string, displayName: string) => {
     try {
-      await leaveMatch(matchId, uid, usersMap);
+      await adminRemovePlayer(matchId, uid, usersMap);
       toast.success(t("playerRemoved", { name: displayName }));
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : t("error");
@@ -985,10 +984,6 @@ export default function AdminPage() {
                           </div>
                           <p className="text-xs text-white/50">{user.email}</p>
                           <div className="flex items-center gap-3 text-xs text-white/50">
-                            <span className="flex items-center gap-0.5">
-                              <Ticket className="h-3 w-3" />
-                              {user.quota.remaining}/10
-                            </span>
                             {user.penalty?.active && user.penalty.bannedUntil && user.penalty.bannedUntil.toDate() > new Date() && (
                               <span className="flex items-center gap-0.5 text-red-400 font-semibold">
                                 <AlertTriangle className="h-3 w-3" />

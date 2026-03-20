@@ -25,14 +25,14 @@ service cloud.firestore {
     // =====================
     match /users/{userId} {
       // Any authenticated user can read any user profile
-      // (quotas and penalties are public)
+      // (penalties are public)
       allow read: if isAuthenticated();
 
       // Users can create their own profile on first sign-in
       allow create: if isOwner(userId);
 
-      // Users can update their own profile (displayName, email, photoURL, quota refresh)
-      // Admins can update any user profile (role changes, penalties, quota deductions)
+      // Users can update their own profile (displayName, email, photoURL)
+      // Admins can update any user profile (role changes, penalties)
       allow update: if isOwner(userId) || isAdmin();
 
       // Only admins can delete user profiles

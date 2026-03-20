@@ -41,7 +41,6 @@ const FAKE_PLAYERS = [
 
 async function seed() {
   const now = Timestamp.now();
-  const month = "2026-03";
 
   console.log("Creating 15 fake user profiles...");
   for (const p of FAKE_PLAYERS) {
@@ -52,7 +51,6 @@ async function seed() {
       email: p.email,
       photoURL: null,
       role: "player",
-      quota: { remaining: 10, month },
       penalty: null,
       createdAt: now,
     });

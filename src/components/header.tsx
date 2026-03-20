@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { LogOut, Shield, User, UserCircle, Ticket, Globe, ScrollText } from "lucide-react";
+import { LogOut, Shield, User, UserCircle, Globe, ScrollText } from "lucide-react";
 
 export function Header() {
   const { profile, signInWithGoogle, signOut, loading } = useAuth();
@@ -70,11 +70,6 @@ export function Header() {
             <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
           ) : profile ? (
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5 text-sm text-white/80">
-                <Ticket className="h-4 w-4" />
-                <span>{profile.quota.remaining}/10</span>
-              </div>
-
               {profile.penalty?.active && (
                 <Badge variant="destructive" className="text-xs bg-red-500 border-red-400">
                   {t("penalized")}

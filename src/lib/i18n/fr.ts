@@ -88,7 +88,7 @@ const fr = {
   noMatchesThisWeek: "Aucun match cette semaine. Cliquez sur \"Créer la semaine\".",
   complete: "Terminer",
   matchCancelled: "Match annulé",
-  matchCompleted: "Match terminé, quotas déduits",
+  matchCompleted: "Match terminé",
   matchReopened: "Match réouvert",
   reopen: "Réouvrir",
   noShow: "No-show",
@@ -172,7 +172,7 @@ const fr = {
   rulesSec1Title: "1. Inscriptions",
   rulesSec1_roster: "La liste de l'application fait foi : seuls les joueurs inscrits dans l'app sont considérés comme participants.",
   rulesSec1_slots: "On joue uniquement si on est AU MOINS 10 joueurs, 12 max.",
-  rulesSec1_priority: "La priorité est déterminée par le quota de matchs joués et l'heure d'inscription. Les joueurs ayant joué moins de matchs sont prioritaires, puis c'est le premier inscrit, premier servi.",
+  rulesSec1_priority: "La priorité est déterminée par l'ordre d'inscription : premier inscrit, premier servi.",
   rulesSec1_full: "Inscris-toi uniquement si tu joueras le MATCH COMPLET D'1 HEURE.",
 
   // Section 2 — Timing
@@ -270,6 +270,7 @@ rulesSec8Title: "8. Contact",
   notEnoughPlayersToConfirm: "Il faut au moins 10 joueurs pour confirmer le match.",
   matchAlreadyConfirmed: "Match déjà confirmé",
   rosterUpdated: "La liste des joueurs a été mise à jour",
+  kickedFromMatch: "Tu as été retiré de ce match par un admin. Seul un admin peut te réinscrire.",
 } as const;
 
 export default fr;

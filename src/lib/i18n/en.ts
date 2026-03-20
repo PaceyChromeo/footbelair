@@ -88,7 +88,7 @@ const en = {
   noMatchesThisWeek: "No matches this week. Click \"Create week\".",
   complete: "Complete",
   matchCancelled: "Match cancelled",
-  matchCompleted: "Match completed, quotas deducted",
+  matchCompleted: "Match completed",
   matchReopened: "Match reopened",
   reopen: "Reopen",
   noShow: "No-show",
@@ -169,7 +169,7 @@ const en = {
   rulesSec1Title: "1. Subscriptions",
   rulesSec1_roster: "The app roster is the source of truth: only players registered in the app are considered as participants.",
   rulesSec1_slots: "We play only if we are AT LEAST 10 players, 12 max.",
-  rulesSec1_priority: "Priority is determined by match quota and subscription time. Players who have played fewer matches get priority, then it's first come, first served.",
+  rulesSec1_priority: "Priority is first come, first served based on registration time.",
   rulesSec1_full: "Only subscribe if you will play the FULL 1-HOUR GAME.",
 
   rulesSec2Title: "2. Timing",
@@ -260,6 +260,7 @@ rulesSec8Title: "8. Contact",
   confirmMatchDescription: "A confirmation email will be sent to all subscribed players (players + waiting list) with the player list.",
   notEnoughPlayersToConfirm: "At least 10 players are required to confirm the match.",
   matchAlreadyConfirmed: "Match already confirmed",
+  kickedFromMatch: "You have been removed from this match by an admin. Only an admin can re-register you.",
 } as const;
 
 export default en;

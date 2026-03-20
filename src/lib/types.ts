@@ -20,6 +20,7 @@ export interface PlayerEntry {
   displayName: string;
   photoURL: string | null;
   joinedAt: Timestamp;
+  adminPlaced?: boolean;
 }
 
 export interface Penalty {
@@ -31,11 +32,6 @@ export interface Penalty {
   declaredAt: Timestamp;
 }
 
-export interface UserQuota {
-  remaining: number;
-  month: string; // format: "2026-03"
-}
-
 export interface UserProfile {
   uid: string;
   displayName: string;
@@ -44,7 +40,6 @@ export interface UserProfile {
   role: UserRole;
   status: UserStatus;
   locale?: Locale;
-  quota: UserQuota;
   penalty: Penalty | null;
   createdAt: Timestamp;
 }
@@ -60,11 +55,11 @@ export interface Match {
   createdBy: string; // admin uid
   createdAt: Timestamp;
   cancellationReason?: CancellationReason;
+  kickedPlayers?: string[];
 }
 
 export const MAX_PLAYERS = 12;
 export const MIN_PLAYERS = 10;
-export const MAX_QUOTA = 10;
 export const PENALTY_DURATION_DAYS = 14; // WL priority penalty (both no-show and late-cancel)
 export const NO_SHOW_BAN_DAYS = 14; // hard ban: cannot subscribe at all (no-show only)
 export const LATE_CANCEL_HOURS = 4;

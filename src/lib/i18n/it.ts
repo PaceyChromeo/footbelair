@@ -88,7 +88,7 @@ const it = {
   noMatchesThisWeek: "Nessuna partita questa settimana. Clicca su \"Crea settimana\".",
   complete: "Completa",
   matchCancelled: "Partita annullata",
-  matchCompleted: "Partita completata, quote detratte",
+  matchCompleted: "Partita completata",
   matchReopened: "Partita riaperta",
   reopen: "Riapri",
   noShow: "No-show",
@@ -166,7 +166,7 @@ const it = {
   rulesSec1Title: "1. Iscrizioni",
   rulesSec1_roster: "La lista dell'app è il riferimento ufficiale: solo i giocatori iscritti nell'app sono considerati partecipanti.",
   rulesSec1_slots: "Si gioca solo se siamo ALMENO 10 giocatori, 12 max.",
-  rulesSec1_priority: "La priorità è determinata dalla quota di partite giocate e dall'orario di iscrizione. I giocatori che hanno giocato meno partite hanno la priorità, poi vale il primo arrivato, primo servito.",
+  rulesSec1_priority: "La priorità è determinata dall'ordine di iscrizione: primo arrivato, primo servito.",
   rulesSec1_full: "Iscriviti solo se giocherai la PARTITA COMPLETA DI 1 ORA.",
 
    rulesSec2Title: "2. Orari",
@@ -257,6 +257,7 @@ rulesSec8Title: "8. Contatto",
   notEnoughPlayersToConfirm: "Servono almeno 10 giocatori per confermare la partita.",
   matchAlreadyConfirmed: "Partita già confermata",
   rosterUpdated: "La lista dei giocatori è stata aggiornata",
+  kickedFromMatch: "Sei stato rimosso da questa partita da un admin. Solo un admin può reiscriverti.",
 } as const;
 
 export default it;

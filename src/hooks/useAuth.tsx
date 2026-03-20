@@ -24,7 +24,7 @@ import {
 } from "firebase/auth";
 import { doc, getDoc, setDoc, Timestamp, collection, query, where, getDocs } from "firebase/firestore";
 import { auth, googleProvider, db } from "@/lib/firebase";
-import { UserProfile, MAX_QUOTA } from "@/lib/types";
+import { UserProfile } from "@/lib/types";
 
 export type SignupErrorCode = "email-already-exists" | "name-already-exists";
 
@@ -78,15 +78,9 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
-function getCurrentMonth(): string {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-}
-
 async function syncUserToFirestore(user: User, displayNameOverride?: string): Promise<UserProfile> {
   const userRef = doc(db, "users", user.uid);
   const userSnap = await getDoc(userRef);
-  const currentMonth = getCurrentMonth();
   const resolvedName = displayNameOverride || user.displayName || "Unknown";
 
   if (userSnap.exists()) {
@@ -98,13 +92,8 @@ async function syncUserToFirestore(user: User, displayNameOverride?: string): Pr
       photoURL: user.photoURL || existing.photoURL,
     };
 
-    // Backfill status for existing users created before the approval workflow
     if (!existing.status) {
       updates.status = "approved";
-    }
-
-    if (existing.quota.month !== currentMonth) {
-      updates.quota = { remaining: MAX_QUOTA, month: currentMonth };
     }
 
     if (existing.penalty?.active && existing.penalty.until.toDate() <= new Date()) {
@@ -117,13 +106,10 @@ async function syncUserToFirestore(user: User, displayNameOverride?: string): Pr
       ...existing,
       ...updates,
       status: updates.status || existing.status || "approved",
-      quota: updates.quota || existing.quota,
       penalty: updates.penalty === null ? null : existing.penalty,
     };
   }
 
-  // No document for this UID — check if an orphaned profile exists for the same email
-  // (e.g. Firebase Auth account was recreated and got a new UID).
   if (user.email) {
     const usersRef = collection(db, "users");
     const emailQuery = query(usersRef, where("email", "==", user.email));
@@ -139,9 +125,6 @@ async function syncUserToFirestore(user: User, displayNameOverride?: string): Pr
         email: user.email,
         photoURL: user.photoURL || orphaned.photoURL,
         status: orphaned.status || "approved",
-        quota: orphaned.quota.month !== currentMonth
-          ? { remaining: MAX_QUOTA, month: currentMonth }
-          : orphaned.quota,
         penalty: orphaned.penalty?.active && orphaned.penalty.until.toDate() <= new Date()
           ? null
           : orphaned.penalty,
@@ -160,7 +143,6 @@ async function syncUserToFirestore(user: User, displayNameOverride?: string): Pr
     role: "player",
     status: "pending",
     locale: "fr",
-    quota: { remaining: MAX_QUOTA, month: currentMonth },
     penalty: null,
     createdAt: Timestamp.now(),
   };

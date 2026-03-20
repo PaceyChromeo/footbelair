@@ -25,7 +25,7 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import { ArrowLeft, Users, Ticket, Flag, Activity, ArrowRight } from "lucide-react";
+import { ArrowLeft, Users, Flag, Activity, ArrowRight } from "lucide-react";
 import { Timestamp } from "firebase/firestore";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -207,6 +207,11 @@ export default function MatchDetailPage() {
     }
   };
 
+  const isKicked =
+    match && profile
+      ? (match.kickedPlayers ?? []).includes(profile.uid)
+      : false;
+
   const isRegistered =
     match && profile
       ? [...match.players, ...match.waitingList].some(
@@ -280,18 +285,10 @@ export default function MatchDetailPage() {
         </Avatar>
         <div className="flex-1 min-w-0">
           <p className="text-sm text-white/90 truncate font-medium">{p.displayName}</p>
-          {user && (
-            <div className="flex items-center gap-2 mt-0.5">
-              <span className="flex items-center gap-0.5 text-[10px] text-emerald-400/80">
-                <Ticket className="h-2.5 w-2.5" />
-                {user.quota.remaining}
-              </span>
-              {hasPenalty && (
-                <Badge variant="destructive" className="text-[8px] px-1 py-0 h-3 border-0">
-                  {t("penalized")}
-                </Badge>
-              )}
-            </div>
+          {hasPenalty && (
+            <Badge variant="destructive" className="text-[8px] px-1 py-0 h-3 border-0 mt-0.5">
+              {t("penalized")}
+            </Badge>
           )}
         </div>
         {match.status === "completed" && profile && p.uid !== profile.uid && (
@@ -375,6 +372,11 @@ export default function MatchDetailPage() {
               {match.status !== "cancelled" && match.status !== "completed" && (
                 <div className="w-full md:w-[300px] flex-shrink-0">
                   {!isRegistered ? (
+                    isKicked ? (
+                     <div className="w-full h-12 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center text-sm font-bold tracking-wide">
+                       {t("kickedFromMatch")}
+                     </div>
+                    ) : (
                     <Button 
                       onClick={handleJoin} 
                       className="w-full h-12 rounded-xl text-sm font-bold tracking-wide bg-white text-black hover:bg-emerald-50 hover:text-emerald-900 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(16,185,129,0.3)]"
@@ -382,6 +384,7 @@ export default function MatchDetailPage() {
                       {t("register")}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
+                    )
                   ) : (
                     <div className="space-y-3">
                       {isInPlayers ? (
@@ -464,20 +467,12 @@ export default function MatchDetailPage() {
                           </Avatar>
                           <div className="flex-1 min-w-0">
                              <p className="text-sm text-white/90 truncate font-medium">{p.displayName}</p>
-                             {user && (
-                               <div className="flex items-center gap-2 mt-0.5">
-                                 <span className="flex items-center gap-0.5 text-[10px] text-emerald-400/80">
-                                   <Ticket className="h-2.5 w-2.5" />
-                                   {user.quota.remaining}
-                                 </span>
-                                 {hasPenalty && (
-                                   <Badge variant="destructive" className="text-[8px] px-1 py-0 h-3 border-0">
-                                     {t("penalized")}
-                                   </Badge>
-                                 )}
-                               </div>
+                             {hasPenalty && (
+                               <Badge variant="destructive" className="text-[8px] px-1 py-0 h-3 border-0 mt-0.5">
+                                 {t("penalized")}
+                               </Badge>
                              )}
-                          </div>
+                           </div>
                         </div>
                       );
                     })

@@ -26,7 +26,6 @@ import {
   NoShowReport,
   MAX_PLAYERS,
   MIN_PLAYERS,
-  MAX_QUOTA,
   PENALTY_DURATION_DAYS,
   NO_SHOW_BAN_DAYS,
   LATE_CANCEL_HOURS,
@@ -34,11 +33,6 @@ import {
   CancellationReason,
 } from "@/lib/types";
 import { sortByPriority, splitPlayersAndWaitingList } from "@/lib/priority";
-
-export function getCurrentMonth(): string {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-}
 
 export function getWeekDates(weekOffset: number = 0): { day: DayOfWeek; date: Date }[] {
   const now = new Date();
@@ -203,6 +197,10 @@ export async function joinMatch(
   }
 
   const match = { id: matchSnap.id, ...matchSnap.data() } as Match;
+
+  if (match.kickedPlayers?.includes(player.uid)) {
+    throw new Error("KICKED");
+  }
 
   const alreadyIn = [...match.players, ...match.waitingList].find(
     (p) => p.uid === player.uid
@@ -370,8 +368,9 @@ export async function adminMoveToPlayers(
   const entry = match.waitingList.find((p) => p.uid === uid);
   if (!entry) throw new Error("Player not in waiting list");
 
+  const movedEntry: PlayerEntry = { ...entry, joinedAt: Timestamp.now(), adminPlaced: undefined };
   const newWL = match.waitingList.filter((p) => p.uid !== uid);
-  const newPlayers = [...match.players, entry];
+  const newPlayers = [...match.players, movedEntry];
   const newStatus = match.status === "confirmed"
     ? "confirmed"
     : newPlayers.length >= MAX_PLAYERS ? "full" : "open";
@@ -392,13 +391,84 @@ export async function adminMoveToWaitingList(
   const demoted = match.players.find((p) => p.uid === uid);
   if (!demoted) throw new Error("Player not in players list");
 
+  const demotedEntry: PlayerEntry = { ...demoted, adminPlaced: true, joinedAt: Timestamp.now() };
   const newPlayers = match.players.filter((p) => p.uid !== uid);
-  const newWL = [...match.waitingList, demoted];
+  const newWL = [...match.waitingList, demotedEntry];
   const newStatus = match.status === "confirmed"
     ? "confirmed"
     : newPlayers.length >= MAX_PLAYERS ? "full" : "open";
 
   await updateDoc(matchRef, { players: newPlayers, waitingList: newWL, status: newStatus });
+}
+
+export async function adminRemovePlayer(
+  matchId: string,
+  uid: string,
+  usersMap: Map<string, UserProfile>
+): Promise<void> {
+  const matchRef = doc(db, "matches", matchId);
+  const matchSnap = await getDoc(matchRef);
+  if (!matchSnap.exists()) throw new Error("Match not found");
+
+  const match = { id: matchSnap.id, ...matchSnap.data() } as Match;
+  const inPlayers = match.players.some((p) => p.uid === uid);
+  const inWL = match.waitingList.some((p) => p.uid === uid);
+  if (!inPlayers && !inWL) throw new Error("Player not found in match");
+
+  const allEntries = [...match.players, ...match.waitingList].filter(
+    (p) => p.uid !== uid
+  );
+  const sorted = sortByPriority(allEntries, usersMap);
+  const { players, waitingList } = splitPlayersAndWaitingList(sorted, MAX_PLAYERS);
+
+  const kicked = match.kickedPlayers ?? [];
+  if (!kicked.includes(uid)) kicked.push(uid);
+
+  const newStatus = match.status === "confirmed"
+    ? "confirmed"
+    : players.length >= MAX_PLAYERS ? "full" : "open";
+
+  await updateDoc(matchRef, {
+    players,
+    waitingList,
+    kickedPlayers: kicked,
+    status: newStatus,
+  });
+}
+
+export async function adminAddPlayer(
+  matchId: string,
+  player: PlayerEntry,
+  usersMap: Map<string, UserProfile>
+): Promise<void> {
+  const matchRef = doc(db, "matches", matchId);
+  const matchSnap = await getDoc(matchRef);
+  if (!matchSnap.exists()) throw new Error("Match not found");
+
+  const match = { id: matchSnap.id, ...matchSnap.data() } as Match;
+
+  const alreadyIn = [...match.players, ...match.waitingList].find(
+    (p) => p.uid === player.uid
+  );
+  if (alreadyIn) throw new Error("Already registered");
+
+  const newEntry: PlayerEntry = { ...player, joinedAt: Timestamp.now() };
+  const allEntries = [...match.players, ...match.waitingList, newEntry];
+  const sorted = sortByPriority(allEntries, usersMap);
+  const { players, waitingList } = splitPlayersAndWaitingList(sorted, MAX_PLAYERS);
+
+  const kicked = (match.kickedPlayers ?? []).filter((k) => k !== player.uid);
+
+  const newStatus = match.status === "confirmed"
+    ? "confirmed"
+    : players.length >= MAX_PLAYERS ? "full" : "open";
+
+  await updateDoc(matchRef, {
+    players,
+    waitingList,
+    kickedPlayers: kicked,
+    status: newStatus,
+  });
 }
 
 export async function reopenMatch(matchId: string): Promise<void> {
@@ -411,33 +481,8 @@ export async function reopenMatch(matchId: string): Promise<void> {
   await updateDoc(matchRef, { status: newStatus });
 }
 
-export async function completeMatchAndDeductQuotas(matchId: string): Promise<void> {
+export async function completeMatch(matchId: string): Promise<void> {
   const matchRef = doc(db, "matches", matchId);
-  const matchSnap = await getDoc(matchRef);
-  if (!matchSnap.exists()) return;
-
-  const match = matchSnap.data() as Match;
-  const currentMonth = getCurrentMonth();
-
-  for (const player of match.players) {
-    const userRef = doc(db, "users", player.uid);
-    const userSnap = await getDoc(userRef);
-    if (!userSnap.exists()) continue;
-
-    const userData = userSnap.data() as UserProfile;
-    const quota = userData.quota;
-
-    if (quota.month !== currentMonth) {
-      await updateDoc(userRef, {
-        quota: { remaining: MAX_QUOTA - 1, month: currentMonth },
-      });
-    } else {
-      await updateDoc(userRef, {
-        quota: { remaining: Math.max(0, quota.remaining - 1), month: currentMonth },
-      });
-    }
-  }
-
   await updateDoc(matchRef, { status: "completed" });
 }
 
@@ -469,7 +514,7 @@ export async function autoResolveExpiredMatches(
 
     if (match.players.length >= MIN_PLAYERS) {
       if (matchEnd > now) continue;
-      await completeMatchAndDeductQuotas(d.id);
+      await completeMatch(d.id);
     } else {
       if (matchStart > now) continue;
       await cancelMatch(d.id, { type: "not_enough_players" });
